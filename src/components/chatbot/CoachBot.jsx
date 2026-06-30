@@ -250,19 +250,19 @@ export default function CoachBot() {
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 20, scale: 0.9 }}
                   transition={{ duration: 0.35 }}
-                  className="flex items-center gap-2 max-w-[240px] cursor-pointer"
+                  className="flex items-center gap-2 max-w-[220px] cursor-pointer"
                   onClick={() => setIsOpen(true)}
                   style={{
-                    background: 'rgba(8,10,15,0.92)',
-                    border: '1px solid rgba(14,165,233,0.3)',
-                    borderRadius: 16,
-                    padding: '10px 14px',
+                    background: 'rgba(8,10,15,0.94)',
+                    border: '1px solid rgba(14,165,233,0.28)',
+                    borderRadius: 14,
+                    padding: '8px 11px',
                     backdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 16px rgba(14,165,233,0.12)',
+                    boxShadow: '0 6px 24px rgba(0,0,0,0.5), 0 0 12px rgba(14,165,233,0.1)',
                   }}
                 >
-                  <span style={{ fontSize: 16, flexShrink: 0 }}>{proactive.emoji}</span>
-                  <p style={{ color: '#E8EAF0', fontSize: 12, lineHeight: 1.4, fontFamily: 'Inter,sans-serif' }}>
+                  <span style={{ fontSize: 14, flexShrink: 0 }}>{proactive.emoji}</span>
+                  <p style={{ color: '#E8EAF0', fontSize: 11, lineHeight: 1.35, fontFamily: 'Inter,sans-serif' }}>
                     {proactive.text}
                   </p>
                   <button
@@ -285,31 +285,31 @@ export default function CoachBot() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 10,
-                padding: '10px 18px 10px 10px',
+                gap: 8,
+                padding: '7px 14px 7px 7px',
                 borderRadius: 50,
                 background: 'rgba(8,10,15,0.95)',
-                border: '1.5px solid rgba(14,165,233,0.4)',
+                border: '1.5px solid rgba(14,165,233,0.35)',
                 backdropFilter: 'blur(20px)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(14,165,233,0.15)',
+                boxShadow: '0 6px 24px rgba(0,0,0,0.5), 0 0 16px rgba(14,165,233,0.12)',
                 cursor: 'pointer',
                 position: 'relative',
               }}
             >
               {/* Animated ring around avatar */}
               <div style={{ position: 'relative' }}>
-                <NexusAvatar size={40} speaking={isSpeaking} pulse={!dismissed} />
+                <NexusAvatar size={34} speaking={isSpeaking} pulse={!dismissed} />
               </div>
               <div style={{ textAlign: 'left' }}>
-                <p style={{ color: '#E8EAF0', fontSize: 13, fontFamily: 'Syne,sans-serif', fontWeight: 700, lineHeight: 1.2 }}>NEXUS</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <p style={{ color: '#E8EAF0', fontSize: 12, fontFamily: 'Syne,sans-serif', fontWeight: 700, lineHeight: 1.2 }}>NEXUS</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   <span style={{
-                    width: 6, height: 6, borderRadius: '50%',
+                    width: 5, height: 5, borderRadius: '50%',
                     background: '#10B981',
                     display: 'inline-block',
                     animation: 'data-flash 1.5s ease-in-out infinite',
                   }}/>
-                  <span style={{ color: '#10B981', fontSize: 10, fontFamily: 'JetBrains Mono,monospace' }}>Coach IA · En línea</span>
+                  <span style={{ color: '#10B981', fontSize: 9, fontFamily: 'JetBrains Mono,monospace' }}>Coach IA · En línea</span>
                 </div>
               </div>
             </motion.button>
@@ -329,26 +329,26 @@ export default function CoachBot() {
             style={{
               bottom: 16,
               right: 16,
-              width: 'min(380px, calc(100vw - 24px))',
-              height: 'min(580px, calc(100dvh - 80px))',
+              width: 'min(320px, calc(100vw - 20px))',
+              height: 'min(500px, calc(100dvh - 80px))',
               background: 'rgba(8,10,15,0.97)',
-              border: '1px solid rgba(14,165,233,0.25)',
-              borderRadius: 20,
+              border: '1px solid rgba(14,165,233,0.22)',
+              borderRadius: 18,
               backdropFilter: 'blur(24px)',
-              boxShadow: '0 24px 80px rgba(0,0,0,0.7), 0 0 40px rgba(14,165,233,0.1)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 30px rgba(14,165,233,0.08)',
             }}
           >
             {/* Header */}
             <div
-              className="flex items-center gap-3 px-4 py-3 flex-shrink-0"
+              className="flex items-center gap-2.5 px-3 py-2.5 flex-shrink-0"
               style={{
                 borderBottom: '1px solid rgba(14,165,233,0.12)',
                 background: 'linear-gradient(180deg, rgba(14,165,233,0.07) 0%, transparent 100%)',
               }}
             >
-              <NexusAvatar size={42} speaking={isSpeaking} />
+              <NexusAvatar size={36} speaking={isSpeaking} />
               <div className="flex-1">
-                <p style={{ color: '#E8EAF0', fontFamily: 'Syne,sans-serif', fontWeight: 700, fontSize: 14 }}>NEXUS</p>
+                <p style={{ color: '#E8EAF0', fontFamily: 'Syne,sans-serif', fontWeight: 700, fontSize: 13 }}>NEXUS</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 1 }}>
                   <span style={{
                     width: 6, height: 6, borderRadius: '50%',
@@ -380,10 +380,10 @@ export default function CoachBot() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-3" style={{ minHeight: 0 }}>
+            <div className="flex-1 overflow-y-auto p-2.5 space-y-2" style={{ minHeight: 0 }}>
               {messages.map((msg) => (
-                <div key={msg.id} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'} gap-2`}>
-                  {msg.from === 'bot' && <NexusAvatar size={26} />}
+                <div key={msg.id} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'} gap-1.5`}>
+                  {msg.from === 'bot' && <NexusAvatar size={22} />}
 
                   <div style={{ maxWidth: '82%' }}>
                     {msg.type === 'challenge' ? (
@@ -427,18 +427,18 @@ export default function CoachBot() {
                           background: 'linear-gradient(135deg, #0EA5E9, #06B6D4)',
                           color: '#080A0F',
                           fontWeight: 500,
-                          borderRadius: '16px 16px 4px 16px',
-                          padding: '10px 14px',
-                          fontSize: 13,
-                          lineHeight: 1.5,
+                          borderRadius: '14px 14px 4px 14px',
+                          padding: '8px 11px',
+                          fontSize: 12,
+                          lineHeight: 1.45,
                         } : {
                           background: 'rgba(20,24,36,0.9)',
                           color: '#E8EAF0',
                           border: '1px solid rgba(255,255,255,0.05)',
-                          borderRadius: '16px 16px 16px 4px',
-                          padding: '10px 14px',
-                          fontSize: 13,
-                          lineHeight: 1.5,
+                          borderRadius: '14px 14px 14px 4px',
+                          padding: '8px 11px',
+                          fontSize: 12,
+                          lineHeight: 1.45,
                         }}
                       >
                         <RenderText text={msg.text} />
@@ -453,8 +453,8 @@ export default function CoachBot() {
 
               {/* Typing indicator */}
               {isTyping && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
-                  <NexusAvatar size={26} speaking={true} />
+                <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end' }}>
+                  <NexusAvatar size={22} speaking={true} />
                   <div style={{ display: 'flex', gap: 5, padding: '12px 16px', borderRadius: '16px 16px 16px 4px', background: 'rgba(20,24,36,0.9)', border: '1px solid rgba(255,255,255,0.05)' }}>
                     {[0, 1, 2].map(i => (
                       <motion.span key={i}
@@ -472,21 +472,23 @@ export default function CoachBot() {
             {/* Input area */}
             <div style={{ borderTop: '1px solid rgba(14,165,233,0.1)', flexShrink: 0 }}>
               {showOptions ? (
-                <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <p style={{ color: '#5A6070', fontSize: 10, fontFamily: 'JetBrains Mono,monospace', marginBottom: 2 }}>OPCIONES RÁPIDAS</p>
+                <div style={{ padding: '8px 10px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5 }}>
                   {QUICK_OPTIONS.map(opt => (
                     <button
                       key={opt.key}
                       onClick={() => handleOption(opt)}
                       style={{
-                        textAlign: 'left', fontSize: 12, padding: '8px 12px', borderRadius: 10,
+                        textAlign: 'left', fontSize: 11, padding: '7px 9px', borderRadius: 9,
                         background: 'rgba(20,24,36,0.8)', border: '1px solid rgba(14,165,233,0.12)',
                         color: '#A8C4D4', cursor: 'pointer', transition: 'all 0.15s',
+                        gridColumn: opt.key === 'free' ? 'span 2' : undefined,
+                        lineHeight: 1.35,
                       }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(14,165,233,0.45)'; e.currentTarget.style.color = '#0EA5E9' }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(14,165,233,0.12)'; e.currentTarget.style.color = '#A8C4D4' }}
                     >
-                      {opt.emoji} {opt.label}
+                      <span style={{ display: 'block', fontSize: 14, marginBottom: 2 }}>{opt.emoji}</span>
+                      {opt.label}
                     </button>
                   ))}
                 </div>
