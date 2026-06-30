@@ -268,13 +268,13 @@ export default function Portal() {
         <Navbar />
 
         {/* ── Hero Welcome Strip ── */}
-        <section className="pt-20 pb-8 px-4 border-b" style={{borderColor:'rgba(14,165,233,0.1)', background:'rgba(13,16,25,0.5)', backdropFilter:'blur(10px)'}}>
+        <section className="pt-16 pb-4 md:pt-20 md:pb-8 px-4 border-b" style={{borderColor:'rgba(14,165,233,0.1)', background:'rgba(13,16,25,0.5)', backdropFilter:'blur(10px)'}}>
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{opacity:0,y:16}}
               animate={{opacity:1,y:0}}
               transition={{duration:0.5}}
-              className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"
+              className="flex flex-wrap lg:flex-row lg:items-center lg:justify-between gap-4"
             >
               {/* Left: Welcome */}
               <div className="flex items-center gap-4">
@@ -339,7 +339,7 @@ export default function Portal() {
         </section>
 
         {/* ── Main Content: Two Panel ── */}
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-3 md:px-4 py-4 md:py-8">
           <div className="flex flex-col xl:flex-row gap-8">
 
             {/* LEFT: Video Grid (65%) */}

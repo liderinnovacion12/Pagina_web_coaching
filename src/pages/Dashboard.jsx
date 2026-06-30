@@ -167,15 +167,15 @@ function BentoKpi({ label, value, sub, colSpan = 1, color = '#0EA5E9', children,
       initial={{ opacity:0, y:20 }}
       animate={{ opacity:1, y:0 }}
       transition={{ duration:0.45, delay, ease:[0.4,0,0.2,1] }}
-      className="glass-card rounded-2xl p-5 relative overflow-hidden"
+      className="glass-card rounded-xl md:rounded-2xl p-3 md:p-5 relative overflow-hidden"
       style={{ gridColumn: colSpan > 1 ? `span ${colSpan}` : undefined, border: `1px solid ${color}22` }}
     >
       <div className="absolute top-0 left-0 right-0 h-0.5" style={{background:`linear-gradient(90deg, ${color}, transparent)`}} />
-      <p className="text-xs font-jetbrains uppercase tracking-widest mb-3" style={{color:'#5A6070'}}>{label}</p>
+      <p className="text-[10px] md:text-xs font-jetbrains uppercase tracking-widest mb-2 md:mb-3" style={{color:'#5A6070'}}>{label}</p>
       {children || (
         <>
-          <p className="font-syne text-3xl font-black mb-1" style={{color:'#E8EAF0', textShadow:`0 0 20px ${color}66`}}>{value}</p>
-          {sub && <p className="text-xs font-jetbrains" style={{color}}>{sub}</p>}
+          <p className="font-syne text-xl md:text-3xl font-black mb-1" style={{color:'#E8EAF0', textShadow:`0 0 20px ${color}66`}}>{value}</p>
+          {sub && <p className="text-[10px] md:text-xs font-jetbrains" style={{color}}>{sub}</p>}
         </>
       )}
     </motion.div>
@@ -514,7 +514,7 @@ export default function Dashboard() {
               <div className="col-span-2">
                 <BentoKpi label="Usuarios Activos" color="#0EA5E9" delay={0}>
                   <div className="flex items-end gap-4">
-                    <p className="font-syne text-4xl font-black" style={{color:'#E8EAF0', textShadow:'0 0 20px rgba(14,165,233,0.5)'}}>847</p>
+                    <p className="font-syne text-2xl md:text-4xl font-black" style={{color:'#E8EAF0', textShadow:'0 0 20px rgba(14,165,233,0.5)'}}>847</p>
                     <div className="pb-1">
                       <p className="text-xs font-jetbrains" style={{color:'#10B981'}}>▲ +12% este mes</p>
                       <p className="text-xs font-jetbrains mt-0.5" style={{color:'#5A6070'}}>vs. 756 prev</p>
@@ -557,7 +557,7 @@ export default function Dashboard() {
 
               {/* NPS Score */}
               <BentoKpi label="NPS Score" color="#F97316" delay={0.12}>
-                <p className="font-syne text-4xl font-black mb-1" style={{color:'#E8EAF0', textShadow:'0 0 20px rgba(249,115,22,0.4)'}}>94</p>
+                <p className="font-syne text-2xl md:text-4xl font-black mb-1" style={{color:'#E8EAF0', textShadow:'0 0 20px rgba(249,115,22,0.4)'}}>94</p>
                 <Stars rating={5}/>
               </BentoKpi>
 
@@ -576,7 +576,7 @@ export default function Dashboard() {
                 <BentoKpi key={s.label} label={s.label} color={s.color} delay={0.21 + i*0.03}>
                   <div className="flex items-center gap-2">
                     <div className="w-2.5 h-2.5 rounded-full" style={{background:s.color, boxShadow:`0 0 8px ${s.color}`}}/>
-                    <p className="font-syne text-2xl font-bold" style={{color:'#E8EAF0'}}>{s.value}%</p>
+                    <p className="font-syne text-lg md:text-2xl font-bold" style={{color:'#E8EAF0'}}>{s.value}%</p>
                   </div>
                   <div className="mt-2 h-1.5 rounded-full" style={{background:'rgba(255,255,255,0.05)'}}>
                     <div className="h-full rounded-full" style={{width:`${s.value}%`, background:s.color, transition:'width 1s ease'}}/>
@@ -588,8 +588,8 @@ export default function Dashboard() {
 
           {/* ── SECTION 2: Analytics Panel ── */}
           <section id="section-analytics">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-syne text-lg" style={{color:'#E8EAF0'}}>Centro de <span style={{color:'#0EA5E9'}}>Analítica</span></h2>
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <h2 className="font-syne text-base md:text-lg" style={{color:'#E8EAF0'}}>Centro de <span style={{color:'#0EA5E9'}}>Analítica</span></h2>
               <span className="text-xs font-jetbrains px-3 py-1 rounded-full" style={{background:'rgba(14,165,233,0.1)', color:'#0EA5E9', border:'1px solid rgba(14,165,233,0.2)'}}>Datos en tiempo real</span>
             </div>
             <AnalyticsPanel/>
