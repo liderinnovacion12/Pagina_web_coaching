@@ -143,7 +143,7 @@ function VideoPlayer({ video, onClose }) {
           {related.length > 0 && (
             <div className="mt-5">
               <p className="text-xs font-jetbrains uppercase tracking-widest mb-3" style={{color:'#5A6070'}}>Relacionados</p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {related.map(r => (
                   <div key={r.id} className="rounded-xl overflow-hidden cursor-pointer" style={{border:'1px solid rgba(28,31,40,0.8)'}}>
                     <div className={`h-16 bg-gradient-to-br ${r.color} flex items-center justify-center text-2xl`}>{r.icon}</div>
@@ -277,35 +277,49 @@ export default function Portal() {
               className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"
             >
               {/* Left: Welcome */}
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-4">
                 {/* Progress ring */}
                 <div className="relative flex-shrink-0">
-                  <CircleProgress value={overallProgress} size={80} stroke={5} color="#0EA5E9"/>
+                  <CircleProgress value={overallProgress} size={72} stroke={5} color="#0EA5E9"/>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="font-jetbrains font-bold text-sm" style={{color:'#0EA5E9'}}>{overallProgress}%</span>
                   </div>
                 </div>
                 <div>
                   <p className="text-xs font-jetbrains uppercase tracking-widest mb-1" style={{color:'#5A6070'}}>Portal de Aprendizaje</p>
-                  <h1 className="font-syne text-3xl lg:text-4xl font-black">
+                  <h1 className="font-syne text-2xl sm:text-3xl lg:text-4xl font-black">
                     <span style={{color:'#E8EAF0'}}>Hola, </span>
                     <span style={{background:'linear-gradient(135deg,#0EA5E9,#8B5CF6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>{firstName}</span>
                   </h1>
-                  <p className="text-sm font-jetbrains mt-1" style={{color:'#5A6070'}}>
-                    {completed} videos completados · {inProgress} en progreso · racha de 7 días 🔥
+                  <p className="text-xs sm:text-sm font-jetbrains mt-1" style={{color:'#5A6070'}}>
+                    {completed} completados · {inProgress} en progreso · 🔥 7 días
                   </p>
                 </div>
               </div>
 
-              {/* Right: Next class */}
+              {/* Quick stats — inline on mobile */}
+              <div className="flex gap-4 lg:gap-6">
+                {[
+                  {label:'Completados', val:completed, color:'#10B981'},
+                  {label:'Horas', val:'12.4h',  color:'#C9A84C'},
+                  {label:'Racha', val:'7d',        color:'#F97316'},
+                ].map(s => (
+                  <div key={s.label} className="text-center">
+                    <p className="font-syne text-xl sm:text-2xl font-black" style={{color:s.color}}>{s.val}</p>
+                    <p className="text-xs font-jetbrains" style={{color:'#5A6070'}}>{s.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Next class — hidden on small, shown on lg */}
               {nextVideo && (
                 <motion.div
                   whileHover={{scale:1.02}}
                   onClick={() => setActiveVideo(nextVideo)}
-                  className="cursor-pointer rounded-2xl overflow-hidden flex items-center gap-4 p-4 lg:min-w-80"
+                  className="cursor-pointer rounded-2xl overflow-hidden hidden sm:flex items-center gap-4 p-4 lg:min-w-72"
                   style={{background:'rgba(14,165,233,0.08)', border:'1px solid rgba(14,165,233,0.25)'}}
                 >
-                  <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${nextVideo.color} flex-shrink-0 flex items-center justify-center text-2xl`}>
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${nextVideo.color} flex-shrink-0 flex items-center justify-center text-2xl`}>
                     {nextVideo.icon}
                   </div>
                   <div className="min-w-0">
@@ -320,20 +334,6 @@ export default function Portal() {
                   </div>
                 </motion.div>
               )}
-
-              {/* Quick stats */}
-              <div className="flex gap-4">
-                {[
-                  {label:'Completados', val:completed, color:'#10B981'},
-                  {label:'Horas vistas', val:'12.4h',  color:'#C9A84C'},
-                  {label:'Racha', val:'7 días',        color:'#F97316'},
-                ].map(s => (
-                  <div key={s.label} className="text-center">
-                    <p className="font-syne text-2xl font-black" style={{color:s.color}}>{s.val}</p>
-                    <p className="text-xs font-jetbrains" style={{color:'#5A6070'}}>{s.label}</p>
-                  </div>
-                ))}
-              </div>
             </motion.div>
           </div>
         </section>
@@ -369,7 +369,7 @@ export default function Portal() {
                   animate={{opacity:1,y:0}}
                   exit={{opacity:0,y:-10}}
                   transition={{duration:0.2}}
-                  className="grid grid-cols-2 md:grid-cols-3 gap-4"
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
                 >
                   {filteredVideos.map((video, i) => (
                     <PortalVideoCard

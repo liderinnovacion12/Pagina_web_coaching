@@ -133,26 +133,25 @@ function LiveStatusBar() {
       borderBottom: '1px solid rgba(14,165,233,0.15)',
       backdropFilter: 'blur(20px)',
     }}>
-      <div className="px-6 py-2.5 flex items-center justify-between flex-wrap gap-3">
+      <div className="px-4 py-2 flex items-center justify-between gap-2">
         {/* Left: live badge */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full live-dot" style={{background:'#10B981'}} />
-            <span className="text-xs font-jetbrains font-medium" style={{color:'#10B981'}}>● LIVE</span>
-            <span className="text-xs font-jetbrains" style={{color:'#5A6070'}}>Plataforma en línea</span>
+            <span className="text-xs font-jetbrains font-medium" style={{color:'#10B981'}}>LIVE</span>
           </div>
-          <span className="font-jetbrains text-xs" style={{color:'rgba(14,165,233,0.7)'}}>{fmt}</span>
+          <span className="font-jetbrains text-xs hidden sm:block" style={{color:'rgba(14,165,233,0.7)'}}>{fmt}</span>
         </div>
-        {/* Right: quick stats */}
-        <div className="flex items-center gap-4">
+        {/* Right: quick stats — abbreviated on mobile */}
+        <div className="flex items-center gap-3">
           {[
-            { label:'usuarios activos', value:'23', color:'#0EA5E9' },
-            { label:'sesiones en curso', value:'8', color:'#8B5CF6' },
-            { label:'coaches disponibles', value:'3', color:'#10B981' },
+            { label:'activos', value:'23', color:'#0EA5E9' },
+            { label:'sesiones', value:'8', color:'#8B5CF6' },
+            { label:'coaches', value:'3', color:'#10B981' },
           ].map(s => (
-            <div key={s.label} className="flex items-center gap-1.5">
+            <div key={s.label} className="flex items-center gap-1">
               <span className="font-jetbrains font-bold text-xs" style={{color:s.color}}>{s.value}</span>
-              <span className="text-xs font-jetbrains" style={{color:'#5A6070'}}>{s.label}</span>
+              <span className="text-xs font-jetbrains hidden sm:block" style={{color:'#5A6070'}}>{s.label}</span>
             </div>
           ))}
         </div>
@@ -191,11 +190,11 @@ function AnalyticsPanel() {
 
   return (
     <div className="glass-card rounded-2xl overflow-hidden">
-      {/* Tab nav */}
-      <div className="flex gap-1 p-3 border-b" style={{borderColor:'rgba(14,165,233,0.1)', background:'rgba(8,10,15,0.5)'}}>
+      {/* Tab nav — scrollable on mobile */}
+      <div className="flex gap-1 p-3 border-b overflow-x-auto scrollbar-hide" style={{borderColor:'rgba(14,165,233,0.1)', background:'rgba(8,10,15,0.5)', WebkitOverflowScrolling:'touch'}}>
         {TABS.map((tab, i) => (
           <button key={tab} onClick={() => setActiveTab(i)}
-            className="px-3 py-1.5 rounded-lg text-xs font-jetbrains font-medium transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs font-jetbrains font-medium transition-all flex-shrink-0"
             style={{
               background: activeTab === i ? '#0EA5E9' : 'transparent',
               color: activeTab === i ? '#080A0F' : '#5A6070',
@@ -474,42 +473,45 @@ export default function Dashboard() {
         <div className="scan-line" />
       </div>
 
-      <Sidebar />
+      {/* Sidebar — hidden on mobile */}
+      <div className="hidden md:flex">
+        <Sidebar />
+      </div>
 
       <main className="flex-1 overflow-y-auto relative z-10 flex flex-col">
         {/* Live Status Bar */}
         <LiveStatusBar />
 
         {/* Topbar */}
-        <div className="px-6 py-4 flex items-center justify-between border-b" style={{borderColor:'rgba(28,31,40,0.5)', background:'rgba(8,10,15,0.5)'}}>
-          <div>
-            <h1 className="font-syne text-lg" style={{color:'#E8EAF0'}}>
-              Misión Control — <span style={{color:'#0EA5E9'}}>Panel Gerencial</span>
+        <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b gap-3" style={{borderColor:'rgba(28,31,40,0.5)', background:'rgba(8,10,15,0.5)'}}>
+          <div className="min-w-0">
+            <h1 className="font-syne text-base md:text-lg truncate" style={{color:'#E8EAF0'}}>
+              <span className="hidden sm:inline">Misión Control — </span><span style={{color:'#0EA5E9'}}>Panel Gerencial</span>
             </h1>
             <p className="text-xs font-jetbrains mt-0.5" style={{color:'#5A6070'}}>
               Bienvenido, <span style={{color:'#C9A84C'}}>{firstName}</span>
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <button aria-label="Notificaciones" className="w-9 h-9 rounded-xl flex items-center justify-center relative" style={{background:'rgba(14,165,233,0.08)', border:'1px solid rgba(14,165,233,0.15)'}}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" strokeWidth="1.8">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
               </svg>
               <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
             </button>
-            <button onClick={handleLogout} className="px-4 py-2 rounded-xl text-sm font-medium" style={{background:'rgba(14,165,233,0.08)', border:'1px solid rgba(14,165,233,0.2)', color:'#0EA5E9'}}>
+            <button onClick={handleLogout} className="px-3 py-2 rounded-xl text-xs md:text-sm font-medium" style={{background:'rgba(14,165,233,0.08)', border:'1px solid rgba(14,165,233,0.2)', color:'#0EA5E9'}}>
               {t('common.logout')}
             </button>
           </div>
         </div>
 
-        <div className="p-6 space-y-8 max-w-[1600px] mx-auto w-full pb-16">
+        <div className="p-3 md:p-6 space-y-6 md:space-y-8 max-w-[1600px] mx-auto w-full pb-20 md:pb-16">
 
           {/* ── SECTION 1: Bento KPI Grid ── */}
           <section>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3" style={{gridAutoRows:'auto'}}>
               {/* Large: Usuarios Activos (2 cols) */}
-              <div style={{gridColumn:'span 2'}}>
+              <div className="col-span-2">
                 <BentoKpi label="Usuarios Activos" color="#0EA5E9" delay={0}>
                   <div className="flex items-end gap-4">
                     <p className="font-syne text-4xl font-black" style={{color:'#E8EAF0', textShadow:'0 0 20px rgba(14,165,233,0.5)'}}>847</p>
@@ -585,7 +587,7 @@ export default function Dashboard() {
           </section>
 
           {/* ── SECTION 2: Analytics Panel ── */}
-          <section>
+          <section id="section-analytics">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-syne text-lg" style={{color:'#E8EAF0'}}>Centro de <span style={{color:'#0EA5E9'}}>Analítica</span></h2>
               <span className="text-xs font-jetbrains px-3 py-1 rounded-full" style={{background:'rgba(14,165,233,0.1)', color:'#0EA5E9', border:'1px solid rgba(14,165,233,0.2)'}}>Datos en tiempo real</span>
@@ -594,7 +596,7 @@ export default function Dashboard() {
           </section>
 
           {/* ── SECTION 3: Two-column — Videos + Leaderboard ── */}
-          <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <section id="section-videos" className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {/* Video Library */}
             <div className="xl:col-span-2">
               <div className="flex items-center justify-between mb-4">
@@ -608,7 +610,7 @@ export default function Dashboard() {
                   Agregar
                 </button>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 <AnimatePresence>
                   {videos.map(v => (
                     <VideoCard key={v.id} v={v} onEdit={vid => { setEditingVideo(vid); setShowVideoModal(true) }} onDelete={handleDeleteVideo}/>
@@ -662,6 +664,32 @@ export default function Dashboard() {
           />
         )}
       </AnimatePresence>
+
+      {/* Mobile bottom nav */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden" style={{background:'rgba(8,10,15,0.96)', borderTop:'1px solid rgba(201,168,76,0.15)', backdropFilter:'blur(20px)'}}>
+        {[
+          { label:'Inicio', sectionId:null, icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> },
+          { label:'Videos', sectionId:'section-videos', icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10 9 15 12 10 15 10 9" fill="currentColor" stroke="none"/></svg> },
+          { label:'Coaches', sectionId:'section-coaches', icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="9" cy="7" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/></svg> },
+          { label:'Analítica', sectionId:'section-analytics', icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
+        ].map(item => (
+          <button
+            key={item.label}
+            onClick={() => {
+              if (item.sectionId) {
+                document.getElementById(item.sectionId)?.scrollIntoView({ behavior:'smooth', block:'start' })
+              } else {
+                window.scrollTo({ top:0, behavior:'smooth' })
+              }
+            }}
+            className="flex-1 flex flex-col items-center justify-center py-2 gap-1"
+            style={{color:'#5A6070'}}
+          >
+            {item.icon}
+            <span className="text-[10px] font-jetbrains">{item.label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   )
 }
