@@ -33,3 +33,6 @@ yarn-error.log*
 .next/
 next-env.d.ts
 *.tsbuildinfo
+
+# Supabase CLI local state
+supabase/.temp/
