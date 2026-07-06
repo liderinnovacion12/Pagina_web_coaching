@@ -93,6 +93,29 @@ export default function useAuth() {
     return { user: data?.user, error }
   }
 
+  async function signUp(email, password, fullName) {
+    if (!isSupabaseConnected()) {
+      return { user: null, session: null, error: { message: 'supabase_not_connected' } }
+    }
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    })
+    return { user: data?.user, session: data?.session, error }
+  }
+
+  async function signInWithGoogle() {
+    if (!isSupabaseConnected()) {
+      return { error: { message: 'supabase_not_connected' } }
+    }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/login` },
+    })
+    return { error }
+  }
+
   async function signOut() {
     if (!isSupabaseConnected()) {
       sessionStorage.removeItem('mock_user')
@@ -103,5 +126,5 @@ export default function useAuth() {
     logout()
   }
 
-  return { signIn, signOut }
+  return { signIn, signUp, signInWithGoogle, signOut }
 }

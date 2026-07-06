@@ -54,6 +54,26 @@
     "error_generic": "Ocurrió un error. Inténtalo más tarde.",
     "demo_hint": "Demo: admin@test.com / admin123  |  user@test.com / user123"
   },
+  "register": {
+    "title": "Crea tu cuenta",
+    "subtitle": "Únete a la plataforma",
+    "full_name": "Nombre completo",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Registrarme",
+    "loading": "Creando cuenta...",
+    "error_generic": "No se pudo crear la cuenta. Inténtalo de nuevo.",
+    "success_title": "Cuenta creada",
+    "success_subtitle": "Revisa tu correo para confirmar tu cuenta antes de ingresar."
+  },
+  "auth": {
+    "google_button": "Continuar con Google",
+    "or_divider": "o",
+    "no_account": "¿No tienes cuenta?",
+    "have_account": "¿Ya tienes cuenta?",
+    "register_link": "Regístrate",
+    "login_link": "Inicia sesión"
+  },
   "dashboard": {
     "greeting_morning": "Buenos días",
     "greeting_afternoon": "Buenas tardes",

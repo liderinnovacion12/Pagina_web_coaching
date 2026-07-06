@@ -8,7 +8,7 @@ import Button from '../components/ui/Button'
 import Toggle from '../components/ui/Toggle'
 
 export default function Login() {
-  const { signIn } = useAuth()
+  const { signIn, signInWithGoogle } = useAuth()
   const { user, profile } = useStore()
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -43,6 +43,12 @@ export default function Login() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleGoogle = async () => {
+    setError('')
+    const { error } = await signInWithGoogle()
+    if (error) setError(t('login.error_generic'))
   }
 
   return (
@@ -140,6 +146,37 @@ export default function Login() {
               {loading ? t('login.loading') : t('login.submit')}
             </Button>
           </form>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="h-px flex-1 bg-edge" />
+            <span className="text-xs text-muted uppercase tracking-wider">{t('auth.or_divider')}</span>
+            <div className="h-px flex-1 bg-edge" />
+          </div>
+
+          {/* Google */}
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={handleGoogle}
+            className="w-full"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.48c-.28 1.5-1.13 2.78-2.4 3.63v3.02h3.88c2.27-2.09 3.57-5.17 3.57-8.84z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.88-3.02c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.12C3.25 21.3 7.31 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.27 14.27A7.2 7.2 0 0 1 4.9 12c0-.79.14-1.56.37-2.27V6.62H1.27A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.27 5.38l4-3.11z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.45-3.45C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.27 6.62l4 3.11C6.22 6.86 8.87 4.75 12 4.75z"/>
+            </svg>
+            {t('auth.google_button')}
+          </Button>
+
+          <p className="text-center mt-6 text-sm text-muted">
+            {t('auth.no_account')}{' '}
+            <Link to="/registro" className="text-gold hover:underline">
+              {t('auth.register_link')}
+            </Link>
+          </p>
 
           {/* Demo hint */}
           <div className="mt-6 pt-5 border-t border-edge">

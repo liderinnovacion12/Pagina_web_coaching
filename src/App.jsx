@@ -7,6 +7,7 @@ import useAuth from './hooks/useAuth'
 // Pages
 import Landing from './pages/Landing'
 import Login from './pages/Login'
+import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Portal from './pages/Portal'
 import NotFound from './pages/NotFound'
@@ -69,6 +70,14 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <Login />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/registro"
+          element={
+            <PageTransition>
+              <Register />
             </PageTransition>
           }
         />

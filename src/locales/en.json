@@ -54,6 +54,26 @@
     "error_generic": "An error occurred. Please try again later.",
     "demo_hint": "Demo: admin@test.com / admin123  |  user@test.com / user123"
   },
+  "register": {
+    "title": "Create your account",
+    "subtitle": "Join the platform",
+    "full_name": "Full name",
+    "email": "Email address",
+    "password": "Password",
+    "submit": "Sign up",
+    "loading": "Creating account...",
+    "error_generic": "Could not create the account. Please try again.",
+    "success_title": "Account created",
+    "success_subtitle": "Check your email to confirm your account before signing in."
+  },
+  "auth": {
+    "google_button": "Continue with Google",
+    "or_divider": "or",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "register_link": "Sign up",
+    "login_link": "Sign in"
+  },
   "dashboard": {
     "greeting_morning": "Good morning",
     "greeting_afternoon": "Good afternoon",
