@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export type Rol = "admin" | "estudiante";
+export type Rol = "admin" | "estudiante" | "coach";
 
 export type SesionUsuario = {
   id: string;
@@ -28,7 +28,10 @@ export async function getSesionUsuario(): Promise<SesionUsuario | null> {
   return { id: user.id, email: user.email ?? "", rol: perfil.rol as Rol };
 }
 
-export async function requireRol(rolRequerido: Rol): Promise<SesionUsuario> {
+export async function requireRol(
+  rolesPermitidos: Rol | Rol[]
+): Promise<SesionUsuario> {
+  const roles = Array.isArray(rolesPermitidos) ? rolesPermitidos : [rolesPermitidos];
   const sesion = await getSesionUsuario();
 
   if (!sesion) {
@@ -36,8 +39,14 @@ export async function requireRol(rolRequerido: Rol): Promise<SesionUsuario> {
     return sesion as never;
   }
 
-  if (sesion.rol !== rolRequerido) {
-    redirect(sesion.rol === "admin" ? "/admin" : "/dashboard");
+  if (!roles.includes(sesion.rol)) {
+    redirect(
+      sesion.rol === "admin"
+        ? "/admin"
+        : sesion.rol === "coach"
+          ? "/coach"
+          : "/dashboard"
+    );
     return sesion as never;
   }
 

@@ -78,4 +78,41 @@ describe("requireRol", () => {
 
     expect(redirectMock).toHaveBeenCalledWith("/dashboard");
   });
+
+  it("redirige a /dashboard si un estudiante intenta acceder a coach", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "user-1", email: "ana@example.com" } },
+    });
+    singleMock.mockResolvedValue({ data: { rol: "estudiante" } });
+
+    const { requireRol } = await import("./session");
+    await requireRol("coach");
+
+    expect(redirectMock).toHaveBeenCalledWith("/dashboard");
+  });
+
+  it("permite a un admin acceder cuando la ruta acepta varios roles", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "user-1", email: "admin@example.com" } },
+    });
+    singleMock.mockResolvedValue({ data: { rol: "admin" } });
+
+    const { requireRol } = await import("./session");
+    const sesion = await requireRol(["coach", "admin"]);
+
+    expect(redirectMock).not.toHaveBeenCalled();
+    expect(sesion.rol).toBe("admin");
+  });
+
+  it("redirige a /coach si un coach intenta acceder a una ruta restringida a admin", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "user-1", email: "coach@example.com" } },
+    });
+    singleMock.mockResolvedValue({ data: { rol: "coach" } });
+
+    const { requireRol } = await import("./session");
+    await requireRol(["admin"]);
+
+    expect(redirectMock).toHaveBeenCalledWith("/coach");
+  });
 });
