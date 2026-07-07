@@ -37,7 +37,8 @@
       "Bash(echo \"started pid $!\")",
       "Bash(curl -s http://localhost:3000/login)",
       "Bash(git rev-list *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(node -e \"console.log\\(require\\('framer-motion/package.json'\\).version, require\\('lucide-react/package.json'\\).version\\)\")"
     ]
   }
 }

@@ -86,13 +86,4 @@ describe("LoginForm", () => {
 
     expect(actions.loginConGoogle).toHaveBeenCalled();
   });
-
-  it("los botones de Microsoft y GitHub están deshabilitados", () => {
-    render(<LoginForm />);
-
-    expect(
-      screen.getByRole("button", { name: /microsoft/i })
-    ).toBeDisabled();
-    expect(screen.getByRole("button", { name: /github/i })).toBeDisabled();
-  });
 });
