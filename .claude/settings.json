@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m ' *)",
+      "Bash(git worktree *)",
+      "Bash(rm -rf node_modules)",
+      "Bash(npm install *)",
+      "Bash(npx next *)",
+      "Bash(npm run *)",
+      "Bash(git fetch *)",
+      "Bash(git push *)",
+      "Bash(node -e \"const fs=require\\('fs'\\); const p='node_modules/@next/font/dist/google/index.js'; console.log\\(fs.existsSync\\(p\\)\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"console.log\\(require\\('next/font/google'\\) ? 'ok':'no'\\)\")",
+      "Bash(npx vitest *)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"started with PID $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3417/)",
+      "Read(//tmp/**)",
+      "mcp__plugin_ecc_playwright__browser_navigate",
+      "Bash(curl -s http://localhost:3417/)",
+      "Bash(curl -s http://localhost:3417/login)",
+      "Bash(node --experimental-vm-modules -e \"\")",
+      "Bash(NODE_PATH=\"c:\\\\Users\\\\Victor Pulido\\\\Documents\\\\GIT_Repositories\\\\Pagina_web_coaching\\\\node_modules\" node shot.mjs)",
+      "Bash(node \"C:\\\\Users\\\\VICTOR~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Victor-Pulido-Documents-GIT-Repositories-Pagina-web-coaching\\\\f8e1f538-0ff4-459d-88dc-864e60ce0fd3\\\\scratchpad\\\\shot.mjs\")",
+      "Bash(node shot.mjs)",
+      "Bash(node shot.cjs)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 30592 //F //T)"
+    ]
+  }
+}
