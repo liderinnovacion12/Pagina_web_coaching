@@ -28,3 +28,11 @@ yarn-error.log*
 
 # Git worktrees
 .worktrees/
+
+# Next.js
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# Supabase CLI local state
+supabase/.temp/
