@@ -26,7 +26,15 @@
       "Bash(node shot.mjs)",
       "Bash(node shot.cjs)",
       "Bash(netstat -ano)",
-      "Bash(taskkill //PID 30592 //F //T)"
+      "Bash(taskkill //PID 30592 //F //T)",
+      "Skill(impeccable)",
+      "Skill(impeccable:*)",
+      "Bash(node \".claude/skills/impeccable/scripts/context.mjs\")",
+      "Bash(node \"/c/Users/Victor Pulido/.claude/skills/impeccable/scripts/context.mjs\")",
+      "Bash(npm test *)",
+      "Bash(echo \"started with pid $!\")",
+      "Bash(nohup npm run dev)",
+      "Bash(echo \"started pid $!\")"
     ]
   }
 }

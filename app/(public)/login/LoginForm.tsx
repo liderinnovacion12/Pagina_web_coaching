@@ -1,37 +1,55 @@
 "use client";
 
+import { useState } from "react";
 import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { login, loginConGoogle, type LoginState } from "./actions";
 
 const estadoInicial: LoginState = { error: null };
 
+const CAMPO_CLASES =
+  "w-full rounded-lg border border-white/10 bg-ink-950 px-4 py-2.5 text-white placeholder:text-mist-400 outline-none transition hover:border-white/20 focus:border-gold-500/60 focus-visible:ring-2 focus-visible:ring-gold-500/30";
+
 export function LoginForm() {
   const [estado, formAction, pendiente] = useActionState(login, estadoInicial);
+  const [mostrarPassword, setMostrarPassword] = useState(false);
 
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
       <form action={formAction} className="flex flex-col gap-5">
         <label className="flex flex-col gap-2">
-          <span className="font-mono text-xs uppercase tracking-wider text-mist-500">
+          <span className="font-mono text-xs uppercase tracking-wider text-mist-400">
             Correo
           </span>
           <input
             name="email"
             type="email"
+            autoComplete="email"
             placeholder="correo@ejemplo.com"
-            className="rounded-lg border border-white/10 bg-ink-950 px-4 py-2.5 text-white placeholder:text-mist-500/60 outline-none transition focus:border-gold-500/60"
+            className={CAMPO_CLASES}
           />
         </label>
         <label className="flex flex-col gap-2">
-          <span className="font-mono text-xs uppercase tracking-wider text-mist-500">
+          <span className="font-mono text-xs uppercase tracking-wider text-mist-400">
             Contraseña
           </span>
-          <input
-            name="password"
-            type="password"
-            placeholder="••••••••"
-            className="rounded-lg border border-white/10 bg-ink-950 px-4 py-2.5 text-white placeholder:text-mist-500/60 outline-none transition focus:border-gold-500/60"
-          />
+          <div className="relative">
+            <input
+              name="password"
+              type={mostrarPassword ? "text" : "password"}
+              autoComplete="current-password"
+              placeholder="••••••••"
+              className={`${CAMPO_CLASES} pr-11`}
+            />
+            <button
+              type="button"
+              onClick={() => setMostrarPassword((valor) => !valor)}
+              aria-label={mostrarPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              className="absolute inset-y-0 right-0 flex items-center rounded-r-lg px-3 text-mist-400 transition hover:text-mist-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60"
+            >
+              {mostrarPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
+          </div>
         </label>
         {estado.error && (
           <p role="alert" className="text-sm text-rose-400">
@@ -41,27 +59,70 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={pendiente}
-          className="rounded-lg bg-gold-500 px-4 py-2.5 font-semibold text-ink-950 transition hover:bg-gold-400 disabled:opacity-60"
+          className="rounded-lg bg-gold-500 px-4 py-2.5 font-semibold text-ink-950 transition hover:bg-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900 disabled:opacity-60"
         >
           {pendiente ? "Ingresando..." : "Ingresar"}
         </button>
       </form>
 
-      <div className="flex items-center gap-3 text-xs text-mist-500">
+      <div className="flex items-center gap-3 text-xs text-mist-400">
         <span className="h-px flex-1 bg-white/10" />
         O
         <span className="h-px flex-1 bg-white/10" />
       </div>
 
-      <button
-        type="button"
-        onClick={() => loginConGoogle()}
-        className="flex items-center justify-center gap-2 rounded-lg border border-gold-500/40 px-4 py-2.5 font-medium text-mist-300 transition hover:bg-gold-500/10"
-      >
-        <GoogleIcon />
-        Continuar con Google
-      </button>
+      <form action={loginConGoogle}>
+        <GoogleButton />
+      </form>
     </div>
+  );
+}
+
+function GoogleButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="flex w-full items-center justify-center gap-2 rounded-lg border border-gold-500/40 px-4 py-2.5 font-medium text-mist-300 transition hover:border-gold-500/60 hover:bg-gold-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900 disabled:opacity-60"
+    >
+      <GoogleIcon />
+      {pending ? "Redirigiendo..." : "Continuar con Google"}
+    </button>
+  );
+}
+
+function EyeIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      className="h-4 w-4"
+    >
+      <path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      className="h-4 w-4"
+    >
+      <path d="M3 3l18 18" />
+      <path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c7 0 10.5 7 10.5 7a13.6 13.6 0 0 1-3.1 3.9M6.6 6.6C3.9 8.3 1.5 12 1.5 12s3.5 7 10.5 7a10.3 10.3 0 0 0 4.4-.95" />
+      <path d="M9.5 10a3 3 0 0 0 4.24 4.24" />
+    </svg>
   );
 }
 
