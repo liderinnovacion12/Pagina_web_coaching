@@ -1,6 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const createServerClientMock = vi.fn(() => ({ mocked: "server-client" }));
+type ServerClientOptions = {
+  cookies: {
+    getAll: () => { name: string; value: string }[];
+    setAll: (
+      cookies: { name: string; value: string; options: Record<string, unknown> }[]
+    ) => void;
+  };
+};
+
+const createServerClientMock = vi.fn(
+  (_url: string, _key: string, _options: ServerClientOptions) => ({
+    mocked: "server-client",
+  })
+);
 const getAllMock = vi.fn(() => [{ name: "sb-token", value: "abc" }]);
 const setMock = vi.fn();
 
