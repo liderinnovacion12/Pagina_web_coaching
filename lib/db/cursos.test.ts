@@ -1,6 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const orderMock = vi.fn(() => ({ data: [{ id: "c1", titulo: "Ventas B2B", precio: 49.99 }], error: null }));
+type CursosResult = {
+  data: { id: string; titulo: string; precio: number }[] | null;
+  error: { message: string } | null;
+};
+
+const orderMock = vi.fn(
+  (): CursosResult => ({
+    data: [{ id: "c1", titulo: "Ventas B2B", precio: 49.99 }],
+    error: null,
+  })
+);
 const eqMock = vi.fn(() => ({ order: orderMock }));
 const selectMock = vi.fn(() => ({ eq: eqMock }));
 const fromMock = vi.fn(() => ({ select: selectMock }));
