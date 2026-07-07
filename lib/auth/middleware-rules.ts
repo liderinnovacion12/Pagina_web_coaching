@@ -1,7 +1,14 @@
-export type Rol = "admin" | "estudiante";
+export type Rol = "admin" | "estudiante" | "coach";
 
 const PREFIJO_ESTUDIANTE = "/dashboard";
 const PREFIJO_ADMIN = "/admin";
+const PREFIJO_COACH = "/coach";
+
+function destinoPorRol(rol: Rol): string {
+  if (rol === "admin") return "/admin";
+  if (rol === "coach") return "/coach";
+  return "/dashboard";
+}
 
 export function calcularRedireccion(
   pathname: string,
@@ -9,12 +16,12 @@ export function calcularRedireccion(
 ): string | null {
   const esRutaEstudiante = pathname.startsWith(PREFIJO_ESTUDIANTE);
   const esRutaAdmin = pathname.startsWith(PREFIJO_ADMIN);
+  const esRutaCoach = pathname.startsWith(PREFIJO_COACH);
 
-  if (!esRutaEstudiante && !esRutaAdmin) return null;
-
+  if (!esRutaEstudiante && !esRutaAdmin && !esRutaCoach) return null;
   if (rol === null) return "/login";
-
-  if (esRutaAdmin && rol !== "admin") return "/dashboard";
+  if (esRutaAdmin && rol !== "admin") return destinoPorRol(rol);
+  if (esRutaCoach && rol !== "admin" && rol !== "coach") return destinoPorRol(rol);
 
   return null;
 }

@@ -10,18 +10,33 @@ describe("calcularRedireccion", () => {
   it("redirige a /login si no hay rol y la ruta es protegida", () => {
     expect(calcularRedireccion("/dashboard", null)).toBe("/login");
     expect(calcularRedireccion("/admin", null)).toBe("/login");
+    expect(calcularRedireccion("/coach", null)).toBe("/login");
   });
 
   it("redirige a un estudiante fuera de /admin", () => {
     expect(calcularRedireccion("/admin", "estudiante")).toBe("/dashboard");
   });
 
+  it("redirige a un estudiante fuera de /coach", () => {
+    expect(calcularRedireccion("/coach", "estudiante")).toBe("/dashboard");
+  });
+
+  it("redirige a un coach fuera de /admin", () => {
+    expect(calcularRedireccion("/admin", "coach")).toBe("/coach");
+  });
+
   it("permite a un estudiante entrar a /dashboard", () => {
     expect(calcularRedireccion("/dashboard", "estudiante")).toBeNull();
   });
 
-  it("permite a un admin entrar a /admin y a /dashboard", () => {
+  it("permite a un coach entrar a /coach y a /dashboard", () => {
+    expect(calcularRedireccion("/coach", "coach")).toBeNull();
+    expect(calcularRedireccion("/dashboard", "coach")).toBeNull();
+  });
+
+  it("permite a un admin entrar a /admin, /coach y /dashboard", () => {
     expect(calcularRedireccion("/admin", "admin")).toBeNull();
+    expect(calcularRedireccion("/coach", "admin")).toBeNull();
     expect(calcularRedireccion("/dashboard", "admin")).toBeNull();
   });
 });
