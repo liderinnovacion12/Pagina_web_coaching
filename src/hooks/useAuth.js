@@ -86,7 +86,7 @@ export default function useAuth() {
   }
 
   async function signIn(email, password) {
-    if (!isSupabaseConnected()) {
+    if (!isSupabaseConnected() || MOCK_PROFILES[email]) {
       return mockLogin(email, password)
     }
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })

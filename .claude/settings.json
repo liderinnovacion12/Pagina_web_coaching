@@ -47,7 +47,22 @@
       "Bash(wc -l lib/supabase/server.ts lib/supabase/client.ts lib/supabase/server.test.ts)",
       "Bash(grep -rn \"server-only\" package.json lib/ app/)",
       "Bash(cat .env.example)",
-      "Bash(grep -n \"SUPABASE_SERVICE_ROLE_KEY\\\\|\\\\.env\" .gitignore)"
+      "Bash(grep -n \"SUPABASE_SERVICE_ROLE_KEY\\\\|\\\\.env\" .gitignore)",
+      "Bash(ls supabase/)",
+      "Bash(ls -la .env.local)",
+      "Bash(supabase --version)",
+      "Bash(supabase status *)",
+      "Bash(ls -la supabase/config.toml)",
+      "Bash(cat supabase/.temp/project-ref)",
+      "Bash(supabase link *)",
+      "Bash(supabase db *)",
+      "Bash(awk '{print NR\": \"\\( $0 ~ /^[A-Za-z_][A-Za-z0-9_]*=.*$/ ? \"OK\" : \\($0 ~ /^#/ ? \"COMMENT\" : \\($0 ~ /^[[:space:]]*$/ ? \"BLANK\" : \"BAD\"\\)\\) \\)}' .env.local)",
+      "Bash(awk -F= '/^SUPABASE_PROJECT_REF=/{v=substr\\($0, index\\($0,\"=\"\\)+1\\); print \"has_space=\"\\(v ~ / /\\)\"; has_hash=\"\\(v ~ /#/\\)\"; has_quote=\"\\(v ~ /\"|'\"'\"'/\\)}' ../../.env.local)",
+      "Bash(awk -F= '/^SUPABASE_PROJECT_REF=/{v=substr\\($0, index\\($0,\"=\"\\)+1\\); split\\(v, a, \" \"\\); print \"first_token_len=\"length\\(a[1]\\)\"; total_len=\"length\\(v\\)}' ../../.env.local)",
+      "Bash(awk -F= '/^SUPABASE_DB_PASSWORD=/{print \"format_check: starts_with_space_quote=\"\\( $0 ~ /^SUPABASE_DB_PASSWORD= \"/ ? \"yes\" : \"no\" \\)}' ../../.env.local)",
+      "Bash(ls -la supabase/.temp/)",
+      "Bash(ls -la \"C:\\\\Users\\\\Victor Pulido\\\\supabase\")",
+      "Bash(supabase migration *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Victor Pulido\\Coachpro\\.worktrees\\semana-1-fundacion",
