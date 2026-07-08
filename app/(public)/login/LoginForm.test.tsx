@@ -86,4 +86,12 @@ describe("LoginForm", () => {
 
     expect(actions.loginConGoogle).toHaveBeenCalled();
   });
+
+  it("muestra un banner de éxito cuando mostrarResetOk es true", () => {
+    render(<LoginForm mostrarResetOk />);
+
+    expect(
+      screen.getByText(/contraseña actualizada/i)
+    ).toBeInTheDocument();
+  });
 });

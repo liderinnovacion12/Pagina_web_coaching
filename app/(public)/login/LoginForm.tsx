@@ -38,7 +38,11 @@ const CAMPO_CLASES =
 
 const CAMPO_CLASES_ERROR = "border-rose-500/60 focus:border-rose-500/60";
 
-export function LoginForm() {
+export function LoginForm({
+  mostrarResetOk = false,
+}: {
+  mostrarResetOk?: boolean;
+}) {
   const [estado, formAction, pendiente] = useActionState(login, estadoInicial);
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const [erroresCampo, setErroresCampo] = useState<ErroresCampo>({});
@@ -60,6 +64,15 @@ export function LoginForm() {
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="flex w-full flex-col gap-8"
     >
+      {mostrarResetOk && (
+        <p
+          role="status"
+          className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300"
+        >
+          Contraseña actualizada. Inicia sesión con tu nueva contraseña.
+        </p>
+      )}
+
       <form
         onSubmit={manejarSubmit}
         action={formAction}

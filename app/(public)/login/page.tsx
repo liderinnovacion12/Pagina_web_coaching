@@ -9,7 +9,14 @@ export const metadata: Metadata = {
     "Accede a tu cuenta de CoachPro para continuar tu formación en coaching ejecutivo.",
 };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ reset?: string }>;
+}) {
+  const params = await searchParams;
+  const mostrarResetOk = params.reset === "ok";
+
   return (
     <main className="grid min-h-screen bg-ink-950 lg:grid-cols-[55fr_45fr]">
       <LoginBranding />
@@ -34,7 +41,7 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-10 rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-12 shadow-[0_0_40px_rgba(0,0,0,0.25)]">
-            <LoginForm />
+            <LoginForm mostrarResetOk={mostrarResetOk} />
           </div>
 
           <p className="mt-8 text-center text-sm text-mist-400">
