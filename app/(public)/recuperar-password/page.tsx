@@ -3,8 +3,8 @@ import Link from "next/link";
 import { RecuperarPasswordForm } from "./RecuperarPasswordForm";
 
 export const metadata: Metadata = {
-  title: "Recuperar contraseña | CoachPro",
-  description: "Recupera el acceso a tu cuenta de CoachPro.",
+  title: "Recuperar contraseña | Team 100% Real Estate",
+  description: "Recupera el acceso a tu cuenta de Team 100% Real Estate.",
 };
 
 export default function RecuperarPasswordPage() {
@@ -14,7 +14,7 @@ export default function RecuperarPasswordPage() {
         href="/"
         className="rounded-sm font-display text-2xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
       >
-        COACH<span className="text-gold-400">PRO</span>
+        TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
         <span className="text-gold-400"> •</span>
       </Link>
 

@@ -19,7 +19,7 @@ export default async function LandingPage() {
 
         <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
           <span className="font-display text-lg font-bold tracking-tight text-white">
-            COACH<span className="text-gold-400">PRO</span>
+            TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
             <span className="text-gold-400"> •</span>
           </span>
 

@@ -3,8 +3,8 @@ import Link from "next/link";
 import { ActualizarPasswordForm } from "./ActualizarPasswordForm";
 
 export const metadata: Metadata = {
-  title: "Actualizar contraseña | CoachPro",
-  description: "Establece una nueva contraseña para tu cuenta de CoachPro.",
+  title: "Actualizar contraseña | Team 100% Real Estate",
+  description: "Establece una nueva contraseña para tu cuenta de Team 100% Real Estate.",
 };
 
 export default function ActualizarPasswordPage() {
@@ -14,7 +14,7 @@ export default function ActualizarPasswordPage() {
         href="/"
         className="rounded-sm font-display text-2xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
       >
-        COACH<span className="text-gold-400">PRO</span>
+        TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
         <span className="text-gold-400"> •</span>
       </Link>
 

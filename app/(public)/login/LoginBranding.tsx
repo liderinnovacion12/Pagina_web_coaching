@@ -32,7 +32,7 @@ export function LoginBranding() {
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 font-display text-lg font-bold tracking-tight text-white"
       >
-        COACH<span className="text-gold-400">PRO</span>
+        TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
         <span className="text-gold-400"> •</span>
       </motion.span>
 
@@ -48,7 +48,7 @@ export function LoginBranding() {
           no se improvisa.
         </h2>
         <p className="mt-6 text-lg text-mist-400">
-          CoachPro es la plataforma de coaching ejecutivo para líderes que
+          Team 100% Real Estate es la plataforma de coaching ejecutivo para líderes que
           buscan resultados medibles, con acompañamiento real en cada etapa
           del camino.
         </p>

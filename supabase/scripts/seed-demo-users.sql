@@ -4,7 +4,7 @@
 -- en la pagina de login, para que las verificaciones locales puedan
 -- iniciar sesion contra el proyecto real de Supabase.
 --
--- El trigger on_auth_user_created (migracion 001_coachpro_schema.sql)
+-- El trigger on_auth_user_created (migracion 003_triggers.sql)
 -- siempre crea la fila en usuarios con rol='estudiante', asi que este
 -- script corrige el rol de admin@test.com.
 

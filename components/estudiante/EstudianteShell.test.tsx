@@ -48,10 +48,12 @@ describe("EstudianteShell", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /formación/i }));
 
-    const item = screen.getByText("Curso de Rentas");
-    expect(item.tagName).not.toBe("A");
+    const label = screen.getByText("Curso de Rentas");
+    const item = label.closest("span[aria-disabled]");
+    expect(item?.tagName).not.toBe("A");
     expect(item).toHaveAttribute("aria-disabled", "true");
     expect(item).toHaveAttribute("title", "Próximamente");
+    expect(item).toHaveTextContent("Próximamente");
   });
 
   it("cierra el panel abierto al hacer click afuera", () => {

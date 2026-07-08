@@ -1,0 +1,113 @@
+# Descripción de módulos — Plataforma Team 100% Real Estate
+
+**URL base:** teamwilmarsosa.samueloropeza.com
+**Naturaleza técnica:** Single Page Application (SPA) con enrutamiento del lado del cliente (las rutas no responden con contenido en la petición HTTP inicial; el DOM se hidrata tras la carga de JavaScript, razón por la cual una petición HTTP simple solo devuelve el shell con metadatos Open Graph).
+**Propietarios:** Wilmar Sosa (Ventas y Liderazgo) y Samuel Oropeza (Marketing e Inteligencia Artificial), Team Leaders bajo el broker My Realty Group / Orlando My Realty.
+**Estructura de navegación:** menú lateral fijo con 18 módulos, cada uno mapeado a una ruta propia.
+
+---
+
+## 1. Bienvenida (`/`)
+
+Pantalla de entrada (landing interno) tras el login. Contiene tres bloques: invitación a unirse a los grupos y comunidades de WhatsApp del equipo (marcado como primer paso obligatorio); una guía rápida de cuatro pasos para usar la plataforma (navegar por el menú lateral, revisar el calendario de entrenamientos, descargar recursos de ventas/marketing, contactar soporte ante dudas); y una sección de "Accesos Rápidos" con enlaces directos a Grupos de WhatsApp, Calendario de Clases, Recursos de Ventas y Soporte. Funciona como onboarding de primer contacto.
+
+## 2. Cultura y Equipo (`/cultura`)
+
+Presenta la identidad organizacional del equipo. Incluye tarjetas de los dos Team Leaders (Wilmar Sosa — Ventas y Liderazgo; Samuel Oropeza — Marketing e IA) con foto, rol y teléfono directo; la Misión ("empoderar a cada agente para que alcance su máximo potencial"); la Visión ("construir un equipo sólido, colaborativo y en constante crecimiento"); cuatro valores corporativos (Integridad, Colaboración, Compromiso, Excelencia) con descripción breve; una sección de Filosofía de Equipo centrada en trabajo colaborativo y aporte de valor; y una Galería del Equipo (contenido visual).
+
+## 3. Sistema 100+ (`/sistema-100`)
+
+Núcleo metodológico de la formación comercial, estructurado en 5 pilares secuenciales, cada uno con videos embebidos de YouTube:
+
+1. **Fundamentos** (Mentalidad + Estándar + Disciplina) — 4 videos: mentalidad de empresario, identidad del equipo y estándar de producción, disciplina comercial y responsabilidad, resumen del pilar.
+2. **Nicho** (Audiencia + Base 100 + Conversaciones + Producto bandera) — define el mercado objetivo y activa la base de contactos.
+3. **Productividad y Organización** — sistemas de organización para escalar producción sin sobrecarga.
+4. **Mercadeo** — construcción de la "máquina" de generación de leads (contenido, posicionamiento, estrategia).
+5. **Ventas** — conversión de conversaciones en cierres mediante seguimiento y manejo de objeciones.
+
+Diseñado para consumo secuencial ("mira el contenido en orden y aplica mientras avanzas").
+
+## 4. Calendario Semanal (`/calendario`)
+
+Agenda recurrente de reuniones del equipo para 2026, organizada por día de la semana con horario (huso horario ET), modalidad (virtual/presencial) y responsable:
+
+- **Lunes:** Reunión de Equipo (Estrategia y Dirección, 9:00 AM) y Reunión Modelo de Rentas (10:00 AM, quincenal, dirige Wilmar Sosa).
+- **Martes:** Conversaciones en Ventas (9:00 AM, Wilmar Sosa) y Mercadeo e IA (10:00 AM, Samuel Oropeza).
+- **Miércoles:** Prácticas y Objeciones en Conversaciones de Venta (9:00 AM, Carolina de la Cruz), Preguntas de Precalificación / Créditos Hipotecarios (10:00 AM, Claudia Aparicio) y Visita presencial a oficina Orlando My Realty (2:00 PM).
+- **Viernes:** repetición de Prácticas y Objeciones, y Onboarding del equipo (10:00 AM, Yusleidy Mesa y Ruby Moyeda).
+
+Cada evento incluye enlace directo de Zoom.
+
+## 5. Clases y Entrenamientos (`/clases`)
+
+Biblioteca histórica (videoteca) de todas las sesiones grabadas, filtrable por categoría: Reunión de equipo, Clases de Rentas, Práctica de Conversaciones en Venta, Mercadeo y IA, y Zoom de Proyectos. El archivo se remonta a septiembre de 2025 y llega hasta junio de 2026, con decenas de sesiones (cada entrada con título, fecha, hora y enlace "Ver en YouTube"). Funciona como repositorio de consulta para quien no pudo asistir en vivo.
+
+## 6. Herramientas y Comunicación (`/herramientas`)
+
+Directorio de comunidades de WhatsApp, presentado como "prioridad #1 para nuevos agentes". Incluye el Grupo Principal del equipo y un listado de 52 grupos temáticos, mayoritariamente organizados por proyecto inmobiliario específico (p. ej. Domus, Delano Residences, Palma, Edge House, Millenia Park, The Standard, entre otros), además de grupos funcionales (Development, Community Rental, Listing de Venta). Es el canal operativo diario del equipo.
+
+## 7. Proyectos Inmobiliarios Aliados (`/proyectos-inmobiliarios-aliados`)
+
+Catálogo de preconstrucciones y desarrollos con los que el equipo tiene alianza comercial. Aplica una comisión regular del 6% y una comisión preferencial del 7% para agentes del equipo. Cada proyecto incluye descripción, precio de entrada, contacto "In House" (nombre y teléfono) y enlace al grupo de WhatsApp correspondiente. Proyectos listados: Domus, Delano, Palma, The House of Wellness, Meliá, Edge House, Elle Residences, GZ Tower, Millenia Park y The Standard — cubriendo rango de precios desde ~$289K hasta $2.4M, con variantes de renta corta y renta anual.
+
+## 8. Aliados Estratégicos (`/aliados`)
+
+Directorio de proveedores externos que dan soporte al negocio del agente: Tributaria LLC (constitución/renovación de LLC y presentación de impuestos — contacto Ricardo Fernández de Córdoba Martos), Cornerstone First Mortgage (préstamos hipotecarios — contacto Rafael Aguilera), Keep It Simple (transaction coordinator / apoyo remoto en el proceso de compraventa — contacto Anahis y Antonio) y Grow Marketing (agencia de marketing digital inmobiliario especializada en Facebook Ads — contacto Carolina Sanabria). Cada entrada incluye descripción del servicio, teléfono y correo.
+
+## 9. Eventos (`/eventos`)
+
+Calendario de eventos presenciales y virtuales del equipo, segmentado en cuatro programas:
+
+- **Eventos Internacionales** ("Florida como destino inmobiliario"): serie de conferencias en Bogotá, Colombia, con fechas bimestrales a lo largo de 2026 y estado de ejecución (realizado / en ejecución / próximo).
+- **Eventos Nacionales EE.UU. — New York**: conferencias y networking en Nueva York (abril, agosto, octubre 2026).
+- **Legacy Impact 360**: planificación trimestral con formato mixto (online y presencial en Orlando/Miami), extendiéndose hasta enero 2027.
+- **"Tu sueño, tu casa" Fest**: evento especial de fin de semana en Orlando, FL.
+
+Cada evento muestra un resumen histórico de ediciones anteriores y su estado actual.
+
+## 10. Acelerador PRO (`/acelerador-pro`)
+
+Landing page de un programa de pago (mentoría intensiva) embebida como contenido externo. Promocionado como "el programa diseñado para agentes inmobiliarios que quieren generar más de $100,000 en comisiones en 6 meses con un sistema claro y probado de ventas, estructura e IA". Formato: mentoría intensiva de 4 semanas con 8 sesiones en vivo; secciones de navegación propias (Programa, Método, Inversión) y CTA de aplicación ("Quiero Aplicar Ahora") con cupos limitados.
+
+## 11. Acelerador Starter (`/acelerador-starter`)
+
+Landing page de un taller intensivo en vivo de menor duración, orientado a agentes en etapa inicial: "3 días para construir la base de tu negocio inmobiliario". Presenta secciones propias de navegación (3 Días, Inversión, Incluye, Beneficios) y responde al mismo patrón de página de ventas embebida que el Acelerador PRO, pero como programa de entrada (starter) frente al de continuidad (PRO).
+
+## 12. Curso de Rentas — Maestría en Rentas (`/curso-rentas`)
+
+Programa formativo especializado en el mercado de rentas inmobiliarias, con beneficio exclusivo de 50% de descuento para agentes del equipo (código `TEAM100REAL`). Incluye módulos en video disponibles 24/7, guiones y plantillas (scripts de llamadas, correos, tableros de gestión), sesiones grupales en vivo con grabaciones disponibles, comunidad privada de WhatsApp, charlas bonus con expertos y un plan de activación de 30 días. Se ofrece con acceso vitalicio en una sola plataforma.
+
+## 13. CRM para Agentes Inmobiliarios (`/crm`)
+
+Módulo de entrenamiento y acceso al CRM GoHighLevel, obtenido mediante alianza estratégica del equipo. Ofrece un recorrido guiado de la plataforma antes de la apertura de cuenta, botón de apertura directa de cuenta CRM, y un listado de beneficios: plantillas preconfiguradas, automatizaciones listas para usar, flujos diseñados específicamente para agentes inmobiliarios, grabaciones y entrenamientos semanales, y soporte continuo. Precio regular de $97/mes reducido a $77/mes para agentes de Team Wilmar & Samuel.
+
+## 14. Recursos de Marketing (`/marketing`)
+
+Repositorio de materiales de marketing y ventas, dividido en: descarga de logotipos oficiales del equipo; ideas de contenido (banco de "100 Hooks Virales", plantilla para definir cliente ideal/avatar); y recursos de venta que incluyen seguimiento de accountability de llamadas, cinco preguntas de precalificación, técnicas de venta específicas (Autoventa, "Pensé en ti", "¿A qué te dedicas?", técnica EMC, cierres generales), un método de presentación efectiva y un creador de metas trimestrales.
+
+## 15. Construcción de Equipo (`/construccion-equipo`)
+
+Módulo orientado al crecimiento de agentes hacia roles de liderazgo interno, presentado en tres etapas: multiplicar ingresos generando ingresos pasivos a través de un equipo propio, desarrollar líderes formando a otros agentes, y escalar el negocio pasando de agente individual a empresario inmobiliario. Es la vía de progresión de carrera dentro de la estructura del Team.
+
+## 16. Transacciones (`/transacciones`)
+
+Centraliza el proceso operativo de cierre de transacciones bajo My Realty Group LLC. Incluye acceso a documentos y formatos generales requeridos; enlace a la plataforma oficial de procesamiento (BackOffice), obligatoria para todas las transacciones; y una sección de videos educativos del canal de YouTube My Realty con tutoriales paso a paso sobre cómo montar y subir transacciones en BackOffice.
+
+## 17. Soporte, Ayuda y Contactos (`/soporte`)
+
+Directorio de soporte operativo. Incluye acceso a "My Assistant", un asistente de IA de My Realty disponible 24/7 para formatos, procesos y dudas operativas, y el directorio de contactos corporativos ("Corporate Allies") con nombre, cargo, teléfono y correo: John Díaz (CEO), Luis Pinto (Director de Educación y Mentoría), Gabriela Guerrero (Directora de Operaciones y Contabilidad), Jeimmy Lema (Coordinadora de Cumplimiento), Marcos Urbina (Director de Expansión y Crecimiento), Pablo Correa (Director de Tecnología), Andrés Díaz (Director de Marketing), María Ramírez (Coordinadora de Onboarding) y Julie Meneses (Mentora).
+
+## 18. Nuestras Oficinas (`/oficinas`)
+
+Listado de las cuatro sedes físicas del brokerage en Florida, cada una con dirección completa, horario de atención (lunes a viernes, 9:00 AM–6:00 PM) y opción de reserva gratuita de sala de juntas para agentes del equipo:
+
+- **Miami:** 7791 NW 46 St, Suite 417, Doral, FL 33166.
+- **Orlando:** 8810 Commodity Circle #4, Orlando, FL 32819.
+- **Tampa:** 2014 Drew Street, Clearwater, FL 33765.
+- **West Palm Beach:** 6685 Forest Hill Blvd, Suite 206, Greenacres, FL 33413.
+
+---
+
+## Observaciones técnicas complementarias
+
+La aplicación está construida como SPA (probablemente React/Vite, dado el patrón de rutas planas sin prefijos de idioma ni parámetros dinámicos visibles). Los módulos "Acelerador PRO" y "Acelerador Starter" no comparten el mismo layout que el resto de la plataforma: se renderizan como páginas de aterrizaje independientes (posiblemente iframes o vistas standalone con su propio header de navegación), lo que indica que son landing pages de venta reutilizadas de otro sistema y simplemente enlazadas dentro del sidebar. El resto de los módulos comparte una estructura consistente de layout con `<main>` y navegación lateral persistente, típica de un panel de miembros (membership site) para gestión de agentes inmobiliarios.

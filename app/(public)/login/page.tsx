@@ -4,9 +4,9 @@ import { LoginForm } from "./LoginForm";
 import { LoginBranding } from "./LoginBranding";
 
 export const metadata: Metadata = {
-  title: "Iniciar sesión | CoachPro",
+  title: "Iniciar sesión | Team 100% Real Estate",
   description:
-    "Accede a tu cuenta de CoachPro para continuar tu formación en coaching ejecutivo.",
+    "Accede a tu cuenta de Team 100% Real Estate para continuar tu formación en coaching ejecutivo.",
 };
 
 export default async function LoginPage({
@@ -27,7 +27,7 @@ export default async function LoginPage({
             href="/"
             className="flex justify-center rounded-sm font-display text-2xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
           >
-            COACH<span className="text-gold-400">PRO</span>
+            TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
             <span className="text-gold-400"> •</span>
           </Link>
 

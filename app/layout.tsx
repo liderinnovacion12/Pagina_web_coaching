@@ -16,7 +16,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CoachPro | Transforma tu Liderazgo",
+  title: "Team 100% Real Estate | Transforma tu Liderazgo",
   description: "Plataforma de coaching ejecutivo para líderes que buscan impacto real.",
 };
 

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Lock } from "lucide-react";
 import { NAV_GROUPS, type NavItem } from "./nav-config";
 import { cerrarSesion } from "@/lib/auth/actions";
 
@@ -67,7 +67,7 @@ export function EstudianteShell({
             href="/dashboard"
             className="font-display text-lg font-bold tracking-tight text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
           >
-            COACH<span className="text-gold-400">PRO</span>
+            TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
             <span className="text-gold-400"> •</span>
           </Link>
 
@@ -148,7 +148,7 @@ export function EstudianteShell({
         >
           <div className="flex items-center justify-between px-6 py-5">
             <span className="font-display text-lg font-bold tracking-tight text-white">
-              COACH<span className="text-gold-400">PRO</span>
+              TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
               <span className="text-gold-400"> •</span>
             </span>
             <button
@@ -237,9 +237,13 @@ function NavLink({
       <span
         aria-disabled="true"
         title="Próximamente"
-        className="block cursor-not-allowed rounded-lg px-3 py-2 text-sm text-mist-500 opacity-50"
+        className="flex cursor-not-allowed items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm text-mist-500 opacity-60"
       >
-        {item.label}
+        <span>{item.label}</span>
+        <span className="flex shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mist-500">
+          <Lock className="h-2.5 w-2.5" aria-hidden="true" />
+          Próximamente
+        </span>
       </span>
     );
   }
