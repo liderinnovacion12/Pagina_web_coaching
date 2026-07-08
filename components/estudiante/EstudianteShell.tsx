@@ -51,6 +51,11 @@ export function EstudianteShell({
     };
   }, []);
 
+  useEffect(() => {
+    setGrupoAbierto(null);
+    setMenuMovilAbierto(false);
+  }, [pathname]);
+
   return (
     <div className="min-h-screen bg-ink-950">
       <header className="border-b border-white/[0.08]">

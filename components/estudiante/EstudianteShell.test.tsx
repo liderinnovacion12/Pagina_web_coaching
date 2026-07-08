@@ -3,18 +3,21 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { EstudianteShell } from "./EstudianteShell";
 
 const cerrarSesionMock = vi.fn();
+const usePathnameMock = vi.fn(() => "/dashboard");
 
 vi.mock("@/lib/auth/actions", () => ({
   cerrarSesion: (...args: unknown[]) => cerrarSesionMock(...args),
 }));
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/dashboard",
+  usePathname: () => usePathnameMock(),
 }));
 
 describe("EstudianteShell", () => {
   beforeEach(() => {
     cerrarSesionMock.mockReset();
+    usePathnameMock.mockReset();
+    usePathnameMock.mockReturnValue("/dashboard");
   });
 
   it("renderiza el logo, el email del usuario y el contenido", () => {
@@ -85,5 +88,29 @@ describe("EstudianteShell", () => {
     render(<EstudianteShell email="ana@example.com"><p>Contenido</p></EstudianteShell>);
 
     expect(screen.getByRole("button", { name: "Cerrar sesión" })).toBeInTheDocument();
+  });
+
+  it("cierra el panel y el overlay móvil al navegar a otra ruta", () => {
+    const { rerender } = render(
+      <EstudianteShell email="ana@example.com">
+        <p>Contenido</p>
+      </EstudianteShell>
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /formación/i }));
+    expect(screen.getByRole("link", { name: "Sistema 100+" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Abrir menú" }));
+    expect(screen.getByRole("button", { name: "Cerrar menú" })).toBeInTheDocument();
+
+    usePathnameMock.mockReturnValue("/sistema-100");
+    rerender(
+      <EstudianteShell email="ana@example.com">
+        <p>Contenido</p>
+      </EstudianteShell>
+    );
+
+    expect(screen.queryAllByRole("link", { name: "Sistema 100+" })).toHaveLength(0);
+    expect(screen.queryByRole("button", { name: "Cerrar menú" })).not.toBeInTheDocument();
   });
 });
