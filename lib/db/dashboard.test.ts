@@ -144,4 +144,91 @@ describe("getResumenEstudiante", () => {
       "No se pudo cargar la membresía: timeout"
     );
   });
+
+  it("elige la lección incompleta actualizada más recientemente entre varias con timestamps distintos", async () => {
+    xpEqMock.mockResolvedValue({ data: [], error: null });
+    insigniasEqMock.mockResolvedValue({ data: [], error: null });
+    progresoEqMock.mockResolvedValue({
+      data: [
+        { leccion_id: "l1", completado: false, actualizado_en: "2026-07-05T10:00:00Z" },
+        { leccion_id: "l2", completado: false, actualizado_en: "2026-07-07T10:00:00Z" },
+        { leccion_id: "l3", completado: false, actualizado_en: "2026-07-06T10:00:00Z" },
+      ],
+      error: null,
+    });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: { estado: "activa" } });
+    leccionesInMock.mockResolvedValue({
+      data: [
+        { id: "l1", titulo: "Lección 1", curso_id: "c1", orden: 1 },
+        { id: "l2", titulo: "Lección 2", curso_id: "c2", orden: 1 },
+        { id: "l3", titulo: "Lección 3", curso_id: "c3", orden: 1 },
+      ],
+      error: null,
+    });
+    cursoSingleMock.mockResolvedValue({ data: { id: "c2", titulo: "Curso 2" } });
+
+    const { getResumenEstudiante } = await import("./dashboard");
+    const resumen = await getResumenEstudiante("u1");
+
+    expect(resumen.continuarViendo).toEqual({
+      cursoId: "c2",
+      leccionId: "l2",
+      leccionTitulo: "Lección 2",
+      cursoTitulo: "Curso 2",
+    });
+  });
+
+  it("lanza un error legible si falla la consulta de XP", async () => {
+    xpEqMock.mockResolvedValue({ data: null, error: { message: "timeout" } });
+    insigniasEqMock.mockResolvedValue({ data: [], error: null });
+    progresoEqMock.mockResolvedValue({ data: [], error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: null });
+
+    const { getResumenEstudiante } = await import("./dashboard");
+
+    await expect(getResumenEstudiante("u1")).rejects.toThrow("No se pudo cargar el XP: timeout");
+  });
+
+  it("lanza un error legible si falla la consulta de insignias", async () => {
+    xpEqMock.mockResolvedValue({ data: [], error: null });
+    insigniasEqMock.mockResolvedValue({ data: null, error: { message: "timeout" } });
+    progresoEqMock.mockResolvedValue({ data: [], error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: null });
+
+    const { getResumenEstudiante } = await import("./dashboard");
+
+    await expect(getResumenEstudiante("u1")).rejects.toThrow(
+      "No se pudieron cargar las insignias: timeout"
+    );
+  });
+
+  it("lanza un error legible si falla la consulta de progreso", async () => {
+    xpEqMock.mockResolvedValue({ data: [], error: null });
+    insigniasEqMock.mockResolvedValue({ data: [], error: null });
+    progresoEqMock.mockResolvedValue({ data: null, error: { message: "timeout" } });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: null });
+
+    const { getResumenEstudiante } = await import("./dashboard");
+
+    await expect(getResumenEstudiante("u1")).rejects.toThrow(
+      "No se pudo cargar el progreso: timeout"
+    );
+  });
+
+  it("lanza un error legible si falla la consulta de lecciones", async () => {
+    xpEqMock.mockResolvedValue({ data: [], error: null });
+    insigniasEqMock.mockResolvedValue({ data: [], error: null });
+    progresoEqMock.mockResolvedValue({
+      data: [{ leccion_id: "l1", completado: false, actualizado_en: "2026-07-06T10:00:00Z" }],
+      error: null,
+    });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: { estado: "activa" } });
+    leccionesInMock.mockResolvedValue({ data: null, error: { message: "timeout" } });
+
+    const { getResumenEstudiante } = await import("./dashboard");
+
+    await expect(getResumenEstudiante("u1")).rejects.toThrow(
+      "No se pudieron cargar las lecciones: timeout"
+    );
+  });
 });

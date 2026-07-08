@@ -44,7 +44,7 @@ export async function getResumenEstudiante(usuarioId: string): Promise<ResumenEs
 
   const progresoIncompleto = (progresoResult.data ?? [])
     .filter((p) => !p.completado)
-    .sort((a, b) => (a.actualizado_en < b.actualizado_en ? 1 : -1));
+    .sort((a, b) => b.actualizado_en.localeCompare(a.actualizado_en));
 
   const leccionIdsOrdenados = [...new Set(progresoIncompleto.map((p) => p.leccion_id))];
 
