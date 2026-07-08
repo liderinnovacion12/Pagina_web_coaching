@@ -24,7 +24,7 @@ describe("GET /auth/callback", () => {
     expect(exchangeCodeForSessionMock).not.toHaveBeenCalled();
   });
 
-  it("intercambia el code y redirige a /dashboard", async () => {
+  it("intercambia el code y redirige a /dashboard cuando no hay next", async () => {
     exchangeCodeForSessionMock.mockResolvedValue({ error: null });
 
     const { GET } = await import("./route");
@@ -35,6 +35,21 @@ describe("GET /auth/callback", () => {
     expect(exchangeCodeForSessionMock).toHaveBeenCalledWith("abc123");
     expect(respuesta.headers.get("location")).toBe(
       "http://localhost/dashboard"
+    );
+  });
+
+  it("intercambia el code y redirige al next indicado", async () => {
+    exchangeCodeForSessionMock.mockResolvedValue({ error: null });
+
+    const { GET } = await import("./route");
+    const respuesta = await GET(
+      new Request(
+        "http://localhost/auth/callback?code=abc123&next=/actualizar-password"
+      )
+    );
+
+    expect(respuesta.headers.get("location")).toBe(
+      "http://localhost/actualizar-password"
     );
   });
 });
