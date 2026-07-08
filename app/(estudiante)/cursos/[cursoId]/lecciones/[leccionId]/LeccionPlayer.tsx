@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { Loader2 } from "lucide-react";
 import { marcarProgresoAction } from "./actions";
@@ -16,6 +16,7 @@ export function LeccionPlayer({
 }) {
   const [completadaLocal, setCompletadaLocal] = useState(completado);
   const [guardando, setGuardando] = useState(false);
+  const ultimoSegundoEnviado = useRef(-1);
 
   async function marcarCompletada() {
     setGuardando(true);
@@ -34,7 +35,10 @@ export function LeccionPlayer({
           playbackId={muxAssetId}
           onTimeUpdate={(evento) => {
             const segundo = Math.floor((evento.target as HTMLMediaElement).currentTime);
-            void marcarProgresoAction(leccionId, { segundoActual: segundo });
+            if (segundo > ultimoSegundoEnviado.current) {
+              ultimoSegundoEnviado.current = segundo;
+              void marcarProgresoAction(leccionId, { segundoActual: segundo });
+            }
           }}
           onEnded={() => {
             void marcarProgresoAction(leccionId, { completado: true });
