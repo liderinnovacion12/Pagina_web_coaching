@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "seed:admin": "node scripts/seed-admin.mjs"
+    "seed:admin": "node scripts/seed-admin.mjs",
+    "seed:contenido": "node scripts/seed-contenido.mjs"
   },
   "dependencies": {
     "@mux/mux-player-react": "^3.13.0",
