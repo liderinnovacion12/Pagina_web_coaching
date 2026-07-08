@@ -99,7 +99,7 @@ export function EstudianteShell({
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                      className="absolute left-0 top-full z-20 mt-2 w-64 rounded-xl border border-white/[0.08] bg-ink-900 p-2 shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+                      className="absolute left-0 top-full z-20 mt-2 flex w-64 flex-col gap-1 rounded-xl border border-white/[0.08] bg-ink-900 p-2 shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
                     >
                       {grupo.items.map((item) => (
                         <NavLink
