@@ -39,4 +39,16 @@ describe("calcularRedireccion", () => {
     expect(calcularRedireccion("/coach", "admin")).toBeNull();
     expect(calcularRedireccion("/dashboard", "admin")).toBeNull();
   });
+
+  it("redirige a /login si no hay rol en /sistema-100, /clases o /cursos", () => {
+    expect(calcularRedireccion("/sistema-100", null)).toBe("/login");
+    expect(calcularRedireccion("/clases", null)).toBe("/login");
+    expect(calcularRedireccion("/cursos/c1", null)).toBe("/login");
+  });
+
+  it("permite a un estudiante entrar a /sistema-100, /clases y /cursos", () => {
+    expect(calcularRedireccion("/sistema-100", "estudiante")).toBeNull();
+    expect(calcularRedireccion("/clases", "estudiante")).toBeNull();
+    expect(calcularRedireccion("/cursos/c1/lecciones/l1", "estudiante")).toBeNull();
+  });
 });

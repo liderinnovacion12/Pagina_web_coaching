@@ -1,6 +1,6 @@
 export type Rol = "admin" | "estudiante" | "coach";
 
-const PREFIJO_ESTUDIANTE = "/dashboard";
+const PREFIJOS_ESTUDIANTE = ["/dashboard", "/sistema-100", "/clases", "/cursos"];
 const PREFIJO_ADMIN = "/admin";
 const PREFIJO_COACH = "/coach";
 
@@ -14,7 +14,9 @@ export function calcularRedireccion(
   pathname: string,
   rol: Rol | null
 ): string | null {
-  const esRutaEstudiante = pathname.startsWith(PREFIJO_ESTUDIANTE);
+  const esRutaEstudiante = PREFIJOS_ESTUDIANTE.some((prefijo) =>
+    pathname.startsWith(prefijo)
+  );
   const esRutaAdmin = pathname.startsWith(PREFIJO_ADMIN);
   const esRutaCoach = pathname.startsWith(PREFIJO_COACH);
 
