@@ -1,11 +1,12 @@
 import { requireRol } from "@/lib/auth/session";
+import { EstudianteShell } from "@/components/estudiante/EstudianteShell";
 
 export default async function EstudianteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await requireRol("estudiante");
+  const sesion = await requireRol("estudiante");
 
-  return <div className="mx-auto max-w-5xl px-4 py-8">{children}</div>;
+  return <EstudianteShell email={sesion.email}>{children}</EstudianteShell>;
 }
