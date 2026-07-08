@@ -103,3 +103,81 @@ export async function getCursosPorCategoria(
     };
   });
 }
+
+export type LeccionConProgreso = {
+  id: string;
+  titulo: string;
+  tipoContenido: string;
+  muxAssetId: string | null;
+  storageKey: string | null;
+  orden: number;
+  segundoActual: number;
+  completado: boolean;
+};
+
+export type CursoDetalle = {
+  id: string;
+  titulo: string;
+  categoria: CategoriaCurso;
+  lecciones: LeccionConProgreso[];
+};
+
+export async function getCursoDetalle(
+  cursoId: string,
+  usuarioId: string
+): Promise<CursoDetalle | null> {
+  const supabase = await createClient();
+
+  const { data: curso, error: cursoError } = await supabase
+    .from("cursos")
+    .select("id, titulo, categoria, publicado")
+    .eq("id", cursoId)
+    .single();
+
+  if (cursoError || !curso || !curso.publicado) {
+    return null;
+  }
+
+  const { data: lecciones, error: leccionesError } = await supabase
+    .from("lecciones")
+    .select("id, titulo, tipo_contenido, mux_asset_id, storage_key, orden")
+    .eq("curso_id", cursoId)
+    .order("orden");
+
+  if (leccionesError) {
+    throw new Error(`No se pudieron cargar las lecciones: ${leccionesError.message}`);
+  }
+
+  const leccionIds = (lecciones ?? []).map((leccion) => leccion.id);
+
+  const { data: progresos } = leccionIds.length
+    ? await supabase
+        .from("progreso")
+        .select("leccion_id, segundo_actual, completado")
+        .eq("usuario_id", usuarioId)
+        .in("leccion_id", leccionIds)
+    : { data: [] };
+
+  const progresoPorLeccion = new Map(
+    (progresos ?? []).map((progreso) => [progreso.leccion_id, progreso])
+  );
+
+  return {
+    id: curso.id,
+    titulo: curso.titulo,
+    categoria: curso.categoria as CategoriaCurso,
+    lecciones: (lecciones ?? []).map((leccion) => {
+      const progreso = progresoPorLeccion.get(leccion.id);
+      return {
+        id: leccion.id,
+        titulo: leccion.titulo,
+        tipoContenido: leccion.tipo_contenido,
+        muxAssetId: leccion.mux_asset_id,
+        storageKey: leccion.storage_key,
+        orden: leccion.orden,
+        segundoActual: progreso?.segundo_actual ?? 0,
+        completado: progreso?.completado ?? false,
+      };
+    }),
+  };
+}

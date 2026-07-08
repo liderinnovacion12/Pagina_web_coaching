@@ -254,3 +254,122 @@ describe("getCursosPorCategoria", () => {
     );
   });
 });
+
+describe("getCursoDetalle", () => {
+  const cursoSingleMock = vi.fn();
+  const cursoEqMock = vi.fn(() => ({ single: cursoSingleMock }));
+  const cursoSelectMock = vi.fn(() => ({ eq: cursoEqMock }));
+
+  const leccionesOrderMock = vi.fn();
+  const leccionesEqMock = vi.fn(() => ({ order: leccionesOrderMock }));
+  const leccionesSelectMock = vi.fn(() => ({ eq: leccionesEqMock }));
+
+  const progresoInMock = vi.fn();
+  const progresoEqUsuarioMock = vi.fn(() => ({ in: progresoInMock }));
+  const progresoSelectMock = vi.fn(() => ({ eq: progresoEqUsuarioMock }));
+
+  const fromMock = vi.fn((tabla: string) => {
+    if (tabla === "cursos") return { select: cursoSelectMock };
+    if (tabla === "lecciones") return { select: leccionesSelectMock };
+    if (tabla === "progreso") return { select: progresoSelectMock };
+    throw new Error(`tabla inesperada: ${tabla}`);
+  });
+
+  beforeEach(() => {
+    fromMock.mockClear();
+    cursoSelectMock.mockClear();
+    cursoEqMock.mockClear();
+    cursoSingleMock.mockClear();
+    leccionesSelectMock.mockClear();
+    leccionesEqMock.mockClear();
+    leccionesOrderMock.mockClear();
+    progresoSelectMock.mockClear();
+    progresoEqUsuarioMock.mockClear();
+    progresoInMock.mockClear();
+
+    vi.resetModules();
+    vi.doMock("@/lib/supabase/server", () => ({
+      createClient: vi.fn(async () => ({ from: fromMock })),
+    }));
+  });
+
+  it("retorna el curso con sus lecciones y progreso del usuario", async () => {
+    cursoSingleMock.mockResolvedValue({
+      data: { id: "c1", titulo: "Negociación y Cierre", categoria: "sistema_100", publicado: true },
+      error: null,
+    });
+    leccionesOrderMock.mockResolvedValue({
+      data: [
+        { id: "l1", titulo: "Psicología de la negociación", tipo_contenido: "video", mux_asset_id: null, storage_key: null, orden: 1 },
+        { id: "l2", titulo: "Técnicas de cierre", tipo_contenido: "video", mux_asset_id: null, storage_key: null, orden: 2 },
+      ],
+      error: null,
+    });
+    progresoInMock.mockResolvedValue({
+      data: [{ leccion_id: "l1", segundo_actual: 120, completado: true }],
+      error: null,
+    });
+
+    const { getCursoDetalle } = await import("./cursos");
+    const resultado = await getCursoDetalle("c1", "u1");
+
+    expect(resultado).toEqual({
+      id: "c1",
+      titulo: "Negociación y Cierre",
+      categoria: "sistema_100",
+      lecciones: [
+        { id: "l1", titulo: "Psicología de la negociación", tipoContenido: "video", muxAssetId: null, storageKey: null, orden: 1, segundoActual: 120, completado: true },
+        { id: "l2", titulo: "Técnicas de cierre", tipoContenido: "video", muxAssetId: null, storageKey: null, orden: 2, segundoActual: 0, completado: false },
+      ],
+    });
+  });
+
+  it("retorna null si el curso no existe o no está publicado", async () => {
+    cursoSingleMock.mockResolvedValue({ data: null, error: { message: "no encontrado" } });
+
+    const { getCursoDetalle } = await import("./cursos");
+    const resultado = await getCursoDetalle("no-existe", "u1");
+
+    expect(resultado).toBeNull();
+  });
+
+  it("retorna null si el curso existe pero publicado es false", async () => {
+    cursoSingleMock.mockResolvedValue({
+      data: { id: "c1", titulo: "Negociación y Cierre", categoria: "sistema_100", publicado: false },
+      error: null,
+    });
+
+    const { getCursoDetalle } = await import("./cursos");
+    const resultado = await getCursoDetalle("c1", "u1");
+
+    expect(resultado).toBeNull();
+  });
+
+  it("retorna lecciones vacías sin consultar progreso si el curso no tiene lecciones", async () => {
+    cursoSingleMock.mockResolvedValue({
+      data: { id: "c1", titulo: "Curso Vacío", categoria: "clases", publicado: true },
+      error: null,
+    });
+    leccionesOrderMock.mockResolvedValue({ data: [], error: null });
+
+    const { getCursoDetalle } = await import("./cursos");
+    const resultado = await getCursoDetalle("c1", "u1");
+
+    expect(resultado?.lecciones).toEqual([]);
+    expect(progresoSelectMock).not.toHaveBeenCalled();
+  });
+
+  it("lanza un error legible si falla la consulta de lecciones", async () => {
+    cursoSingleMock.mockResolvedValue({
+      data: { id: "c1", titulo: "Curso A", categoria: "clases", publicado: true },
+      error: null,
+    });
+    leccionesOrderMock.mockResolvedValue({ data: null, error: { message: "fallo lecciones" } });
+
+    const { getCursoDetalle } = await import("./cursos");
+
+    await expect(getCursoDetalle("c1", "u1")).rejects.toThrow(
+      "No se pudieron cargar las lecciones: fallo lecciones"
+    );
+  });
+});
