@@ -150,13 +150,17 @@ export async function getCursoDetalle(
 
   const leccionIds = (lecciones ?? []).map((leccion) => leccion.id);
 
-  const { data: progresos } = leccionIds.length
+  const { data: progresos, error: progresoError } = leccionIds.length
     ? await supabase
         .from("progreso")
         .select("leccion_id, segundo_actual, completado")
         .eq("usuario_id", usuarioId)
         .in("leccion_id", leccionIds)
-    : { data: [] };
+    : { data: [], error: null };
+
+  if (progresoError) {
+    throw new Error(`No se pudo cargar el progreso: ${progresoError.message}`);
+  }
 
   const progresoPorLeccion = new Map(
     (progresos ?? []).map((progreso) => [progreso.leccion_id, progreso])

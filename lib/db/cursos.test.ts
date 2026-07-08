@@ -372,4 +372,24 @@ describe("getCursoDetalle", () => {
       "No se pudieron cargar las lecciones: fallo lecciones"
     );
   });
+
+  it("lanza un error legible si falla la consulta de progreso", async () => {
+    cursoSingleMock.mockResolvedValue({
+      data: { id: "c1", titulo: "Curso A", categoria: "clases", publicado: true },
+      error: null,
+    });
+    leccionesOrderMock.mockResolvedValue({
+      data: [
+        { id: "l1", titulo: "Lección 1", tipo_contenido: "video", mux_asset_id: null, storage_key: null, orden: 1 },
+      ],
+      error: null,
+    });
+    progresoInMock.mockResolvedValue({ data: null, error: { message: "timeout" } });
+
+    const { getCursoDetalle } = await import("./cursos");
+
+    await expect(getCursoDetalle("c1", "u1")).rejects.toThrow(
+      "No se pudo cargar el progreso: timeout"
+    );
+  });
 });
