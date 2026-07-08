@@ -42,7 +42,12 @@ Nueva migración `006_cursos_categoria.sql`:
 ```sql
 alter table cursos add column categoria text not null default 'clases'
   check (categoria in ('sistema_100', 'clases'));
+
+alter table lecciones add column titulo text not null default 'Lección sin título';
+alter table lecciones alter column titulo drop default;
 ```
+
+**Nota (encontrada al planear):** `lecciones` nunca tuvo columna de título en el esquema original (001) — solo `tipo_contenido`, `mux_asset_id`, `storage_key`, `orden`. Sin `titulo` no se puede listar lecciones en la UI de detalle/reproductor, así que se agrega en esta misma migración (con default transitorio para filas existentes, luego se elimina el default para que las inserciones futuras lo requieran explícitamente).
 
 - No se modifica RLS: `cursos_select_publicado` (migración 001) ya permite `select` de cualquier curso `publicado = true` a cualquier usuario autenticado, y eso es exactamente el modelo de acceso de esta fase.
 - **Modelo de acceso confirmado**: cualquier estudiante logueado puede ver/avanzar cualquier curso y lección `publicado = true`, sin validar `inscripciones` ni `membresia` todavía (no hay checkout real — Stripe es fase posterior según `PRODUCT.md`). Esto se revisita cuando se implemente el flujo de pago.
