@@ -155,6 +155,17 @@ describe("marcarProgreso", () => {
     );
   });
 
+  it("omite segundo_actual del payload si solo se provee completado", async () => {
+    upsertMock.mockResolvedValue({ error: null });
+
+    const { marcarProgreso } = await import("./lecciones");
+    await marcarProgreso("u1", "l2", { completado: true });
+
+    const payloadEnviado = upsertMock.mock.calls[0][0];
+    expect(payloadEnviado).not.toHaveProperty("segundo_actual");
+    expect(payloadEnviado).toMatchObject({ usuario_id: "u1", leccion_id: "l2", completado: true });
+  });
+
   it("lanza un error legible si Supabase falla", async () => {
     upsertMock.mockResolvedValue({ error: { message: "timeout" } });
 
