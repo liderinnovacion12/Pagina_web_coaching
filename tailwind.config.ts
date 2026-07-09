@@ -24,6 +24,10 @@ const config: Config = {
           400: "#8b93a7",
           500: "#6b7385",
         },
+        whatsapp: {
+          DEFAULT: "#25D366",
+          dark: "#1EBE5D",
+        },
       },
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],

@@ -31,6 +31,7 @@ Definida en `tailwind.config.ts`. **No crear colores nuevos** — reutilizar est
 | `mist-400` | `#8b93a7` | Párrafos secundarios, subtítulos |
 | `mist-500` | `#6b7385` | Placeholders, íconos inactivos, texto terciario |
 | `rose-400` / `rose-500` (Tailwind default) | — | Errores de validación exclusivamente |
+| `whatsapp` / `whatsapp-dark` | `#25D366` / `#1EBE5D` | **Excepción documentada** — solo el botón "Únete a los Grupos y Comunidades de WhatsApp" en `/dashboard`. No reutilizar en otro contexto. |
 
 Reglas de aplicación:
 - Fondos: siempre `ink-950` (o `ink-900` en overlays). Nunca blanco/gris claro.
