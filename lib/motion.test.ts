@@ -1,0 +1,70 @@
+import { describe, it, expect, vi } from "vitest";
+import { renderHook } from "@testing-library/react";
+
+const useReducedMotionMock = vi.fn();
+
+vi.mock("framer-motion", async () => {
+  const actual =
+    await vi.importActual<typeof import("framer-motion")>("framer-motion");
+  return {
+    ...actual,
+    useReducedMotion: () => useReducedMotionMock(),
+  };
+});
+
+import {
+  EASE_OUT,
+  fadeUp,
+  fadeIn,
+  staggerContainer,
+  SCROLL_REVEAL_VIEWPORT,
+  useReducedMotionSafe,
+} from "./motion";
+
+describe("variantes de motion", () => {
+  it("fadeUp parte invisible/desplazado y usa el easing del proyecto", () => {
+    expect(fadeUp.hidden).toEqual({ opacity: 0, transform: "translateY(18px)" });
+    expect(fadeUp.visible).toMatchObject({
+      opacity: 1,
+      transform: "translateY(0px)",
+      transition: { duration: 0.6, ease: EASE_OUT },
+    });
+  });
+
+  it("fadeIn solo anima opacidad", () => {
+    expect(fadeIn.hidden).toEqual({ opacity: 0 });
+    expect(fadeIn.visible).toMatchObject({ opacity: 1 });
+  });
+
+  it("staggerContainer usa 60ms de stagger por defecto (dentro del rango 30-80ms)", () => {
+    const variant = staggerContainer();
+    expect(variant.visible).toMatchObject({
+      transition: { staggerChildren: 0.06, delayChildren: 0 },
+    });
+  });
+
+  it("staggerContainer acepta overrides de stagger y delay", () => {
+    const variant = staggerContainer(0.08, 0.1);
+    expect(variant.visible).toMatchObject({
+      transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    });
+  });
+
+  it("SCROLL_REVEAL_VIEWPORT dispara una sola vez con margen negativo", () => {
+    expect(SCROLL_REVEAL_VIEWPORT).toEqual({ once: true, margin: "-10% 0px" });
+  });
+});
+
+describe("useReducedMotionSafe", () => {
+  it("devuelve false si framer-motion aún no determinó la preferencia (null)", () => {
+    useReducedMotionMock.mockReturnValue(null);
+    const { result } = renderHook(() => useReducedMotionSafe());
+    expect(result.current).toBe(false);
+  });
+
+  it("devuelve true cuando el usuario prefiere reduced motion", () => {
+    useReducedMotionMock.mockReturnValue(true);
+    const { result } = renderHook(() => useReducedMotionSafe());
+    expect(result.current).toBe(true);
+  });
+});

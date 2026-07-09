@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
 import { solicitarRecuperacion, type RecuperarPasswordState } from "./actions";
 
@@ -50,13 +51,16 @@ export function RecuperarPasswordForm() {
         )}
       </div>
 
-      <button
+      <motion.button
         type="submit"
         disabled={pendiente}
+        whileHover={pendiente ? undefined : { y: -2 }}
+        whileTap={pendiente ? undefined : { scale: 0.97 }}
+        transition={{ duration: 0.15 }}
         className="h-[52px] rounded-xl bg-gold-500 font-semibold text-ink-950 transition-colors duration-150 hover:bg-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pendiente ? "Enviando..." : "Enviar instrucciones"}
-      </button>
+      </motion.button>
     </form>
   );
 }

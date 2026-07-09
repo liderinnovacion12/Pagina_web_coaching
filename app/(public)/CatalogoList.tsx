@@ -1,4 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
 import type { CursoPublicado } from "@/lib/db/cursos";
+import { CatalogoCursoCard } from "./CatalogoCursoCard";
+import { SCROLL_REVEAL_VIEWPORT, staggerContainer } from "@/lib/motion";
 
 export function CatalogoList({ cursos }: { cursos: CursoPublicado[] }) {
   if (cursos.length === 0) {
@@ -6,20 +11,16 @@ export function CatalogoList({ cursos }: { cursos: CursoPublicado[] }) {
   }
 
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <motion.ul
+      initial="hidden"
+      whileInView="visible"
+      viewport={SCROLL_REVEAL_VIEWPORT}
+      variants={staggerContainer(0.07)}
+      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+    >
       {cursos.map((curso) => (
-        <li
-          key={curso.id}
-          className="rounded-xl border border-white/10 bg-ink-900 p-5 transition hover:border-gold-500/40"
-        >
-          <h3 className="font-display font-semibold text-white">
-            {curso.titulo}
-          </h3>
-          <p className="mt-2 font-mono text-gold-400">
-            ${curso.precio.toFixed(2)}
-          </p>
-        </li>
+        <CatalogoCursoCard key={curso.id} curso={curso} />
       ))}
-    </ul>
+    </motion.ul>
   );
 }

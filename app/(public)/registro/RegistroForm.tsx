@@ -116,6 +116,7 @@ export function RegistroForm() {
           type="submit"
           disabled={pendiente}
           whileHover={pendiente ? undefined : { y: -2 }}
+          whileTap={pendiente ? undefined : { scale: 0.97 }}
           transition={{ duration: 0.15 }}
           className="flex h-[52px] items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-ink-950 shadow-[0_8px_24px_rgba(217,169,78,0.25)] transition-colors duration-150 hover:bg-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
