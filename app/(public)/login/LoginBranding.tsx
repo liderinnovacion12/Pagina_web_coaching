@@ -2,12 +2,14 @@
 
 import { motion } from "framer-motion";
 import { HeroBackground } from "@/app/(public)/HeroBackground";
+import { ParticleField } from "@/components/motion/ParticleField";
 import { CursorGlow } from "@/components/motion/CursorGlow";
 
 export function LoginBranding() {
   return (
     <div className="relative hidden overflow-hidden bg-ink-950 lg:flex lg:flex-col lg:justify-between lg:p-16">
       <HeroBackground />
+      <ParticleField />
       <CursorGlow />
 
       <div
