@@ -1,68 +1,59 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-
-const getSesionUsuarioMock = vi.fn();
-const getResumenEstudianteMock = vi.fn();
-
-vi.mock("@/lib/auth/session", () => ({
-  getSesionUsuario: getSesionUsuarioMock,
-}));
-
-vi.mock("@/lib/db/dashboard", () => ({
-  getResumenEstudiante: getResumenEstudianteMock,
-}));
+import DashboardPage from "./page";
 
 describe("DashboardPage", () => {
-  beforeEach(() => {
-    getSesionUsuarioMock.mockReset();
-    getResumenEstudianteMock.mockReset();
-    getSesionUsuarioMock.mockResolvedValue({ id: "u1", email: "ana@example.com", rol: "estudiante" });
+  it("muestra el encabezado de bienvenida", () => {
+    render(<DashboardPage />);
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Bienvenido a Team 100% Real Estate" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("by Wilmar Sosa y Samuel Oropeza")).toBeInTheDocument();
   });
 
-  it("muestra las 4 estadísticas y la sección continuar viendo", async () => {
-    getResumenEstudianteMock.mockResolvedValue({
-      xpTotal: 80,
-      insigniasCount: 1,
-      cursosEnProgreso: 2,
-      membresiaEstado: "activa",
-      continuarViendo: {
-        cursoId: "c2",
-        leccionId: "l2",
-        leccionTitulo: "Fuentes de leads en 2026",
-        cursoTitulo: "Prospección y Generación de Leads",
-      },
-    });
+  it("embebe el video de bienvenida de Loom", () => {
+    render(<DashboardPage />);
 
-    const DashboardPage = (await import("./page")).default;
-    render(await DashboardPage());
-
-    expect(screen.getByText("80")).toBeInTheDocument();
-    expect(screen.getByText("1")).toBeInTheDocument();
-    expect(screen.getByText("2")).toBeInTheDocument();
-    expect(screen.getByText("Activa")).toBeInTheDocument();
-    expect(screen.getByText("Fuentes de leads en 2026")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /retomar/i })).toHaveAttribute(
-      "href",
-      "/cursos/c2/lecciones/l2"
+    const iframe = screen.getByTitle("Video de bienvenida — Team 100% Real Estate");
+    expect(iframe).toHaveAttribute(
+      "src",
+      "https://www.loom.com/embed/cb856608ad54454a95f79ccdbaa07de1"
     );
   });
 
-  it("muestra el estado vacío para un estudiante sin actividad", async () => {
-    getResumenEstudianteMock.mockResolvedValue({
-      xpTotal: 0,
-      insigniasCount: 0,
-      cursosEnProgreso: 0,
-      membresiaEstado: "sin_membresia",
-      continuarViendo: null,
-    });
+  it("el boton de WhatsApp enlaza a /herramientas", () => {
+    render(<DashboardPage />);
 
-    const DashboardPage = (await import("./page")).default;
-    render(await DashboardPage());
+    expect(
+      screen.getByRole("link", { name: /únete a los grupos y comunidades de whatsapp/i })
+    ).toHaveAttribute("href", "/herramientas");
+  });
 
-    expect(screen.queryByText(/continuar viendo/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /comenzar sistema 100\+/i })).toHaveAttribute(
+  it("muestra los 4 pasos de Como Usar la Plataforma", () => {
+    render(<DashboardPage />);
+
+    expect(screen.getByText("Usa el menú lateral para navegar entre módulos.")).toBeInTheDocument();
+    expect(screen.getByText("Revisa el calendario de clases y eventos.")).toBeInTheDocument();
+    expect(screen.getByText("Descarga los recursos disponibles.")).toBeInTheDocument();
+    expect(screen.getByText("Contacta a soporte si tienes dudas.")).toBeInTheDocument();
+  });
+
+  it("los accesos rapidos enlazan a las 4 rutas correctas", () => {
+    render(<DashboardPage />);
+
+    expect(screen.getByRole("link", { name: "Grupos de WhatsApp" })).toHaveAttribute(
       "href",
-      "/sistema-100"
+      "/herramientas"
     );
+    expect(screen.getByRole("link", { name: "Calendario de Clases" })).toHaveAttribute(
+      "href",
+      "/calendario"
+    );
+    expect(screen.getByRole("link", { name: "Recursos de Ventas" })).toHaveAttribute(
+      "href",
+      "/marketing"
+    );
+    expect(screen.getByRole("link", { name: "Soporte" })).toHaveAttribute("href", "/soporte");
   });
 });
