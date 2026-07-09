@@ -229,15 +229,45 @@ export function ParticleField() {
     // clickable (headline, CTAs) is rendered after it with `relative z-10`,
     // so it still intercepts its own clicks via normal stacking order while
     // the canvas receives pointer moves everywhere else.
-    canvas.addEventListener("pointermove", handlePointerMove);
-    canvas.addEventListener("pointerleave", handlePointerLeave);
+    //
+    // The cursor lean/squash is a fine-pointer-only affordance (same
+    // convention as CursorGlow.tsx): on touch devices there's no hover, and
+    // a drag would otherwise pull the lean toward the touch point with no
+    // pointerleave to release it. The vortex itself (breathing, rotation,
+    // wander) keeps animating unconditionally via the rAF loop above.
+    const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let pointerListenersAttached = false;
+
+    function attachPointerListeners() {
+      if (pointerListenersAttached) return;
+      canvas.addEventListener("pointermove", handlePointerMove);
+      canvas.addEventListener("pointerleave", handlePointerLeave);
+      pointerListenersAttached = true;
+    }
+
+    function detachPointerListeners() {
+      if (!pointerListenersAttached) return;
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerleave", handlePointerLeave);
+      pointerListenersAttached = false;
+      mouse.x = -9999;
+      mouse.y = -9999;
+    }
+
+    function handlePointerQueryChange(event: MediaQueryListEvent) {
+      if (event.matches) attachPointerListeners();
+      else detachPointerListeners();
+    }
+
+    if (pointerQuery.matches) attachPointerListeners();
+    pointerQuery.addEventListener("change", handlePointerQueryChange);
 
     return () => {
       stopLoop();
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
-      canvas.removeEventListener("pointermove", handlePointerMove);
-      canvas.removeEventListener("pointerleave", handlePointerLeave);
+      detachPointerListeners();
+      pointerQuery.removeEventListener("change", handlePointerQueryChange);
     };
   }, [reducedMotion]);
 
