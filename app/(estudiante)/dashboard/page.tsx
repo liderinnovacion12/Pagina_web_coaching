@@ -25,14 +25,14 @@ export default function DashboardPage() {
         <p className="mt-2 text-lg text-mist-400">by Wilmar Sosa y Samuel Oropeza</p>
       </div>
 
-      <div className="rounded-[20px] bg-white p-4 sm:p-6">
+      <div className="rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-4 sm:p-6">
         <div className="flex items-center justify-between px-1 pb-3">
-          <p className="font-mono text-xs uppercase tracking-wider text-ink-950/60">
+          <p className="font-mono text-xs uppercase tracking-wider text-mist-500">
             Video de bienvenida
           </p>
-          <span className="text-xs font-medium text-ink-950/60">4 min</span>
+          <span className="text-xs font-medium text-mist-400">4 min</span>
         </div>
-        <div className="aspect-video overflow-hidden rounded-xl">
+        <div className="aspect-video overflow-hidden rounded-xl border border-white/[0.08]">
           <iframe
             src="https://www.loom.com/embed/cb856608ad54454a95f79ccdbaa07de1"
             title="Video de bienvenida — Team 100% Real Estate"
