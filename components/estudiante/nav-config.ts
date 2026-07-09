@@ -30,22 +30,22 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Aliados Estratégicos", href: null },
       { label: "Transacciones", href: null },
       { label: "CRM", href: null },
-      { label: "Marketing", href: null },
+      { label: "Marketing", href: "/marketing" },
     ],
   },
   {
     label: "Comunidad",
     items: [
-      { label: "Calendario", href: null },
+      { label: "Calendario", href: "/calendario" },
       { label: "Eventos", href: null },
-      { label: "Herramientas", href: null },
+      { label: "Herramientas", href: "/herramientas" },
       { label: "Construcción de Equipo", href: null },
     ],
   },
   {
     label: "Soporte",
     items: [
-      { label: "Soporte", href: null },
+      { label: "Soporte", href: "/soporte" },
       { label: "Oficinas", href: null },
     ],
   },
