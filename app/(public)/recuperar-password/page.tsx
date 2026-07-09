@@ -26,7 +26,7 @@ export default function RecuperarPasswordPage() {
           Te enviaremos instrucciones para restablecer tu contraseña.
         </p>
 
-        <div className="mt-10 rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-12">
+        <div className="mt-10 rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-12 transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
           <RecuperarPasswordForm />
         </div>
 
