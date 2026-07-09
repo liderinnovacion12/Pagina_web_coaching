@@ -240,8 +240,8 @@ function NavLink({
         className="flex cursor-not-allowed items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm text-mist-500 opacity-60"
       >
         <span>{item.label}</span>
-        <span className="flex shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mist-500">
-          <Lock className="h-2.5 w-2.5" aria-hidden="true" />
+        <span className="flex shrink-0 items-center gap-0.5 rounded-full border border-white/10 bg-white/[0.03] px-1 py-px font-mono text-[8px] uppercase tracking-wider text-mist-500">
+          <Lock className="h-1.5 w-1.5" aria-hidden="true" />
           Próximamente
         </span>
       </span>

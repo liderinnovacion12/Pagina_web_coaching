@@ -27,7 +27,7 @@ describe("EstudianteShell", () => {
       </EstudianteShell>
     );
 
-    expect(screen.getByText("PRO")).toBeInTheDocument();
+    expect(screen.getByText("REAL ESTATE")).toBeInTheDocument();
     expect(screen.getByText("ana@example.com")).toBeInTheDocument();
     expect(screen.getByText("Contenido de la página")).toBeInTheDocument();
   });
