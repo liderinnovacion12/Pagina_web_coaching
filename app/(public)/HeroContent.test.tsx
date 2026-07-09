@@ -18,6 +18,7 @@ describe("HeroContent", () => {
       "#cursos"
     );
     expect(screen.getByText("2,000+")).toBeInTheDocument();
-    expect(screen.getByText("Líderes")).toBeInTheDocument();
+    // "Líderes" también existe en un <dt> sr-only; se apunta al <p> visible.
+    expect(screen.getByText("Líderes", { selector: "p" })).toBeInTheDocument();
   });
 });
