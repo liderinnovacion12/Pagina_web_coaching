@@ -75,7 +75,7 @@ export function LoginBranding() {
             <p className="text-[11px] uppercase tracking-[0.24em] text-mist-500">
               motion
             </p>
-            <p className="mt-2 text-base font-semibold text-white">orbital</p>
+            <p className="mt-2 text-base font-semibold text-white">vortex</p>
           </div>
           <div className="rounded-2xl border border-white/8 bg-black/20 px-3 py-3">
             <p className="text-[11px] uppercase tracking-[0.24em] text-mist-500">

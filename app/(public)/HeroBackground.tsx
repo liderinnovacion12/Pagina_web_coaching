@@ -34,63 +34,29 @@ export function HeroBackground() {
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
-          <radialGradient id="hero-vortex-glow" cx="0.58" cy="0.5" r="0.7">
-            <stop offset="0%" stopColor="rgb(217,169,78)" stopOpacity="0.22" />
-            <stop offset="35%" stopColor="rgb(217,169,78)" stopOpacity="0.08" />
-            <stop offset="70%" stopColor="rgb(140,150,175)" stopOpacity="0.04" />
-            <stop offset="100%" stopColor="rgb(5,7,12)" stopOpacity="0" />
+          <radialGradient id="hero-vortex-glow" cx="0.58" cy="0.5" r="0.82">
+            <stop offset="0%" stopColor="rgb(217,167,74)" stopOpacity="0.24" />
+            <stop offset="28%" stopColor="rgb(217,167,74)" stopOpacity="0.12" />
+            <stop offset="52%" stopColor="rgb(255,255,255)" stopOpacity="0.05" />
+            <stop offset="100%" stopColor="rgb(15,15,14)" stopOpacity="0" />
           </radialGradient>
-          <linearGradient id="hero-vortex-line" x1="0" x2="1">
-            <stop offset="0%" stopColor="rgb(140,150,175)" stopOpacity="0" />
-            <stop offset="50%" stopColor="rgb(217,169,78)" stopOpacity="0.28" />
-            <stop offset="100%" stopColor="rgb(140,150,175)" stopOpacity="0" />
-          </linearGradient>
         </defs>
 
         <rect width="1400" height="900" fill="url(#hero-vortex-glow)" />
 
-        <motion.g
-          data-testid="hero-layer-back"
-          style={{ transform: backTransform }}
-          fill="none"
-          stroke="currentColor"
-        >
-          <ellipse
-            cx="925"
-            cy="470"
-            rx="380"
-            ry="210"
-            className="text-mist-500/12"
-            strokeWidth="1"
-          />
-          <ellipse
-            cx="925"
-            cy="470"
-            rx="260"
-            ry="145"
-            className="text-gold-500/15"
-            strokeWidth="1"
-          />
+        <motion.g data-testid="hero-layer-back" style={{ transform: backTransform }}>
+          <circle cx="940" cy="470" r="290" fill="rgba(217,167,74,0.04)" />
+          <circle cx="920" cy="458" r="190" fill="rgba(255,255,255,0.03)" />
         </motion.g>
 
-        <motion.g
-          data-testid="hero-layer-mid"
-          style={{ transform: midTransform }}
-          fill="none"
-          stroke="url(#hero-vortex-line)"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-        >
-          <path d="M560 290 C720 210, 960 230, 1060 360" />
-          <path d="M540 600 C690 710, 930 700, 1080 560" />
-          <path d="M610 180 C760 290, 925 330, 1120 260" />
-          <path d="M640 700 C810 610, 940 560, 1100 640" />
+        <motion.g data-testid="hero-layer-mid" style={{ transform: midTransform }}>
+          <circle cx="930" cy="462" r="110" fill="rgba(217,167,74,0.09)" />
+          <circle cx="900" cy="442" r="68" fill="rgba(255,255,255,0.08)" />
         </motion.g>
 
         <motion.g data-testid="hero-layer-front" style={{ transform: frontTransform }}>
-          <circle cx="900" cy="470" r="7" className="fill-gold-400/90" />
-          <circle cx="735" cy="372" r="3.5" className="fill-mist-300/70" />
-          <circle cx="1045" cy="540" r="3.5" className="fill-mist-300/65" />
+          <circle cx="902" cy="466" r="18" fill="rgba(255,255,255,0.9)" />
+          <circle cx="902" cy="466" r="42" fill="rgba(217,167,74,0.1)" />
         </motion.g>
       </svg>
     </div>

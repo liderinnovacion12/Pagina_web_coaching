@@ -3,8 +3,8 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotionSafe } from "@/lib/motion";
 
-const PARTICLE_COUNT_MIN = 180;
-const PARTICLE_COUNT_MAX = 320;
+const PARTICLE_COUNT_MIN = 240;
+const PARTICLE_COUNT_MAX = 420;
 const ACCENT_RATIO = 0.1;
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -65,7 +65,7 @@ function createProgram(
 function makeSeededParticles(count: number) {
   const particles = new Float32Array(count * 8);
   for (let index = 0; index < count; index += 1) {
-    const shell = Math.pow(Math.random(), 0.72);
+    const shell = Math.pow(Math.random(), 0.64);
     const base = index * 8;
 
     particles[base + 0] = index * 2.399963229728653 + (Math.random() - 0.5) * 0.5; // angle
@@ -73,7 +73,7 @@ function makeSeededParticles(count: number) {
     particles[base + 2] = Math.random() * Math.PI * 2; // phase
     particles[base + 3] = 0.04 + shell * 0.22 + Math.random() * 0.04; // spin
     particles[base + 4] = 0.12 + Math.random() * 0.18; // lift
-    particles[base + 5] = 0.55 + (1 - shell) * 1.35; // size
+    particles[base + 5] = 0.72 + (1 - shell) * 1.7; // size
     particles[base + 6] = Math.random() < ACCENT_RATIO ? 1 : 0; // accent
     particles[base + 7] = Math.random() * 2.8 + shell * 1.4; // twist
   }
@@ -118,7 +118,7 @@ vec3 rotateY(vec3 p, float angle) {
 vec3 fieldPosition(float t) {
   float breathWave = 0.5 + 0.5 * sin(t * 0.72 + aPhase);
   float breath = mix(0.46, 1.0, breathWave);
-  float shellRadius = mix(0.18, 1.0, aShell) * breath;
+  float shellRadius = mix(0.28, 1.22, aShell) * breath;
   float swirl = aAngle + t * (0.12 + aSpin) + aTwist * 0.18;
   float lane = sin(t * aLift + aPhase * 1.6);
   float ripple = cos(t * (aLift * 0.74 + 0.05) + aPhase * 1.2);
@@ -139,8 +139,8 @@ vec3 fieldPosition(float t) {
 vec2 projectToScreen(vec3 p) {
   float perspective = 1.0 / (1.82 - p.z * 0.72);
   return vec2(
-    p.x * perspective * uResolution.y * 0.42,
-    p.y * perspective * uResolution.y * 0.30
+    p.x * perspective * uResolution.y * 0.52,
+    p.y * perspective * uResolution.y * 0.37
   );
 }
 
@@ -149,8 +149,8 @@ void main() {
   float trailTime = 0.042 + aShell * 0.028;
   vec3 previous = fieldPosition(uTime - trailTime);
 
-  float cursorTiltX = uPointer.x * 0.62 + sin(uTime * 0.08) * 0.03;
-  float cursorTiltY = -uPointer.y * 0.44;
+  float cursorTiltX = uPointer.x * 0.92 + sin(uTime * 0.08) * 0.03;
+  float cursorTiltY = -uPointer.y * 0.72;
 
   current = rotateY(current, cursorTiltX);
   current = rotateX(current, cursorTiltY);
@@ -161,7 +161,7 @@ void main() {
   vec2 currentPixel = center + projectToScreen(current);
   vec2 previousPixel = center + projectToScreen(previous);
 
-  currentPixel += vec2(uPointer.x * uResolution.x * 0.035, -uPointer.y * uResolution.y * 0.024);
+  currentPixel += vec2(uPointer.x * uResolution.x * 0.06, -uPointer.y * uResolution.y * 0.042);
 
   vec2 motion = currentPixel - previousPixel;
   float speed = length(motion);
@@ -169,11 +169,11 @@ void main() {
   vec2 perpendicular = vec2(-direction.y, direction.x);
 
   float perspective = 1.0 / (1.82 - current.z * 0.72);
-  float baseSize = mix(4.0, 12.0, aShell) * aSize * perspective;
-  float stretch = clamp(1.0 + speed * 0.03, 1.0, 3.6);
+  float baseSize = mix(6.0, 17.5, aShell) * aSize * perspective;
+  float stretch = clamp(1.0 + speed * 0.04, 1.0, 4.2);
   vec2 local = vec2(
-    aCorner.x * baseSize * stretch * 1.15,
-    aCorner.y * baseSize * 0.76
+    aCorner.x * baseSize * stretch * 1.25,
+    aCorner.y * baseSize * 0.88
   );
 
   vec2 finalPixel = currentPixel + direction * local.x + perpendicular * local.y;
@@ -181,7 +181,7 @@ void main() {
 
   gl_Position = vec4(clip * vec2(1.0, -1.0), current.z * 0.0001, 1.0);
   vCorner = aCorner;
-  vAlpha = clamp(0.12 + aShell * 0.52 + speed * 0.02 + aAccent * 0.08, 0.08, 0.95);
+  vAlpha = clamp(0.16 + aShell * 0.56 + speed * 0.022 + aAccent * 0.1, 0.1, 0.98);
   vAccent = aAccent;
   vDepth = clamp((current.z + 0.9) / 1.8, 0.0, 1.0);
 }
@@ -439,12 +439,12 @@ export function ParticleField() {
     <div ref={rootRef} className="absolute inset-0 pointer-events-none overflow-hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 animate-vortex-pulse bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.14),transparent_20%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.08),transparent_38%),radial-gradient(circle_at_58%_50%,rgba(15,15,14,0.12),transparent_58%)]"
+        className="absolute inset-0 animate-vortex-pulse bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.16),transparent_18%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.1),transparent_36%),radial-gradient(circle_at_58%_50%,rgba(15,15,14,0.14),transparent_58%)]"
       />
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 animate-vortex-drift bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.07),transparent_16%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.04),transparent_34%)] mix-blend-screen"
+        className="absolute inset-0 animate-vortex-drift bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.08),transparent_16%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.05),transparent_34%)] mix-blend-screen"
       />
 
       <canvas
