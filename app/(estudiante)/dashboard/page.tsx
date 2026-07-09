@@ -46,18 +46,15 @@ const VALORES = [
   },
 ];
 
-// Reemplaza cada URL por el link directo de Google Drive de cada foto
-// (ver public/images/cultura/README.md para el procedimiento de conversión).
-const GALERIA_EQUIPO = [
-  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_01",
-  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_02",
-  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_03",
-  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_04",
-  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_05",
-  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_06",
-  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_07",
-  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_08",
-];
+// Reemplaza cada URL por el link publico de Supabase Storage de cada foto
+// (ver public/images/cultura/README.md para el procedimiento de subida).
+const GALERIA_EQUIPO = Array.from(
+  { length: 8 },
+  (_, indice) =>
+    `https://tu-proyecto.supabase.co/storage/v1/object/public/equipo/REEMPLAZAR-galeria-${String(
+      indice + 1
+    ).padStart(2, "0")}.jpg`
+);
 
 export default async function DashboardPage() {
   const miembrosEquipo = await getMiembrosEquipo();
@@ -165,7 +162,6 @@ export default async function DashboardPage() {
                   src={miembro.fotoUrl}
                   alt={miembro.nombre}
                   fill
-                  unoptimized
                   sizes="(min-width: 640px) 50vw, 100vw"
                   className="object-cover"
                 />
@@ -265,7 +261,6 @@ export default async function DashboardPage() {
                 src={src}
                 alt="Foto del equipo Team 100% Real Estate"
                 fill
-                unoptimized
                 sizes="(min-width: 640px) 25vw, 50vw"
                 className="object-cover"
               />

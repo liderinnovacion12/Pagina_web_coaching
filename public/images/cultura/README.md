@@ -1,27 +1,25 @@
-# Fotos de "Cultura y Equipo" — vía Google Drive
+# Fotos de "Cultura y Equipo" — vía Supabase Storage
 
-Las fotos ya **no** se suben a este repositorio. Se alojan en una carpeta de Google Drive y el código solo guarda el link directo de cada una.
+Las fotos ya **no** se suben a este repositorio ni a Google Drive. Se alojan en un bucket público de Supabase Storage y el código solo guarda la URL pública de cada una.
 
-## Cómo obtener el link directo de una foto en Drive
+## Cómo subir una foto y obtener su URL pública
 
-1. Sube la foto a la carpeta de Drive del equipo.
-2. Click derecho → **Compartir** → cambia el acceso a **"Cualquier persona con el enlace"** (como mínimo "Lector"). Sin esto, la imagen no cargará en la página.
-3. Copia el link que te da Drive, con esta forma:
-   `https://drive.google.com/file/d/AQUI_VA_EL_ID/view?usp=sharing`
-4. Toma solo el `ID` (la parte entre `/d/` y `/view`) y arma la URL directa:
-   `https://lh3.googleusercontent.com/d/AQUI_VA_EL_ID`
-
-Esa segunda URL (`lh3.googleusercontent.com/...`) es la que se guarda en el código/base de datos — la de `drive.google.com/file/d/...` es solo la de compartir y no sirve para mostrarla directo en la página.
+1. En el Dashboard de Supabase del proyecto → **Storage** → crea un bucket (una sola vez) llamado, por ejemplo, `equipo`, marcado como **público** (Public bucket).
+2. Sube la foto dentro de ese bucket (arrastrar y soltar funciona).
+3. Click en el archivo subido → **Copy URL** (o "Obtener URL pública"). Te da un link con esta forma:
+   `https://<tu-proyecto>.supabase.co/storage/v1/object/public/equipo/wilmar-sosa.jpg`
+4. Esa URL completa es la que se guarda en el código/base de datos — no hace falta ninguna conversión (a diferencia de Drive).
 
 ## Dónde va cada link
 
-- **Team Leaders** (Wilmar Sosa, Samuel Oropeza y futuros miembros): se guarda en la columna `foto_url` de la tabla `miembros_equipo` en Supabase. Actualízalo con:
+- **Team Leaders** (Wilmar Sosa, Samuel Oropeza y futuros miembros): se guarda en la columna `foto_url` de la tabla `miembros_equipo`. Actualízalo con:
   ```sql
-  update miembros_equipo set foto_url = 'https://lh3.googleusercontent.com/d/...' where nombre = 'Wilmar Sosa';
+  update miembros_equipo set foto_url = 'https://<tu-proyecto>.supabase.co/storage/v1/object/public/equipo/wilmar-sosa.jpg' where nombre = 'Wilmar Sosa';
   ```
-- **Galería del Equipo** (8 fotos del grid): se guardan en el array `GALERIA_EQUIPO` dentro de `app/(estudiante)/dashboard/page.tsx` — reemplaza cada `REEMPLAZAR_ID_FOTO_0X` por el link real y haz commit/deploy (a diferencia de los Team Leaders, esta lista sí vive en código, no en la base de datos).
+- **Galería del Equipo** (8 fotos del grid): se guardan en el array `GALERIA_EQUIPO` dentro de `app/(estudiante)/dashboard/page.tsx` — reemplaza cada `REEMPLAZAR_URL_PUBLICA_FOTO_0X` por la URL real y haz commit/deploy (a diferencia de los Team Leaders, esta lista vive en código, no en la base de datos).
 
-## Notas
+## Por qué Supabase Storage y no Drive
 
-- Google Drive no es un CDN de producción: para un equipo pequeño funciona bien, pero si el tráfico crece conviene migrar a Supabase Storage o un servicio de imágenes dedicado.
-- `next.config.ts` ya está configurado para permitir optimizar imágenes desde `lh3.googleusercontent.com`.
+Un archivo de Drive compartido "para cualquiera con el link" a veces igual redirige a una pantalla de login de Google para visitantes sin sesión (justo lo que pasó con la primera prueba). Un bucket público de Supabase Storage es un archivo estático servido por HTTPS sin ninguna capa de autenticación de por medio — no tiene ese problema, y ya es la misma infraestructura que usa el resto de la app.
+
+`next.config.ts` ya está configurado para permitir optimizar imágenes desde cualquier subdominio `*.supabase.co`.
