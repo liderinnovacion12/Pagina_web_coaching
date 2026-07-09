@@ -163,7 +163,7 @@ export default async function DashboardPage() {
                   alt={miembro.nombre}
                   fill
                   sizes="(min-width: 640px) 50vw, 100vw"
-                  className="object-cover"
+                  className="object-cover object-top"
                 />
               ) : (
                 <div className="absolute inset-0 bg-ink-800" aria-hidden="true" />
