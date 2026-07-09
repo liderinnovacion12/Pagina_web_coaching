@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { CatalogoList } from "./CatalogoList";
 import { HeroBackground } from "./HeroBackground";
 import { HeroContent } from "./HeroContent";
+import { ParticleField } from "@/components/motion/ParticleField";
 
 export const metadata: Metadata = {
   title: "Team 100% Real Estate | Transforma tu Liderazgo",
@@ -26,6 +27,7 @@ export default async function LandingPage() {
 
       <div className="relative overflow-hidden bg-grain">
         <HeroBackground />
+        <ParticleField />
         <HeroContent estadisticas={ESTADISTICAS} />
       </div>
 
