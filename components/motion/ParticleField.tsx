@@ -203,10 +203,10 @@ void main() {
   float glow = smoothstep(1.0, 0.0, dist);
   float core = smoothstep(0.28, 0.0, dist);
 
-  vec3 cold = vec3(0.87, 0.91, 0.97);
-  vec3 warm = vec3(0.85, 0.66, 0.29);
-  vec3 color = mix(cold, warm, vAccent);
-  color *= 0.5 + core * 1.15 + vDepth * 0.16;
+  vec3 white = vec3(1.0);
+  vec3 gold = vec3(0.8509804, 0.6549020, 0.2901961);
+  vec3 color = mix(white, gold, vAccent);
+  color *= 0.42 + core * 1.12 + vDepth * 0.14;
 
   float alpha = vAlpha * glow * glow;
   outColor = vec4(color, alpha);
@@ -439,12 +439,12 @@ export function ParticleField() {
     <div ref={rootRef} className="absolute inset-0 pointer-events-none overflow-hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 animate-vortex-pulse bg-[radial-gradient(circle_at_58%_50%,rgba(217,169,78,0.12),transparent_20%),radial-gradient(circle_at_58%_50%,rgba(141,152,175,0.08),transparent_38%),radial-gradient(circle_at_58%_50%,rgba(5,7,12,0.1),transparent_58%)]"
+        className="absolute inset-0 animate-vortex-pulse bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.14),transparent_20%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.08),transparent_38%),radial-gradient(circle_at_58%_50%,rgba(15,15,14,0.12),transparent_58%)]"
       />
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 animate-vortex-drift bg-[radial-gradient(circle_at_58%_50%,rgba(217,169,78,0.06),transparent_16%),radial-gradient(circle_at_58%_50%,rgba(141,152,175,0.035),transparent_34%)] mix-blend-screen"
+        className="absolute inset-0 animate-vortex-drift bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.07),transparent_16%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.04),transparent_34%)] mix-blend-screen"
       />
 
       <canvas
@@ -456,7 +456,7 @@ export function ParticleField() {
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_58%_50%,transparent_36%,rgba(5,7,12,0.32)_72%,rgba(5,7,12,0.84)_100%)]"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_58%_50%,transparent_36%,rgba(15,15,14,0.34)_72%,rgba(15,15,14,0.9)_100%)]"
       />
     </div>
   );

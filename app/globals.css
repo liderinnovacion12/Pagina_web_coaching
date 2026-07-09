@@ -43,11 +43,14 @@
   }
 
   body {
-    @apply bg-ink-950 text-mist-300 antialiased;
+    @apply antialiased;
+    background-color: #0f0f0e;
+    color: #ffffff;
   }
 
   ::selection {
-    @apply bg-gold-500/30 text-gold-200;
+    background: rgba(217, 167, 74, 0.28);
+    color: #fffdf7;
   }
 }
 
@@ -78,7 +81,7 @@
   }
 
   .text-gradient-gold {
-    background: linear-gradient(100deg, #e8c168 0%, #f0d38a 35%, #cdd6e0 75%);
+    background: linear-gradient(100deg, #d9a74a 0%, #f1d489 42%, #ffffff 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
