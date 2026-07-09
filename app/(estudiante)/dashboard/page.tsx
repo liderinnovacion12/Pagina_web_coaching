@@ -46,10 +46,18 @@ const VALORES = [
   },
 ];
 
-const GALERIA_EQUIPO = Array.from(
-  { length: 8 },
-  (_, indice) => `/images/cultura/galeria/galeria-${String(indice + 1).padStart(2, "0")}.jpg`
-);
+// Reemplaza cada URL por el link directo de Google Drive de cada foto
+// (ver public/images/cultura/README.md para el procedimiento de conversión).
+const GALERIA_EQUIPO = [
+  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_01",
+  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_02",
+  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_03",
+  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_04",
+  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_05",
+  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_06",
+  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_07",
+  "https://lh3.googleusercontent.com/d/REEMPLAZAR_ID_FOTO_08",
+];
 
 export default async function DashboardPage() {
   const miembrosEquipo = await getMiembrosEquipo();

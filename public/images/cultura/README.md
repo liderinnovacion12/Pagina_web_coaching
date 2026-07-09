@@ -1,23 +1,27 @@
-# Fotos de "Cultura y Equipo"
+# Fotos de "Cultura y Equipo" — vía Google Drive
 
-Coloca aquí los archivos con estos nombres exactos (minúsculas, sin espacios). El código de la página los referenciará por ruta fija, así que el nombre debe coincidir tal cual.
+Las fotos ya **no** se suben a este repositorio. Se alojan en una carpeta de Google Drive y el código solo guarda el link directo de cada una.
 
-## Team Leaders (tarjeta con foto de fondo completo)
+## Cómo obtener el link directo de una foto en Drive
 
-- `wilmar-sosa.jpg` — Wilmar Sosa (Ventas y Liderazgo). Orientación vertical recomendada (ej. 800×1000px o mayor), foto de medio cuerpo o retrato, buena resolución ya que cubre toda la tarjeta.
-- `samuel-oropeza.jpg` — Samuel Oropeza (Marketing e Inteligencia Artificial). Mismas recomendaciones que la anterior.
+1. Sube la foto a la carpeta de Drive del equipo.
+2. Click derecho → **Compartir** → cambia el acceso a **"Cualquier persona con el enlace"** (como mínimo "Lector"). Sin esto, la imagen no cargará en la página.
+3. Copia el link que te da Drive, con esta forma:
+   `https://drive.google.com/file/d/AQUI_VA_EL_ID/view?usp=sharing`
+4. Toma solo el `ID` (la parte entre `/d/` y `/view`) y arma la URL directa:
+   `https://lh3.googleusercontent.com/d/AQUI_VA_EL_ID`
 
-## Galería del Equipo (grid de 8 fotos, en `galeria/`)
+Esa segunda URL (`lh3.googleusercontent.com/...`) es la que se guarda en el código/base de datos — la de `drive.google.com/file/d/...` es solo la de compartir y no sirve para mostrarla directo en la página.
 
-- `galeria/galeria-01.jpg`
-- `galeria/galeria-02.jpg`
-- `galeria/galeria-03.jpg`
-- `galeria/galeria-04.jpg`
-- `galeria/galeria-05.jpg`
-- `galeria/galeria-06.jpg`
-- `galeria/galeria-07.jpg`
-- `galeria/galeria-08.jpg`
+## Dónde va cada link
 
-Fotos de eventos/reuniones presenciales del equipo (networking, presentaciones de proyectos, fotos grupales). Orientación horizontal recomendada (ej. 1200×800px), ya que se muestran en un grid de 4 columnas.
+- **Team Leaders** (Wilmar Sosa, Samuel Oropeza y futuros miembros): se guarda en la columna `foto_url` de la tabla `miembros_equipo` en Supabase. Actualízalo con:
+  ```sql
+  update miembros_equipo set foto_url = 'https://lh3.googleusercontent.com/d/...' where nombre = 'Wilmar Sosa';
+  ```
+- **Galería del Equipo** (8 fotos del grid): se guardan en el array `GALERIA_EQUIPO` dentro de `app/(estudiante)/dashboard/page.tsx` — reemplaza cada `REEMPLAZAR_ID_FOTO_0X` por el link real y haz commit/deploy (a diferencia de los Team Leaders, esta lista sí vive en código, no en la base de datos).
 
-`.jpg` o `.png` funcionan igual — si usas `.png`, avisa para ajustar la extensión en el código.
+## Notas
+
+- Google Drive no es un CDN de producción: para un equipo pequeño funciona bien, pero si el tráfico crece conviene migrar a Supabase Storage o un servicio de imágenes dedicado.
+- `next.config.ts` ya está configurado para permitir optimizar imágenes desde `lh3.googleusercontent.com`.
