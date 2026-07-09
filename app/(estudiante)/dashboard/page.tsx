@@ -165,6 +165,7 @@ export default async function DashboardPage() {
                   src={miembro.fotoUrl}
                   alt={miembro.nombre}
                   fill
+                  unoptimized
                   sizes="(min-width: 640px) 50vw, 100vw"
                   className="object-cover"
                 />
@@ -264,6 +265,7 @@ export default async function DashboardPage() {
                 src={src}
                 alt="Foto del equipo Team 100% Real Estate"
                 fill
+                unoptimized
                 sizes="(min-width: 640px) 25vw, 50vw"
                 className="object-cover"
               />
