@@ -135,50 +135,53 @@ export default async function DashboardPage() {
       </div>
 
       <div>
-        <div className="flex items-center gap-3">
-          <Users className="h-6 w-6 text-gold-300" aria-hidden="true" />
-          <h2 className="font-display text-3xl font-bold text-white">Cultura y Equipo</h2>
-        </div>
+        <h2 className="font-display text-3xl font-bold text-white">Cultura y Equipo</h2>
         <p className="mt-2 text-lg text-mist-400">
           Conoce a los líderes y los principios que nos guían.
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {miembrosEquipo.map((miembro) => (
-          <div
-            key={miembro.id}
-            className="relative h-[420px] overflow-hidden rounded-[20px] border border-white/[0.08]"
-          >
-            {miembro.fotoUrl ? (
-              <Image
-                src={miembro.fotoUrl}
-                alt={miembro.nombre}
-                fill
-                sizes="(min-width: 640px) 50vw, 100vw"
-                className="object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-ink-800" aria-hidden="true" />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-6">
-              <p className="font-mono text-xs uppercase tracking-wider text-gold-300">
-                {miembro.cargo}
-              </p>
-              <h3 className="mt-1 font-display text-xl font-semibold text-white">
-                {miembro.nombre}
-              </h3>
-              <p className="mt-2 text-sm text-mist-300">{miembro.descripcionCargo}</p>
-              <a
-                href={`tel:${miembro.telefono}`}
-                className="mt-3 inline-block text-sm font-semibold text-gold-300 transition hover:text-gold-200 hover:underline"
-              >
-                {miembro.telefono}
-              </a>
+      <div>
+        <div className="flex items-center gap-2">
+          <Users className="h-5 w-5 text-gold-300" aria-hidden="true" />
+          <h2 className="font-display text-2xl font-semibold text-white">Team Leaders</h2>
+        </div>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          {miembrosEquipo.map((miembro) => (
+            <div
+              key={miembro.id}
+              className="relative h-[420px] overflow-hidden rounded-[20px] border border-white/[0.08]"
+            >
+              {miembro.fotoUrl ? (
+                <Image
+                  src={miembro.fotoUrl}
+                  alt={miembro.nombre}
+                  fill
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-ink-800" aria-hidden="true" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6">
+                <p className="font-mono text-xs uppercase tracking-wider text-gold-300">
+                  {miembro.cargo}
+                </p>
+                <h3 className="mt-1 font-display text-xl font-semibold text-white">
+                  {miembro.nombre}
+                </h3>
+                <p className="mt-2 text-sm text-mist-300">{miembro.descripcionCargo}</p>
+                <a
+                  href={`tel:${miembro.telefono}`}
+                  className="mt-3 inline-block text-sm font-semibold text-gold-300 transition hover:text-gold-200 hover:underline"
+                >
+                  {miembro.telefono}
+                </a>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
