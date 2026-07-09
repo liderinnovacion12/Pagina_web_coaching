@@ -16,7 +16,11 @@ Las fotos ya **no** se suben a este repositorio ni a Google Drive. Se alojan en 
   ```sql
   update miembros_equipo set foto_url = 'https://<tu-proyecto>.supabase.co/storage/v1/object/public/equipo/wilmar-sosa.jpg' where nombre = 'Wilmar Sosa';
   ```
-- **Galería del Equipo** (8 fotos del grid): se guardan en el array `GALERIA_EQUIPO` dentro de `app/(estudiante)/dashboard/page.tsx` — reemplaza cada `REEMPLAZAR_URL_PUBLICA_FOTO_0X` por la URL real y haz commit/deploy (a diferencia de los Team Leaders, esta lista vive en código, no en la base de datos).
+- **Galería del Equipo** (grid de fotos): se guarda en la columna `url` de la tabla `galeria_equipo`. Para agregar una foto:
+  ```sql
+  insert into galeria_equipo (url, orden) values ('https://<tu-proyecto>.supabase.co/storage/v1/object/public/equipo/galeria-01.jpg', 1);
+  ```
+  Igual que con los Team Leaders, esto no requiere tocar código ni hacer deploy — la página lee la tabla completa, ordenada por `orden`.
 
 ## Por qué Supabase Storage y no Drive
 

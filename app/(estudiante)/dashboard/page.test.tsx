@@ -2,14 +2,26 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 const getMiembrosEquipoMock = vi.fn();
+const getGaleriaEquipoMock = vi.fn();
 
 vi.mock("@/lib/db/equipo", () => ({
   getMiembrosEquipo: getMiembrosEquipoMock,
 }));
 
+vi.mock("@/lib/db/galeria", () => ({
+  getGaleriaEquipo: getGaleriaEquipoMock,
+}));
+
 describe("DashboardPage", () => {
   beforeEach(() => {
     getMiembrosEquipoMock.mockReset();
+    getGaleriaEquipoMock.mockReset();
+    getGaleriaEquipoMock.mockResolvedValue(
+      Array.from({ length: 8 }, (_, indice) => ({
+        id: `g${indice + 1}`,
+        url: `https://tu-proyecto.supabase.co/storage/v1/object/public/equipo/galeria-${indice + 1}.jpg`,
+      }))
+    );
     getMiembrosEquipoMock.mockResolvedValue([
       {
         id: "m1",

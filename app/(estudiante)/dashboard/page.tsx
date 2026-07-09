@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { getMiembrosEquipo } from "@/lib/db/equipo";
+import { getGaleriaEquipo } from "@/lib/db/galeria";
 
 const PASOS_USO = [
   "Usa el menú lateral para navegar entre módulos.",
@@ -46,18 +47,11 @@ const VALORES = [
   },
 ];
 
-// Reemplaza cada URL por el link publico de Supabase Storage de cada foto
-// (ver public/images/cultura/README.md para el procedimiento de subida).
-const GALERIA_EQUIPO = Array.from(
-  { length: 8 },
-  (_, indice) =>
-    `https://tu-proyecto.supabase.co/storage/v1/object/public/equipo/REEMPLAZAR-galeria-${String(
-      indice + 1
-    ).padStart(2, "0")}.jpg`
-);
-
 export default async function DashboardPage() {
-  const miembrosEquipo = await getMiembrosEquipo();
+  const [miembrosEquipo, galeriaEquipo] = await Promise.all([
+    getMiembrosEquipo(),
+    getGaleriaEquipo(),
+  ]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -252,13 +246,13 @@ export default async function DashboardPage() {
           <h2 className="font-display text-2xl font-semibold text-white">Galería del Equipo</h2>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {GALERIA_EQUIPO.map((src) => (
+          {galeriaEquipo.map((foto) => (
             <div
-              key={src}
+              key={foto.id}
               className="relative aspect-square overflow-hidden rounded-xl border border-white/[0.08]"
             >
               <Image
-                src={src}
+                src={foto.url}
                 alt="Foto del equipo Team 100% Real Estate"
                 fill
                 sizes="(min-width: 640px) 25vw, 50vw"
