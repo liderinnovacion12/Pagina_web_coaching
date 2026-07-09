@@ -3,29 +3,50 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotionSafe } from "@/lib/motion";
 
-const SLOT_FRACTIONS = [0.16, 0.34, 0.52, 0.7, 0.88, 1.0];
-const BREATH_PERIOD = 6.5;
-const BREATH_MIN = 0.42;
-const ROTATION_SPEED = 0.045;
-const ACCENT_RATIO = 0.12;
-const ACCENT_RGB = "217,169,78"; // gold-500
-const NEUTRAL_RGB = "139,147,167"; // mist-400
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+const ORBIT_COUNT = 3;
+const PARTICLE_COUNT_MIN = 220;
+const PARTICLE_COUNT_MAX = 360;
+const BREATH_PERIOD = 7.2;
+const BREATH_MIN = 0.38;
+const BASE_SWIRL_SPEED = 0.18;
+const CAMERA_DISTANCE = 860;
+const CURSOR_TILT_X = 0.52;
+const CURSOR_TILT_Y = 0.72;
+const CURSOR_SHIFT_X = 0.06;
+const CURSOR_SHIFT_Y = 0.04;
+const TRAIL_SAMPLE_SECONDS = 0.06;
+const GOLD_RGB = "217,169,78";
+const MIST_RGB = "220,228,240";
+const DEEP_RGB = "90,102,128";
+const ACCENT_RATIO = 0.14;
 
 type Particle = {
-  baseAngle: number;
-  slotFraction: number;
-  radiusPx: number;
+  azimuth: number;
+  latitude: number;
+  shell: number;
+  phase: number;
+  orbitSpeed: number;
+  liftSpeed: number;
+  twist: number;
+  size: number;
   accent: boolean;
-  opacityMin: number;
-  opacityMax: number;
-  opacityPhase: number;
-  opacitySpeed: number;
-  wanderAmpX: number;
-  wanderAmpY: number;
-  wanderFreqX: number;
-  wanderFreqY: number;
-  wanderPhaseX: number;
-  wanderPhaseY: number;
+  trail: number;
+  driftX: number;
+  driftY: number;
+};
+
+type Projection = {
+  x: number;
+  y: number;
+  z: number;
+  radius: number;
+  lineWidth: number;
+  alpha: number;
+  color: string;
+  accent: boolean;
+  shell: number;
+  halo: number;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -34,6 +55,71 @@ function clamp(value: number, min: number, max: number) {
 
 function rgba(rgb: string, alpha: number) {
   return `rgba(${rgb},${alpha})`;
+}
+
+function projectParticle(
+  particle: Particle,
+  seconds: number,
+  cx: number,
+  cy: number,
+  maxRadius: number,
+  breath: number,
+  tiltX: number,
+  tiltY: number
+): Projection {
+  const orbitPhase = seconds * (BASE_SWIRL_SPEED + particle.orbitSpeed);
+  const shellRadius = maxRadius * (0.24 + particle.shell * 0.76) * breath;
+  const tubeRadius = maxRadius * (0.08 + particle.shell * 0.22);
+  const spiral = particle.azimuth + orbitPhase + particle.twist * 0.28;
+  const latitudeWave = Math.sin(
+    seconds * particle.liftSpeed + particle.phase + particle.latitude
+  );
+  const depthWave = Math.cos(
+    seconds * (0.24 + particle.liftSpeed * 0.35) + particle.phase
+  );
+
+  let x = Math.cos(spiral) * shellRadius;
+  let y =
+    Math.sin(particle.latitude + seconds * particle.liftSpeed * 0.75) *
+      tubeRadius *
+      1.15 +
+    latitudeWave * tubeRadius * 0.42;
+  let z = Math.sin(spiral * 1.12) * shellRadius * 0.66 + depthWave * tubeRadius * 0.5;
+
+  const armWarp = Math.sin(spiral * 2.55 + particle.phase * 0.7);
+  const armOffset = armWarp * maxRadius * (0.04 + particle.shell * 0.12);
+  x += Math.cos(spiral + Math.PI / 2) * armOffset;
+  y += Math.sin(spiral + Math.PI / 2) * armOffset * 0.5;
+
+  const pinch = 1 - Math.abs(Math.sin(particle.latitude)) * 0.3;
+  x *= pinch;
+  z *= 0.7 + particle.shell * 0.35;
+
+  const cosY = Math.cos(tiltY);
+  const sinY = Math.sin(tiltY);
+  const x1 = x * cosY - z * sinY;
+  let z1 = x * sinY + z * cosY;
+
+  const cosX = Math.cos(tiltX);
+  const sinX = Math.sin(tiltX);
+  const y1 = y * cosX - z1 * sinX;
+  z1 = y * sinX + z1 * cosX;
+
+  const perspective = CAMERA_DISTANCE / (CAMERA_DISTANCE - z1);
+  const scale = perspective * (0.72 + particle.shell * 0.45);
+
+  return {
+    x: cx + x1 * perspective + particle.driftX * particle.shell * 1.25,
+    y: cy + y1 * perspective + particle.driftY * particle.shell * 1.25,
+    z: z1,
+    radius: Math.max(0.5, particle.size * scale * 1.2),
+    lineWidth: Math.max(0.75, particle.size * scale * 0.68),
+    alpha: clamp(0.14 + particle.shell * 0.68, 0.12, 0.9),
+    color: particle.accent ? GOLD_RGB : MIST_RGB,
+    accent: particle.accent,
+    shell: particle.shell,
+    halo: 0.12 + particle.shell * 0.18,
+  };
 }
 
 export function ParticleField() {
@@ -50,9 +136,8 @@ export function ParticleField() {
     const ctx2d = canvasEl.getContext("2d");
     if (!ctx2d) return;
 
-    // Reassigned as non-nullable so the nested closures below (resize,
-    // draw, loop, event handlers) don't need repeated null checks — TS
-    // doesn't propagate the narrowing above across function boundaries.
+    // Reassigned as non-nullable so the nested closures below can stay
+    // simple and avoid repeating null checks on every frame.
     const canvas = canvasEl;
     const container = containerEl;
     const ctx = ctx2d;
@@ -66,33 +151,38 @@ export function ParticleField() {
     const dpr = Math.max(1, window.devicePixelRatio || 1);
 
     function initParticles(width: number, height: number) {
-      center = { x: width / 2, y: height / 2 };
-      maxRadius = Math.min(width, height) * 0.46;
+      center = {
+        x: width * 0.585,
+        y: height * 0.5,
+      };
+      maxRadius = Math.min(width, height) * 0.44;
 
-      const spokeCount = Math.min(36, Math.max(18, Math.round(width / 26)));
+      const particleCount = clamp(
+        Math.round((width * height) / 4200),
+        PARTICLE_COUNT_MIN,
+        PARTICLE_COUNT_MAX
+      );
       const next: Particle[] = [];
-      for (let s = 0; s < spokeCount; s++) {
-        const baseAngle = (s / spokeCount) * Math.PI * 2;
-        for (const slot of SLOT_FRACTIONS) {
-          const frac = slot * (0.92 + Math.random() * 0.16);
-          next.push({
-            baseAngle: baseAngle + (Math.random() - 0.5) * 0.045,
-            slotFraction: frac,
-            radiusPx: 0.6 + frac * 1.7,
-            accent: Math.random() < ACCENT_RATIO,
-            opacityMin: 0.16,
-            opacityMax: 0.3 + Math.random() * 0.5,
-            opacityPhase: Math.random() * Math.PI * 2,
-            opacitySpeed: 0.5 + Math.random() * 0.6,
-            wanderAmpX: 6 + Math.random() * 16,
-            wanderAmpY: 6 + Math.random() * 16,
-            wanderFreqX: 0.12 + Math.random() * 0.35,
-            wanderFreqY: 0.12 + Math.random() * 0.35,
-            wanderPhaseX: Math.random() * Math.PI * 2,
-            wanderPhaseY: Math.random() * Math.PI * 2,
-          });
-        }
+
+      for (let i = 0; i < particleCount; i++) {
+        const shell = Math.pow(Math.random(), 0.58);
+        next.push({
+          azimuth: i * GOLDEN_ANGLE + (Math.random() - 0.5) * 0.7,
+          latitude:
+            (Math.random() - 0.5) * Math.PI * (0.88 - shell * 0.22),
+          shell,
+          phase: Math.random() * Math.PI * 2,
+          orbitSpeed: 0.08 + shell * 0.34 + Math.random() * 0.08,
+          liftSpeed: 0.16 + Math.random() * 0.24,
+          twist: Math.random() * 3.2 + shell * 2.1,
+          size: 0.55 + (1 - shell) * 1.8,
+          accent: Math.random() < ACCENT_RATIO,
+          trail: 0.65 + shell * 1.85,
+          driftX: (Math.random() - 0.5) * 28,
+          driftY: (Math.random() - 0.5) * 28,
+        });
       }
+
       particles = next;
     }
 
@@ -106,79 +196,176 @@ export function ParticleField() {
       initParticles(rect.width, rect.height);
     }
 
+    function drawOrbitRings(
+      cx: number,
+      cy: number,
+      breath: number,
+      tiltX: number,
+      tiltY: number
+    ) {
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      ctx.strokeStyle = rgba(DEEP_RGB, 0.12);
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i < ORBIT_COUNT; i++) {
+        const band = i / Math.max(1, ORBIT_COUNT - 1);
+        const ringRadiusX = maxRadius * (0.22 + band * 0.38) * breath;
+        const ringRadiusY = maxRadius * (0.08 + band * 0.14) * (0.9 + breath * 0.12);
+        const rotation = tiltY * 0.45 + band * 0.85 + tiltX * 0.18;
+
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, ringRadiusX, ringRadiusY, rotation, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function drawCoreGlow(cx: number, cy: number, breath: number) {
+      const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius * 1.35);
+      core.addColorStop(0, rgba(GOLD_RGB, 0.18 + breath * 0.08));
+      core.addColorStop(0.18, rgba(GOLD_RGB, 0.08));
+      core.addColorStop(0.48, rgba(MIST_RGB, 0.04));
+      core.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = core;
+      ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    }
+
     function draw(elapsedMs: number) {
       const rect = container.getBoundingClientRect();
       const width = rect.width;
       const height = rect.height;
       const seconds = elapsedMs / 1000;
+
+      const breathPhase = seconds * ((Math.PI * 2) / BREATH_PERIOD) - Math.PI / 2;
+      const breath = BREATH_MIN + (1 - BREATH_MIN) * ((Math.sin(breathPhase) + 1) / 2);
+      const breathVelocity = Math.cos(breathPhase);
+      const backgroundPulse = 0.55 + 0.45 * ((Math.sin(seconds * 0.72) + 1) / 2);
+
+      let targetX = 0;
+      let targetY = 0;
+      if (mouse.x > -9000) {
+        targetX = clamp((mouse.x - width / 2) / (width / 2), -1, 1);
+        targetY = clamp((mouse.y - height / 2) / (height / 2), -1, 1);
+      }
+
+      lean.x += (targetX - lean.x) * 0.08;
+      lean.y += (targetY - lean.y) * 0.08;
+
+      const cx = center.x + lean.x * width * CURSOR_SHIFT_X;
+      const cy = center.y + lean.y * height * CURSOR_SHIFT_Y;
+      const tiltY = lean.x * CURSOR_TILT_Y + seconds * 0.07;
+      const tiltX = -lean.y * CURSOR_TILT_X + Math.sin(seconds * 0.18) * 0.04;
+
       ctx.clearRect(0, 0, width, height);
 
-      // shared breathing phase: a plain sine has zero velocity at both the
-      // fully-contracted and fully-expanded extremes and peaks mid-cycle —
-      // "slow near the center, accelerates outward, eases to a stop at the
-      // edge before reversing" comes for free from this shape.
-      const omega = (Math.PI * 2) / BREATH_PERIOD;
-      const raw = (Math.sin(seconds * omega - Math.PI / 2) + 1) / 2;
-      const radiusFraction = BREATH_MIN + (1 - BREATH_MIN) * raw;
-      const breathVelocity =
-        (omega * Math.cos(seconds * omega - Math.PI / 2)) / 2;
-      const breathGlow = 0.7 + 0.3 * raw;
-      const globalAngle = seconds * ROTATION_SPEED;
+      // The field is built in layers: a dark wash, a moving core glow, the
+      // orbital scaffold, and then the particle cluster itself.
+      const wash = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius * 2.15);
+      wash.addColorStop(0, rgba(GOLD_RGB, 0.08 * backgroundPulse));
+      wash.addColorStop(0.18, rgba(GOLD_RGB, 0.04));
+      wash.addColorStop(0.48, rgba(MIST_RGB, 0.03));
+      wash.addColorStop(1, "rgba(5,7,12,0.48)");
+      ctx.fillStyle = wash;
+      ctx.fillRect(0, 0, width, height);
 
-      let nx = 0;
-      let ny = 0;
-      if (mouse.x > -9000) {
-        nx = clamp((mouse.x - width / 2) / (width / 2), -1, 1);
-        ny = clamp((mouse.y - height / 2) / (height / 2), -1, 1);
-      }
-      lean.x += (nx * 40 - lean.x) * 0.06;
-      lean.y += (ny * 24 - lean.y) * 0.06;
-      const squashX = 1 - Math.abs(nx) * 0.12;
-      const cx = center.x + lean.x;
-      const cy = center.y + lean.y;
+      ctx.save();
+      ctx.globalCompositeOperation = "multiply";
+      ctx.fillStyle = "rgba(5,7,12,0.62)";
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
 
-      for (const p of particles) {
-        const theta = p.baseAngle + globalAngle;
-        const currentR = maxRadius * radiusFraction * p.slotFraction;
-        const wanderX =
-          p.wanderAmpX * Math.sin(seconds * p.wanderFreqX + p.wanderPhaseX);
-        const wanderY =
-          p.wanderAmpY * Math.sin(seconds * p.wanderFreqY + p.wanderPhaseY);
-        const x = cx + Math.cos(theta) * currentR * squashX + wanderX;
-        const y = cy + Math.sin(theta) * currentR + wanderY;
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      const halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius * 1.1);
+      halo.addColorStop(0, rgba(GOLD_RGB, 0.14));
+      halo.addColorStop(0.36, rgba(MIST_RGB, 0.04));
+      halo.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = halo;
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
 
-        const perspective = 0.4 + p.slotFraction * 0.9;
-        const wave =
-          (Math.sin(seconds * p.opacitySpeed + p.opacityPhase) + 1) / 2;
-        const opacity =
-          (p.opacityMin + wave * (p.opacityMax - p.opacityMin)) * breathGlow;
-        const color = p.accent ? ACCENT_RGB : NEUTRAL_RGB;
+      drawCoreGlow(cx, cy, breath);
+      drawOrbitRings(cx, cy, breath, tiltX, tiltY);
 
-        const speedAtSlot =
-          Math.abs(breathVelocity) * (1 - BREATH_MIN) * maxRadius * p.slotFraction;
-        const dirSign = breathVelocity >= 0 ? 1 : -1;
-        const ux = Math.cos(theta) * dirSign;
-        const uy = Math.sin(theta) * dirSign;
-        const tailLen = p.radiusPx * perspective * 2.2 + speedAtSlot * 0.5;
-        const tailX = x - ux * tailLen;
-        const tailY = y - uy * tailLen;
+      const renderList = particles
+        .map((particle) => {
+          const current = projectParticle(
+            particle,
+            seconds,
+            cx,
+            cy,
+            maxRadius,
+            breath,
+            tiltX,
+            tiltY
+          );
+          const previous = projectParticle(
+            particle,
+            seconds - TRAIL_SAMPLE_SECONDS * particle.trail,
+            cx,
+            cy,
+            maxRadius,
+            breath,
+            tiltX,
+            tiltY
+          );
 
-        const trail = ctx.createLinearGradient(tailX, tailY, x, y);
-        trail.addColorStop(0, rgba(color, 0));
-        trail.addColorStop(1, rgba(color, opacity));
-        ctx.strokeStyle = trail;
-        ctx.lineWidth = Math.max(0.8, p.radiusPx * perspective * 1.3);
+          return { current, previous };
+        })
+        .sort((a, b) => a.current.z - b.current.z);
+
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+
+      for (const item of renderList) {
+        const { current, previous } = item;
+        const motion = Math.hypot(current.x - previous.x, current.y - previous.y);
+        const depth = clamp((current.z + maxRadius * 0.75) / (maxRadius * 1.5), 0, 1);
+        const alpha = clamp(
+          current.alpha * (0.46 + depth * 0.7) * (0.88 + breathVelocity * 0.08),
+          0.04,
+          1
+        );
+        const tail = ctx.createLinearGradient(
+          previous.x,
+          previous.y,
+          current.x,
+          current.y
+        );
+        tail.addColorStop(0, rgba(current.color, 0));
+        tail.addColorStop(1, rgba(current.color, alpha));
+
+        ctx.strokeStyle = tail;
+        ctx.lineWidth = Math.max(current.lineWidth, motion * 0.1);
         ctx.lineCap = "round";
         ctx.beginPath();
-        ctx.moveTo(tailX, tailY);
-        ctx.lineTo(x, y);
+        ctx.moveTo(previous.x, previous.y);
+        ctx.lineTo(current.x, current.y);
         ctx.stroke();
 
-        ctx.fillStyle = rgba(color, Math.min(1, opacity * 1.5));
+        if (current.accent) {
+          ctx.fillStyle = rgba(current.color, alpha * 0.16);
+          ctx.beginPath();
+          ctx.arc(current.x, current.y, current.radius * 2.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = rgba(current.color, alpha * 1.05);
         ctx.beginPath();
-        ctx.arc(x, y, p.radiusPx * perspective * 0.6, 0, Math.PI * 2);
+        ctx.arc(current.x, current.y, current.radius, 0, Math.PI * 2);
         ctx.fill();
+
+        if (current.shell > 0.68) {
+          ctx.fillStyle = rgba(MIST_RGB, alpha * current.halo * 0.6);
+          ctx.beginPath();
+          ctx.arc(current.x, current.y, current.radius * 3.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
+
+      ctx.restore();
     }
 
     function loop(timestamp: number) {
@@ -207,8 +394,6 @@ export function ParticleField() {
       mouse.y = -9999;
     }
 
-    // Pause the rAF loop entirely (not just the draw call) while the field
-    // is scrolled out of view, instead of paying for canvas work off-screen.
     const intersectionObserver = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) startLoop();
@@ -222,19 +407,6 @@ export function ParticleField() {
     resizeObserver.observe(container);
     resize();
 
-    // Unlike CursorGlow.tsx (which sets `pointer-events-none` on the same
-    // element it listens to — CSS excludes that element from hit-testing,
-    // so its onPointerMove handler can never fire), this canvas keeps the
-    // default `pointer-events: auto`. Sibling content that should stay
-    // clickable (headline, CTAs) is rendered after it with `relative z-10`,
-    // so it still intercepts its own clicks via normal stacking order while
-    // the canvas receives pointer moves everywhere else.
-    //
-    // The cursor lean/squash is a fine-pointer-only affordance (same
-    // convention as CursorGlow.tsx): on touch devices there's no hover, and
-    // a drag would otherwise pull the lean toward the touch point with no
-    // pointerleave to release it. The vortex itself (breathing, rotation,
-    // wander) keeps animating unconditionally via the rAF loop above.
     const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
     let pointerListenersAttached = false;
 
