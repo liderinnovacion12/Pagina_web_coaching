@@ -1,12 +1,8 @@
-export default function CalendarioPage() {
-  return (
-    <div>
-      <h1 className="font-display text-[42px] font-bold leading-tight text-white">
-        Calendario de Clases
-      </h1>
-      <p className="mt-2 text-lg text-mist-400">
-        Horario de clases y eventos en vivo — en construcción.
-      </p>
-    </div>
-  );
+import { getClasesCalendario } from "@/lib/db/calendario";
+import { CalendarioSemanal } from "@/components/estudiante/calendario/CalendarioSemanal";
+
+export default async function CalendarioPage() {
+  const clases = await getClasesCalendario();
+
+  return <CalendarioSemanal clases={clases} />;
 }
