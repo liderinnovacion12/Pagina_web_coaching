@@ -4,19 +4,21 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { ExternalLink, X } from "lucide-react";
 import { formatHora } from "@/lib/calendario/recurrencia";
+import { ETIQUETA_MODALIDAD } from "@/lib/db/calendario";
 import type { OcurrenciaClase } from "./WeekGrid";
-
-const ETIQUETA_MODALIDAD: Record<string, string> = {
-  online: "Online",
-  presencial: "Presencial",
-  hibrida: "Híbrida",
-};
 
 const ETIQUETA_RECURRENCIA: Record<string, string> = {
   semanal: "Semanal",
   quincenal: "Quincenal",
   unica: "Única",
 };
+
+// next.config.ts solo autoriza imágenes servidas desde Supabase Storage;
+// cualquier otra URL debe ignorarse en vez de dejar que next/image lance
+// un error en tiempo de ejecución por hostname no configurado.
+function esImagenPermitida(url: string): boolean {
+  return /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\//.test(url);
+}
 
 export function EventDetailPanel({
   ocurrencia,
@@ -63,7 +65,7 @@ export function EventDetailPanel({
               </button>
             </div>
 
-            {ocurrencia.clase.imagenUrl && (
+            {ocurrencia.clase.imagenUrl && esImagenPermitida(ocurrencia.clase.imagenUrl) && (
               <div className="relative mt-4 h-32 w-full overflow-hidden rounded-xl">
                 <Image
                   src={ocurrencia.clase.imagenUrl}

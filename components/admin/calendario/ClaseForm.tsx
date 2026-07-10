@@ -114,6 +114,10 @@ export function ClaseForm({
       <label className="flex flex-col gap-1 text-sm text-mist-300 sm:col-span-2">
         URL de la imagen
         <input name="imagenUrl" defaultValue={clase?.imagenUrl ?? ""} className={CAMPO_CLASES} />
+        <span className="text-xs text-mist-500">
+          Debe ser una URL de Supabase Storage (https://*.supabase.co/storage/v1/object/public/...);
+          otros hosts no se mostrarán en el detalle de la clase.
+        </span>
       </label>
 
       <label className="flex items-center gap-2 text-sm text-mist-300">

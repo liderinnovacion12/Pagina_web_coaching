@@ -4,6 +4,12 @@ import type { Recurrencia } from "@/lib/calendario/recurrencia";
 export type ModalidadClase = "online" | "presencial" | "hibrida";
 export type RecurrenciaClase = Recurrencia;
 
+export const ETIQUETA_MODALIDAD: Record<ModalidadClase, string> = {
+  online: "Online",
+  presencial: "Presencial",
+  hibrida: "Híbrida",
+};
+
 export type ClaseCalendario = {
   id: string;
   nombre: string;

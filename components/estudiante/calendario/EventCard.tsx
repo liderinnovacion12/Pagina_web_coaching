@@ -3,14 +3,8 @@
 import { motion } from "framer-motion";
 import { MapPin, Video } from "lucide-react";
 import { formatHora } from "@/lib/calendario/recurrencia";
-import type { ClaseCalendario } from "@/lib/db/calendario";
+import { ETIQUETA_MODALIDAD, type ClaseCalendario } from "@/lib/db/calendario";
 import type { OcurrenciaClase } from "./WeekGrid";
-
-function etiquetaModalidad(modalidad: ClaseCalendario["modalidad"]): string {
-  if (modalidad === "presencial") return "Presencial";
-  if (modalidad === "hibrida") return "Híbrida";
-  return "Online";
-}
 
 function iconoModalidad(modalidad: ClaseCalendario["modalidad"]) {
   return modalidad === "presencial" ? MapPin : Video;
@@ -42,7 +36,7 @@ export function EventCard({
     >
       <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-gold-300">
         <Icono className="h-3 w-3 shrink-0" />
-        {etiquetaModalidad(ocurrencia.clase.modalidad)}
+        {ETIQUETA_MODALIDAD[ocurrencia.clase.modalidad]}
       </div>
       <p className="mt-1 truncate text-xs font-semibold text-white">{ocurrencia.clase.nombre}</p>
       <p className="truncate text-[11px] text-mist-400">{horario}</p>
