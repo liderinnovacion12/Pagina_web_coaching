@@ -200,8 +200,8 @@ void main() {
   gl_Position = vec4(clip * vec2(1.0, -1.0), current.z * 0.0001, 1.0);
   vUV    = aCorner;
 
-  float alpha = clamp(0.20 + aShell * 0.46 + aAccent * 0.05, 0.14, 0.96);
-  vAlpha  = mix(alpha, clamp(alpha * 1.4, 0.24, 0.99), uFocusMode) * mix(0.22, 1.0, depth);
+  float alpha = clamp(0.30 + aShell * 0.55 + aAccent * 0.06, 0.22, 0.98);
+  vAlpha  = mix(alpha, clamp(alpha * 1.5, 0.33, 0.99), uFocusMode) * mix(0.36, 1.0, depth);
   vAccent = mix(aAccent, 0.92, uFocusMode * 0.8);
   vDepth  = depth;
 }
@@ -237,9 +237,9 @@ void main() {
   else if (vAccent > 0.2) color = mix(copper, gold,                    (vAccent - 0.2) / 0.4);
   else                    color = mix(white,  copper,                    vAccent / 0.2);
 
-  color *= 0.42 + core * 1.22 + vDepth * 0.14;
+  color *= 0.63 + core * 1.83 + vDepth * 0.20;
 
-  float alpha = vAlpha * glow * glow * uOpacity;
+  float alpha = vAlpha * pow(glow, 1.4) * uOpacity;
   outColor = vec4(color, alpha);
 }
 `;
