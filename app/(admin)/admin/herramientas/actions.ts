@@ -1,14 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import {
-  crearGrupo,
-  actualizarGrupo,
-  eliminarGrupo,
-  type GrupoComunidadInput,
-  type CategoriaGrupoComunidad,
-  type CanalGrupoComunidad,
-} from "@/lib/db/grupos-comunidad";
+import { crearGrupo, actualizarGrupo, eliminarGrupo } from "@/lib/db/grupos-comunidad";
+import type {
+  GrupoComunidadInput,
+  CategoriaGrupoComunidad,
+  CanalGrupoComunidad,
+} from "@/lib/db/grupos-comunidad.types";
 
 export type GrupoFormState = { error: string | null };
 

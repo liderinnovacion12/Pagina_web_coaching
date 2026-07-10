@@ -2,8 +2,8 @@
 
 import { Folder, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import type { GrupoComunidad } from "@/lib/db/grupos-comunidad";
-import { ETIQUETA_CATEGORIA } from "@/lib/db/grupos-comunidad";
+import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
+import { ETIQUETA_CATEGORIA } from "@/lib/db/grupos-comunidad.types";
 import { blurFadeUp } from "@/lib/motion";
 
 const ETIQUETA_ACCION: Record<GrupoComunidad["tipoCanal"], string> = {

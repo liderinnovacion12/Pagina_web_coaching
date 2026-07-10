@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { HerramientasHub } from "./HerramientasHub";
-import type { GrupoComunidad } from "@/lib/db/grupos-comunidad";
+import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
 
 function crearGrupo(overrides: Partial<GrupoComunidad> & { id: string; nombre: string }): GrupoComunidad {
   return {

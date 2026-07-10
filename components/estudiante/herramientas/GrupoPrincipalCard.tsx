@@ -1,5 +1,5 @@
 import { MessageCircle } from "lucide-react";
-import type { GrupoComunidad } from "@/lib/db/grupos-comunidad";
+import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
 
 export function GrupoPrincipalCard({ grupo }: { grupo: GrupoComunidad | undefined }) {
   if (!grupo) {

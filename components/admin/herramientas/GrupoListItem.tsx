@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { GrupoComunidad } from "@/lib/db/grupos-comunidad";
-import { ETIQUETA_CATEGORIA } from "@/lib/db/grupos-comunidad";
+import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
+import { ETIQUETA_CATEGORIA } from "@/lib/db/grupos-comunidad.types";
 import { actualizarGrupoAction, eliminarGrupoAction } from "@/app/(admin)/admin/herramientas/actions";
 import { GrupoForm } from "./GrupoForm";
 

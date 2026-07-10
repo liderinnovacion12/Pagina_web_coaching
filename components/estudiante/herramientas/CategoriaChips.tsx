@@ -1,7 +1,7 @@
 "use client";
 
-import type { CategoriaGrupoComunidad } from "@/lib/db/grupos-comunidad";
-import { ETIQUETA_CATEGORIA } from "@/lib/db/grupos-comunidad";
+import type { CategoriaGrupoComunidad } from "@/lib/db/grupos-comunidad.types";
+import { ETIQUETA_CATEGORIA } from "@/lib/db/grupos-comunidad.types";
 
 export type FiltroCategoria = CategoriaGrupoComunidad | "todos";
 

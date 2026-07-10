@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, MessageCircle } from "lucide-react";
-import type { GrupoComunidad } from "@/lib/db/grupos-comunidad";
+import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
 import { staggerContainer, blurFadeUp } from "@/lib/motion";
 import { GrupoPrincipalCard } from "./GrupoPrincipalCard";
 import { IndicadoresPanel } from "./IndicadoresPanel";

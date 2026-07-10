@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import type { GrupoComunidad } from "@/lib/db/grupos-comunidad";
+import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
 import type { GrupoFormState } from "@/app/(admin)/admin/herramientas/actions";
 
 const estadoInicial: GrupoFormState = { error: null };
