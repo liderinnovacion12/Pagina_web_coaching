@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Menu, X, ChevronDown, Lock } from "lucide-react";
 import { NAV_GROUPS, type NavItem } from "./nav-config";
 import { cerrarSesion } from "@/lib/auth/actions";
+import { BotonCronograma } from "@/components/cronograma/BotonCronograma";
 
 function idDePanel(label: string, prefijo: string): string {
   const slug = label
@@ -122,6 +123,7 @@ export function EstudianteShell({
           </nav>
 
           <div className="hidden items-center gap-4 lg:flex">
+            <BotonCronograma href="/cronograma" compact />
             <span className="max-w-[160px] truncate text-sm text-mist-400">{email}</span>
             <form action={cerrarSesion}>
               <button
@@ -211,7 +213,9 @@ export function EstudianteShell({
               );
             })}
 
-            <form action={cerrarSesion} className="mt-6">
+            <BotonCronograma href="/cronograma" className="mt-6 w-full justify-center" />
+
+            <form action={cerrarSesion} className="mt-3">
               <button
                 type="submit"
                 className="w-full rounded-lg border border-white/10 px-3 py-2 text-sm text-mist-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
