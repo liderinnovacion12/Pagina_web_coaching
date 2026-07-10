@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RegistroForm } from "./RegistroForm";
+import { ParticleField } from "@/components/motion/ParticleField";
 
 export const metadata: Metadata = {
   title: "Crear cuenta | Team 100% Real Estate",
@@ -10,28 +11,31 @@ export const metadata: Metadata = {
 
 export default function RegistroPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-ink-950 bg-grain px-6 py-16">
+    <main className="relative flex h-screen flex-col items-center justify-center overflow-y-auto overflow-x-hidden bg-ink-950 px-6 py-4">
+      {/* Fondo de Partículas WebGL Nebulosa */}
+      <ParticleField />
+
       <Link
         href="/"
-        className="rounded-sm font-display text-2xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+        className="relative z-10 rounded-sm font-display text-xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
       >
         TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
         <span className="text-gold-400"> •</span>
       </Link>
 
-      <div className="mt-10 w-full max-w-sm">
-        <h1 className="text-center font-display text-[42px] font-bold leading-tight text-white">
+      <div className="relative z-10 mt-4 w-full max-w-sm">
+        <h1 className="text-center font-display text-2xl font-bold leading-tight text-white">
           Crea tu cuenta
         </h1>
-        <p className="mt-2 text-center text-lg text-mist-400">
+        <p className="mt-1 text-center text-sm text-mist-400">
           El liderazgo se construye, no se improvisa.
         </p>
 
-        <div className="mt-10 rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-12 transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
+        <div className="mt-4 rounded-[20px] border border-white/[0.08] bg-ink-900/40 p-6 shadow-[0_0_50px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_40px_rgba(0,0,0,0.25),0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
           <RegistroForm />
         </div>
 
-        <p className="mt-8 text-center text-sm text-mist-400">
+        <p className="mt-3 text-center text-sm text-mist-400">
           ¿Ya tienes una cuenta?{" "}
           <Link
             href="/login"

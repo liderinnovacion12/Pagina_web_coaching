@@ -17,7 +17,7 @@ const SECTORES = [
 const estadoInicial: RegistroState = { error: null };
 
 const CAMPO_CLASES =
-  "h-[52px] w-full rounded-xl border border-white/10 bg-ink-950 pl-11 pr-4 text-base text-white placeholder:text-mist-500 outline-none transition duration-150 hover:border-white/20 focus:border-gold-500/60 focus:shadow-[0_0_0_4px_rgba(217,169,78,0.12)]";
+  "h-11 w-full rounded-xl border border-white/10 bg-ink-950 pl-11 pr-4 text-base text-white placeholder:text-mist-500 outline-none transition duration-150 hover:border-white/20 focus:border-gold-500/60 focus:shadow-[0_0_0_4px_rgba(217,169,78,0.12)]";
 
 export function RegistroForm() {
   const [estado, formAction, pendiente] = useActionState(registrar, estadoInicial);
@@ -29,8 +29,8 @@ export function RegistroForm() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      <form action={formAction} className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
+      <form action={formAction} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
           <label htmlFor="email" className="text-sm font-medium text-mist-300">
             Correo
           </label>
@@ -50,7 +50,7 @@ export function RegistroForm() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label htmlFor="password" className="text-sm font-medium text-mist-300">
             Contraseña
           </label>
@@ -84,15 +84,15 @@ export function RegistroForm() {
           </div>
         </div>
 
-        <fieldset className="flex flex-col gap-3">
-          <legend className="mb-1 text-sm font-medium text-mist-300">
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-0.5 text-sm font-medium text-mist-300">
             Tus intereses
           </legend>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             {SECTORES.map((sector) => (
               <label
                 key={sector.valor}
-                className="flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-ink-950 px-4 py-3 text-sm text-mist-300 transition duration-150 hover:border-white/20 has-[:checked]:border-gold-500/60 has-[:checked]:bg-gold-500/10 has-[:checked]:text-gold-200"
+                className="flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-ink-950 px-3 py-1.5 text-sm text-mist-300 transition duration-150 hover:border-white/20 has-[:checked]:border-gold-500/60 has-[:checked]:bg-gold-500/10 has-[:checked]:text-gold-200"
               >
                 <input
                   type="checkbox"
@@ -118,7 +118,7 @@ export function RegistroForm() {
           whileHover={pendiente ? undefined : { y: -2 }}
           whileTap={pendiente ? undefined : { scale: 0.97 }}
           transition={{ duration: 0.15 }}
-          className="flex h-[52px] items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-ink-950 shadow-[0_8px_24px_rgba(217,169,78,0.25)] transition-colors duration-150 hover:bg-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex h-11 items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-ink-950 shadow-[0_8px_24px_rgba(217,169,78,0.25)] transition-colors duration-150 hover:bg-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {pendiente && (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />

@@ -154,7 +154,10 @@ void main() {
   else if (pPos < borderW + borderH)     tOff = vec2(borderW*0.5, borderH*0.5 - (pPos - borderW));
   else if (pPos < borderW*2.0 + borderH) tOff = vec2(borderW*0.5 - (pPos - (borderW + borderH)), -borderH*0.5);
   else                                   tOff = vec2(-borderW*0.5, -borderH*0.5 + (pPos - (borderW*2.0 + borderH)));
-  tOff += normalize(tOff) * sin(uTime * 3.5 + aPhase * 2.0) * 7.0;
+  
+  // Dispersar las partículas en una banda más ancha y suave alrededor del perímetro
+  float offsetAmt = sin(uTime * 2.5 + aPhase * 2.0) * 12.0 + (aPhase - 3.14159) * 28.0;
+  tOff += normalize(tOff) * offsetAmt;
   vec2 targetPixel = center + tOff;
 
   float ppPos = mod(aAngle * 48.0 + (uTime - trail) * 0.040 * perim, perim);
@@ -163,11 +166,16 @@ void main() {
   else if (ppPos < borderW + borderH)     ptOff = vec2(borderW*0.5, borderH*0.5 - (ppPos - borderW));
   else if (ppPos < borderW*2.0 + borderH) ptOff = vec2(borderW*0.5 - (ppPos - (borderW + borderH)), -borderH*0.5);
   else                                    ptOff = vec2(-borderW*0.5, -borderH*0.5 + (ppPos - (borderW*2.0 + borderH)));
-  ptOff += normalize(ptOff) * sin((uTime - trail)*3.5 + aPhase*2.0) * 7.0;
+  
+  float prevOffsetAmt = sin((uTime - trail) * 2.5 + aPhase * 2.0) * 12.0 + (aPhase - 3.14159) * 28.0;
+  ptOff += normalize(ptOff) * prevOffsetAmt;
   vec2 prevTargetPixel = center + ptOff;
 
-  vec2 currentPixel  = mix(basePixel,     targetPixel,     uFocusMode);
-  vec2 previousPixel = mix(prevBasePixel, prevTargetPixel, uFocusMode);
+  // Solo un subconjunto de las partículas migran hacia la tarjeta para evitar densidad excesiva
+  float focusInfluence = uFocusMode * smoothstep(0.40, 0.70, aShell);
+
+  vec2 currentPixel  = mix(basePixel,     targetPixel,     focusInfluence);
+  vec2 previousPixel = mix(prevBasePixel, prevTargetPixel, focusInfluence);
 
   vec2 camShift = vec2(uPointer.x * uResolution.x * 0.032, -uPointer.y * uResolution.y * 0.022);
   currentPixel  += camShift;
@@ -179,8 +187,8 @@ void main() {
   float distPtr   = length(toPtr);
   if (distPtr < 240.0) {
     float inf = smoothstep(240.0, 0.0, distPtr);
-    float mf  = mix(0.16, 0.04, uFocusMode);
-    float of  = mix(0.13, 0.02, uFocusMode);
+    float mf  = mix(0.16, 0.04, focusInfluence);
+    float of  = mix(0.13, 0.02, focusInfluence);
     currentPixel += toPtr * mf * inf + vec2(-toPtr.y, toPtr.x) * of * inf;
   }
 
@@ -188,7 +196,7 @@ void main() {
   float depth    = clamp((current.z + 0.9) / 1.8, 0.0, 1.0);
   float persp    = 1.0 / (1.58 - current.z * 0.52);
   float baseSize = mix(4.5, 12.5, aShell) * aSize * persp;
-  baseSize = mix(baseSize, baseSize * 1.18, uFocusMode);
+  baseSize = mix(baseSize, baseSize * 1.18, focusInfluence);
   baseSize *= mix(0.5, 1.3, depth);
 
   // Quad simétrico → punto/círculo en el fragment shader
@@ -201,8 +209,8 @@ void main() {
   vUV    = aCorner;
 
   float alpha = clamp(0.30 + aShell * 0.55 + aAccent * 0.06, 0.22, 0.98);
-  vAlpha  = mix(alpha, clamp(alpha * 1.5, 0.33, 0.99), uFocusMode) * mix(0.36, 1.0, depth);
-  vAccent = mix(aAccent, 0.92, uFocusMode * 0.8);
+  vAlpha  = mix(alpha, clamp(alpha * 1.5, 0.33, 0.99), focusInfluence) * mix(0.36, 1.0, depth);
+  vAccent = mix(aAccent, 0.92, focusInfluence * 0.8);
   vDepth  = depth;
 }
 `;
