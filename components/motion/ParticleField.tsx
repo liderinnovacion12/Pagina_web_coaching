@@ -58,7 +58,7 @@ function makeSeededParticles(count: number) {
     data[base + 4] = 0.06 + Math.random() * 0.18;
     data[base + 5] = 0.5  + (1 - shell) * 1.2 + Math.random() * 0.4;
     const r = Math.random();
-    let accent = r < 0.18 ? 0.8 + Math.random() * 0.2
+    const accent = r < 0.18 ? 0.8 + Math.random() * 0.2
                : r < 0.40 ? 0.35 + Math.random() * 0.35
                : Math.random() * 0.12;
     data[base + 6] = accent;
