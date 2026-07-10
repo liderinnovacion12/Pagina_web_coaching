@@ -6,20 +6,20 @@ product
 
 ## Users
 
-Dos roles reales sobre Supabase Auth:
+Dos roles reales sobre Supabase Auth (un tercero, coach, ya existe en el esquema y RLS pero sin panel propio aún — ver `docs/TAREAS.md`):
 
-- **Estudiante**: profesional o líder ejecutivo que compra/toma cursos de coaching ejecutivo (B2B2C, ~1000 estudiantes objetivo). Llega desde la landing pública, se registra o inicia sesión, y pasa a `(estudiante)` para ver su catálogo/progreso.
+- **Estudiante**: agente inmobiliario que compra/toma cursos de formación en ventas y liderazgo (Sistema 100+, clases). Llega desde la landing pública, se registra o inicia sesión, y pasa a `(estudiante)` para ver su catálogo/progreso.
 - **Admin**: cuenta creada por seed (sin sign-up propio), gestiona cursos/lecciones desde `(admin)`.
 
-El login es la puerta entre la landing de marca y el producto: debe sentirse ya "del producto" (confianza, seriedad ejecutiva), no como un formulario genérico desconectado del resto del sitio.
+El login es la puerta entre la landing de marca y el producto: debe sentirse ya "del producto" (confianza, seriedad de marca), no como un formulario genérico desconectado del resto del sitio.
 
 ## Product Purpose
 
-CoachPro es una plataforma de venta y consumo de cursos de coaching ejecutivo (LMS B2B2C) construida en Next.js App Router + Supabase (Auth, Postgres con RLS, Storage) + Mux + Stripe (fases posteriores). Éxito = un usuario puede registrarse, iniciar sesión, y llegar a su contenido sin fricción; un admin entra a rutas protegidas separadas.
+**Team 100% Real Estate** es la marca real y definitiva del producto: una plataforma de venta y consumo de cursos de formación para agentes inmobiliarios (Sistema 100+, clases, comunidad de WhatsApp) construida en Next.js App Router + Supabase (Auth, Postgres con RLS, Storage) + Mux + Stripe (fases posteriores). Éxito = un usuario puede registrarse, iniciar sesión, y llegar a su contenido sin fricción; un admin entra a rutas protegidas separadas.
 
 ## Brand Personality
 
-Confiado, exclusivo, editorial. Ejecutivo-premium: dorado sobre negro casi puro (`ink-950`), tipografía display (Bricolage Grotesque) para peso y carácter, mono (IBM Plex Mono) para detalles técnicos/etiquetas en mayúsculas trackeadas. Nada de calidez tipo SaaS-cream ni de generic-dashboard azul/gris.
+Confiado, exclusivo, editorial. Premium: dorado sobre negro casi puro (`ink-950`), tipografía display (Bricolage Grotesque) para peso y carácter, mono (IBM Plex Mono) para detalles técnicos/etiquetas en mayúsculas trackeadas. Nada de calidez tipo SaaS-cream ni de generic-dashboard azul/gris.
 
 ## Anti-references
 

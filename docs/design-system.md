@@ -1,10 +1,10 @@
-# CoachPro — Guía de estilo (Dark Premium SaaS)
+# Team 100% Real Estate — Guía de estilo (Dark Premium SaaS)
 
 > Extraída del rediseño de `/login` y `/recuperar-password` (2026-07-07). Úsala como referencia para llevar el mismo lenguaje visual a otras páginas (ej. `/registro`, dashboard, admin).
 
 ## 1. Esencia
 
-CoachPro se presenta como una plataforma de coaching ejecutivo seria y premium, no como una app SaaS genérica. El tono visual busca:
+Team 100% Real Estate se presenta como una plataforma de formación inmobiliaria seria y premium, no como una app SaaS genérica. El tono visual busca:
 
 - **Oscuridad con propósito**: fondo casi negro (`ink-950`), no gris. Transmite exclusividad, no "modo oscuro por defecto".
 - **Dorado como acento, no como color base**: el dorado (`gold-*`) se reserva para acciones primarias, énfasis tipográfico y detalles decorativos — nunca para fondos grandes.
@@ -24,7 +24,7 @@ Definida en `tailwind.config.ts`. **No crear colores nuevos** — reutilizar est
 | `ink-600` | `#282840` | — |
 | `gold-200` | `#f6e2ae` | Texto dorado más claro (hover de links) |
 | `gold-300` | `#f0d38a` | Links dorados por defecto (ej. "Crear cuenta") |
-| `gold-400` | `#e8c168` | Acentos de marca ("CoachPRO"), hover de botón primario |
+| `gold-400` | `#e8c168` | Acentos de marca ("REAL ESTATE" en el wordmark), hover de botón primario |
 | `gold-500` | `#d9a94e` | Color base de botones primarios, focus rings |
 | `gold-600` | `#b98a36` | — |
 | `mist-300` | `#aab1c4` | Labels, texto secundario más visible |
@@ -50,7 +50,7 @@ fontFamily: {
 }
 ```
 
-- **Marca / logo**: `font-display font-bold tracking-tight` → `COACH<span class="text-gold-400">PRO</span><span class="text-gold-400"> •</span>`. Este patrón se repite igual en cada página (login, recuperar-password) — no improvisar variantes.
+- **Marca / logo**: `font-display font-bold tracking-tight` → `TEAM 100%<span class="text-gold-400"> REAL ESTATE</span>`. Este patrón se repite igual en cada página (header, login, recuperar-password, shell de estudiante) — no improvisar variantes.
 - **H1 de página**: `font-display text-[42px] font-bold leading-tight text-white`.
 - **Subtítulo bajo H1**: `text-lg text-mist-400`.
 - **Labels de formulario**: `text-sm font-medium text-mist-300`.
@@ -101,7 +101,9 @@ transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
 
 ## 8. Fondo decorativo (paneles de marca)
 
-Patrón usado en `LoginBranding.tsx` para paneles hero/laterales oscuros:
+> Nota: este patrón se documentó junto con `LoginBranding.tsx`, un panel de marca de dos columnas para `/login` que fue removido (código muerto sin uso) en la limpieza de 2026-07-10 — el login actual es de una sola columna centrada con `ParticleField` como fondo. Se deja esta sección como referencia por si el layout de dos columnas vuelve a construirse.
+
+Patrón usado en el panel hero/lateral oscuro (histórico):
 
 - Radial gradients dorados muy sutiles como overlay: `bg-[radial-gradient(circle_at_20%_20%,rgba(217,169,78,0.08),transparent_55%),radial-gradient(circle_at_80%_80%,rgba(217,169,78,0.05),transparent_50%)]`.
 - Líneas diagonales + partículas en SVG (`stroke`/`circle`) con opacidades muy bajas (`/10`, `/25`, `/40`, `/50`, `/60`, `/70`) — el efecto debe notarse solo de cerca, nunca competir con el contenido.
@@ -118,7 +120,7 @@ Ambas páginas nuevas siguen el mismo esqueleto:
 4. Una única tarjeta (`rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-12`) que envuelve el formulario — el formulario en sí no tiene fondo propio, es siempre la tarjeta quien lo da.
 5. Link secundario de footer (crear cuenta / volver a login) en `text-sm text-mist-400` con el destino en `text-gold-300 hover:text-gold-200 hover:underline`.
 
-Layout de dos columnas (ej. `/login`) solo cuando la página lo justifica (flujo principal de entrada): `grid lg:grid-cols-[55fr_45fr]` con el panel de marca (`LoginBranding`) oculto en mobile (`hidden lg:flex`) y el formulario siempre centrado y visible.
+Layout de dos columnas: histórico (ver nota en §8), no representa el `/login` actual. Si se reintroduce, seguía el patrón `grid lg:grid-cols-[55fr_45fr]` con el panel de marca oculto en mobile (`hidden lg:flex`) y el formulario siempre centrado y visible.
 
 ## 10. Qué NO hacer
 
@@ -132,7 +134,6 @@ Layout de dos columnas (ej. `/login`) solo cuando la página lo justifica (flujo
 
 - `tailwind.config.ts` — tokens de color, fuentes, animaciones.
 - `app/globals.css` — reset base, `bg-grain`, `text-gradient-gold`, soporte `prefers-reduced-motion`.
-- `app/(public)/login/LoginBranding.tsx` — patrón de panel decorativo con Framer Motion.
 - `app/(public)/login/LoginForm.tsx` — patrón completo de formulario (inputs con ícono, validación, botones sociales, estados de carga).
-- `app/(public)/login/page.tsx` — layout de dos columnas.
+- `app/(public)/login/page.tsx` — layout actual de una columna con `ParticleField` de fondo.
 - `app/(public)/recuperar-password/page.tsx` y `RecuperarPasswordForm.tsx` — layout de una columna, versión más ligera de la tarjeta de formulario.
