@@ -126,33 +126,32 @@ vec3 rotateY(vec3 p, float angle) {
 }
 
 vec3 fieldPosition(float t) {
-  // Dispersión inicial en toda la pantalla
-  float x = sin(aAngle) * 2.2;
-  float y = cos(aAngle * 1.34 + aPhase) * 1.4;
+  // Distribución inicial ligeramente más concentrada para cohesión visual
+  float x = sin(aAngle) * 1.48;
+  float y = cos(aAngle * 1.34 + aPhase) * 0.98;
   
-  // Desplazamiento lateral de viento cósmico continuo (navegación por pantalla)
-  float driftSpeed = 0.02 + aSpin * 0.02;
+  // Desplazamiento lateral de viento cósmico continuo
+  float driftSpeed = 0.018 + aSpin * 0.018;
   float driftX = t * driftSpeed;
-  float driftY = sin(t * 0.1 + aPhase) * 0.15;
+  float driftY = sin(t * 0.08 + aPhase) * 0.12;
 
-  // Envoltura cilíndrica infinita (wrapping)
-  float finalX = mod(x + driftX + 2.2, 4.4) - 2.2;
-  float finalY = mod(y + driftY + 1.4, 2.8) - 1.4;
+  // Envoltura cilíndrica infinita un poco más estrecha
+  float finalX = mod(x + driftX + 1.6, 3.2) - 1.6;
+  float finalY = mod(y + driftY + 1.1, 2.2) - 1.1;
 
-  // Profundidad Z con oscilación suave
-  float z = sin(t * aLift * 0.5 + aPhase) * 0.6;
+  // Profundidad Z con oscilación
+  float z = sin(t * aLift * 0.5 + aPhase) * 0.55;
 
   vec3 p = vec3(finalX, finalY, z);
 
   // Inclinación por defecto para perspectiva 3D
-  p = rotateX(p, 0.25);
+  p = rotateX(p, 0.28);
 
   return p;
 }
 
 vec2 projectToScreen(vec3 p) {
-  // Proyección de perspectiva 3D simple
-  float perspective = 1.0 / (1.6 - p.z * 0.5);
+  float perspective = 1.0 / (1.55 - p.z * 0.5);
   return p.xy * perspective;
 }
 
@@ -162,13 +161,13 @@ void main() {
   vec3 previous = fieldPosition(uTime - trailTime);
 
   // Paneo autónomo de cámara
-  float autoTiltX = sin(uTime * 0.08) * 0.06;
-  float autoTiltY = cos(uTime * 0.06) * 0.04;
+  float autoTiltX = sin(uTime * 0.06) * 0.05;
+  float autoTiltY = cos(uTime * 0.05) * 0.035;
 
-  float cursorTiltX = uPointer.x * 0.52 + autoTiltX;
-  float cursorTiltY = -uPointer.y * 0.38 + autoTiltY;
+  float cursorTiltX = uPointer.x * 0.48 + autoTiltX;
+  float cursorTiltY = -uPointer.y * 0.35 + autoTiltY;
 
-  // Aplicamos rotación de la cámara basada en cursor
+  // Aplicamos rotación de la cámara
   current = rotateY(current, cursorTiltX);
   current = rotateX(current, cursorTiltY);
   previous = rotateY(previous, cursorTiltX);
@@ -177,31 +176,28 @@ void main() {
   vec2 center = uResolution * 0.5;
   
   // Proyección a coordenadas de pixel
-  vec2 currentPixel = center + projectToScreen(current) * uResolution.y * 0.62;
-  vec2 previousPixel = center + projectToScreen(previous) * uResolution.y * 0.62;
+  vec2 currentPixel = center + projectToScreen(current) * uResolution.y * 0.65;
+  vec2 previousPixel = center + projectToScreen(previous) * uResolution.y * 0.65;
 
-  // Suavizado del cambio de posición de cámara global
-  currentPixel += vec2(uPointer.x * uResolution.x * 0.04, -uPointer.y * uResolution.y * 0.03);
-  previousPixel += vec2(uPointer.x * uResolution.x * 0.04, -uPointer.y * uResolution.y * 0.03);
+  // Ajuste fino de la cámara en pantalla
+  currentPixel += vec2(uPointer.x * uResolution.x * 0.035, -uPointer.y * uResolution.y * 0.025);
+  previousPixel += vec2(uPointer.x * uResolution.x * 0.035, -uPointer.y * uResolution.y * 0.025);
 
-  // REACCIÓN MAGNÉTICA LOCAL: Atracción y órbita al cursor en pantalla completa
+  // REACCIÓN MAGNÉTICA LOCAL: Atracción y órbita al cursor
   vec2 pointerPixel = center + vec2(uPointer.x * uResolution.x * 0.5, -uPointer.y * uResolution.y * 0.5);
   vec2 toPointer = pointerPixel - currentPixel;
   float distToPointer = length(toPointer);
   if (distToPointer < 260.0) {
     float influence = smoothstep(260.0, 0.0, distToPointer);
-    // Vector de atracción (hacia el cursor)
-    vec2 pull = toPointer * 0.16 * influence;
-    // Vector de rotación orbital alrededor del cursor (giro magnético)
-    vec2 orbit = vec2(-toPointer.y, toPointer.x) * 0.14 * influence;
-    
+    vec2 pull = toPointer * 0.18 * influence;
+    vec2 orbit = vec2(-toPointer.y, toPointer.x) * 0.15 * influence;
     currentPixel += pull + orbit;
   }
 
   vec2 motion = currentPixel - previousPixel;
   
-  // Previene estiramientos gigantescos (trails rotos) cuando las partículas envuelven la pantalla
-  if (length(motion) > uResolution.x * 0.25) {
+  // Previene estiramientos gigantescos en la envoltura de pantalla
+  if (length(motion) > uResolution.x * 0.22) {
     motion = vec2(0.0);
   }
 
@@ -211,12 +207,13 @@ void main() {
 
   // Profundidad y perspectiva
   float depth = clamp((current.z + 0.9) / 1.8, 0.0, 1.0);
-  float perspective = 1.0 / (1.6 - current.z * 0.5);
+  float perspective = 1.0 / (1.55 - current.z * 0.5);
   
-  float baseSize = mix(5.0, 15.0, aShell) * aSize * perspective;
-  baseSize *= mix(0.5, 1.25, depth); // Más grandes al frente
+  // Ajuste de tamaño para mayor visibilidad (notorias pero no protagonistas)
+  float baseSize = mix(6.5, 17.5, aShell) * aSize * perspective;
+  baseSize *= mix(0.55, 1.35, depth);
 
-  float stretch = clamp(1.0 + speed * 0.04, 1.0, 3.5);
+  float stretch = clamp(1.0 + speed * 0.045, 1.0, 3.2);
   vec2 local = vec2(
     aCorner.x * baseSize * stretch * 1.15,
     aCorner.y * baseSize * 0.82
@@ -228,8 +225,9 @@ void main() {
   gl_Position = vec4(clip * vec2(1.0, -1.0), current.z * 0.0001, 1.0);
   vCorner = aCorner;
   
-  float alpha = clamp(0.12 + aShell * 0.48 + speed * 0.02 + aAccent * 0.08, 0.06, 0.92);
-  vAlpha = alpha * mix(0.15, 1.0, depth);
+  // Brillo base un poco más alto para no perderse en el fondo oscuro
+  float alpha = clamp(0.18 + aShell * 0.44 + speed * 0.025 + aAccent * 0.06, 0.12, 0.95);
+  vAlpha = alpha * mix(0.25, 1.0, depth);
   
   vAccent = aAccent;
   vDepth = depth;
@@ -244,7 +242,7 @@ in float vAlpha;
 in float vAccent;
 in float vDepth;
 
-uniform float uOpacity; // Control de transición de entrada suave
+uniform float uOpacity;
 
 out vec4 outColor;
 
@@ -252,11 +250,11 @@ void main() {
   vec2 p = vec2(vCorner.x * 0.7, vCorner.y);
   float dist = length(p);
   
-  // Brillo gaussiano exponencial
-  float glow = exp(-dist * dist * 3.8);
+  // Brillo gaussiano ligeramente más expandido para visibilidad y suavidad
+  float glow = exp(-dist * dist * 3.0);
   
   // Núcleo brillante
-  float core = exp(-dist * dist * 28.0);
+  float core = exp(-dist * dist * 24.0);
 
   vec3 white = vec3(0.96, 0.97, 1.0);
   vec3 gold = vec3(0.92, 0.72, 0.36);
@@ -271,7 +269,7 @@ void main() {
     color = mix(white, copper, vAccent / 0.2);
   }
 
-  color *= 0.42 + core * 1.25 + vDepth * 0.12;
+  color *= 0.45 + core * 1.25 + vDepth * 0.15;
 
   float alpha = vAlpha * glow * glow * uOpacity;
   outColor = vec4(color, alpha);
@@ -305,7 +303,7 @@ export function ParticleField() {
     const glContext = gl;
 
     const particleCount = clamp(
-      Math.round((window.innerWidth * window.innerHeight) / 4500), // Menor densidad por pixel
+      Math.round((window.innerWidth * window.innerHeight) / 4500),
       PARTICLE_COUNT_MIN,
       PARTICLE_COUNT_MAX
     );
@@ -392,7 +390,7 @@ export function ParticleField() {
     let frameId = 0;
     let targetPointer = { x: 0, y: 0 };
     const pointer = { x: 0, y: 0 };
-    let entranceOpacity = 0.0; // Control de aparición difuminada inicial
+    let entranceOpacity = 0.0;
 
     const dpr = Math.max(1, window.devicePixelRatio || 1);
 
@@ -407,7 +405,6 @@ export function ParticleField() {
       glContext.viewport(0, 0, width, height);
     }
 
-    // Registra movimiento del cursor en toda la ventana (pantalla completa)
     function handlePointerMove(event: PointerEvent) {
       const x = event.clientX / window.innerWidth;
       const y = event.clientY / window.innerHeight;
@@ -422,11 +419,9 @@ export function ParticleField() {
     function draw(timestamp: number) {
       const time = timestamp * 0.001;
 
-      // Suavizado del puntero (lerp)
       pointer.x += (targetPointer.x - pointer.x) * 0.08;
       pointer.y += (targetPointer.y - pointer.y) * 0.08;
 
-      // Incremento de opacidad progresivo de entrada
       if (entranceOpacity < 1.0) {
         entranceOpacity = Math.min(1.0, entranceOpacity + 0.008);
       }
@@ -465,7 +460,6 @@ export function ParticleField() {
     resizeObserver.observe(document.body);
     resize();
 
-    // Escuchar el movimiento del mouse en 'window' para que reaccione en toda la pantalla
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerleave", handlePointerLeave);
 
