@@ -3,8 +3,8 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotionSafe } from "@/lib/motion";
 
-const PARTICLE_COUNT_MIN = 120;
-const PARTICLE_COUNT_MAX = 240;
+const PARTICLE_COUNT_MIN = 80;
+const PARTICLE_COUNT_MAX = 150;
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -107,6 +107,7 @@ in float aTwist;
 uniform float uTime;
 uniform vec2 uResolution;
 uniform vec2 uPointer;
+uniform float uFocusMode; // 0.0 = normal drift, 1.0 = agrupados alrededor del login
 
 out vec2 vCorner;
 out float vAlpha;
@@ -126,25 +127,22 @@ vec3 rotateY(vec3 p, float angle) {
 }
 
 vec3 fieldPosition(float t) {
-  // Distribución inicial ligeramente más concentrada para cohesión visual
-  float x = sin(aAngle) * 1.48;
-  float y = cos(aAngle * 1.34 + aPhase) * 0.98;
+  // Distribución inicial flotante
+  float x = sin(aAngle) * 1.5;
+  float y = cos(aAngle * 1.34 + aPhase) * 1.0;
   
-  // Desplazamiento lateral de viento cósmico continuo
-  float driftSpeed = 0.018 + aSpin * 0.018;
+  // Desplazamiento lateral de viento continuo
+  float driftSpeed = 0.015 + aSpin * 0.015;
   float driftX = t * driftSpeed;
   float driftY = sin(t * 0.08 + aPhase) * 0.12;
 
-  // Envoltura cilíndrica infinita un poco más estrecha
+  // Envoltura cilíndrica infinita
   float finalX = mod(x + driftX + 1.6, 3.2) - 1.6;
   float finalY = mod(y + driftY + 1.1, 2.2) - 1.1;
 
-  // Profundidad Z con oscilación
   float z = sin(t * aLift * 0.5 + aPhase) * 0.55;
 
   vec3 p = vec3(finalX, finalY, z);
-
-  // Inclinación por defecto para perspectiva 3D
   p = rotateX(p, 0.28);
 
   return p;
@@ -175,28 +173,73 @@ void main() {
 
   vec2 center = uResolution * 0.5;
   
-  // Proyección a coordenadas de pixel
-  vec2 currentPixel = center + projectToScreen(current) * uResolution.y * 0.65;
-  vec2 previousPixel = center + projectToScreen(previous) * uResolution.y * 0.65;
+  // Posiciones base proyectadas (en píxeles)
+  vec2 basePixel = center + projectToScreen(current) * uResolution.y * 0.65;
+  vec2 prevBasePixel = center + projectToScreen(previous) * uResolution.y * 0.65;
 
-  // Ajuste fino de la cámara en pantalla
+  // EFECTO MAGNÉTICO AL INGRESO DE CREDENCIALES (Alineamiento alrededor del login card)
+  // SM login card es ~384px de ancho y ~480px de alto. Añadimos margen para formar un halo.
+  float borderW = 410.0;
+  float borderH = 510.0;
+  float perimeter = (borderW + borderH) * 2.0;
+  float flowSpeed = 0.045; // Velocidad del flujo de partículas alrededor del marco
+  
+  // Posición en el perímetro de la tarjeta
+  float pPos = mod(aAngle * 42.0 + uTime * flowSpeed * perimeter, perimeter);
+  vec2 targetOffset;
+  if (pPos < borderW) {
+    targetOffset = vec2(-borderW * 0.5 + pPos, borderH * 0.5);
+  } else if (pPos < borderW + borderH) {
+    targetOffset = vec2(borderW * 0.5, borderH * 0.5 - (pPos - borderW));
+  } else if (pPos < borderW * 2.0 + borderH) {
+    targetOffset = vec2(borderW * 0.5 - (pPos - (borderW + borderH)), -borderH * 0.5);
+  } else {
+    targetOffset = vec2(-borderW * 0.5, -borderH * 0.5 + (pPos - (borderW * 2.0 + borderH)));
+  }
+  
+  // Micro onda oscilatoria para que el halo perimetral respire en 3D
+  float wave = sin(uTime * 3.8 + aPhase * 2.0) * 8.0;
+  targetOffset += normalize(targetOffset) * wave;
+  vec2 targetPixel = center + targetOffset;
+
+  // Calculamos el objetivo de estela (previousTarget)
+  float prevPPos = mod(aAngle * 42.0 + (uTime - trailTime) * flowSpeed * perimeter, perimeter);
+  vec2 prevTargetOffset;
+  if (prevPPos < borderW) {
+    prevTargetOffset = vec2(-borderW * 0.5 + prevPPos, borderH * 0.5);
+  } else if (prevPPos < borderW + borderH) {
+    prevTargetOffset = vec2(borderW * 0.5, borderH * 0.5 - (prevPPos - borderW));
+  } else if (prevPPos < borderW * 2.0 + borderH) {
+    prevTargetOffset = vec2(borderW * 0.5 - (prevPPos - (prevPPos - (borderW + borderH))), -borderH * 0.5);
+  } else {
+    prevTargetOffset = vec2(-borderW * 0.5, -borderH * 0.5 + (prevPPos - (borderW * 2.0 + borderH)));
+  }
+  prevTargetOffset += normalize(prevTargetOffset) * sin((uTime - trailTime) * 3.8 + aPhase * 2.0) * 8.0;
+  vec2 prevTargetPixel = center + prevTargetOffset;
+
+  // Mezcla de posiciones final en base al modo focus
+  vec2 currentPixel = mix(basePixel, targetPixel, uFocusMode);
+  vec2 previousPixel = mix(prevBasePixel, prevTargetPixel, uFocusMode);
+
+  // Cámara interactiva básica
   currentPixel += vec2(uPointer.x * uResolution.x * 0.035, -uPointer.y * uResolution.y * 0.025);
   previousPixel += vec2(uPointer.x * uResolution.x * 0.035, -uPointer.y * uResolution.y * 0.025);
 
-  // REACCIÓN MAGNÉTICA LOCAL: Atracción y órbita al cursor
+  // REACCIÓN MAGNÉTICA LOCAL: Atracción al cursor (se atenúa en modo focus para respetar la tarjeta)
   vec2 pointerPixel = center + vec2(uPointer.x * uResolution.x * 0.5, -uPointer.y * uResolution.y * 0.5);
   vec2 toPointer = pointerPixel - currentPixel;
   float distToPointer = length(toPointer);
   if (distToPointer < 260.0) {
     float influence = smoothstep(260.0, 0.0, distToPointer);
-    vec2 pull = toPointer * 0.18 * influence;
-    vec2 orbit = vec2(-toPointer.y, toPointer.x) * 0.15 * influence;
+    float mouseForce = mix(0.18, 0.05, uFocusMode);
+    float orbitForce = mix(0.15, 0.03, uFocusMode);
+    
+    vec2 pull = toPointer * mouseForce * influence;
+    vec2 orbit = vec2(-toPointer.y, toPointer.x) * orbitForce * influence;
     currentPixel += pull + orbit;
   }
 
   vec2 motion = currentPixel - previousPixel;
-  
-  // Previene estiramientos gigantescos en la envoltura de pantalla
   if (length(motion) > uResolution.x * 0.22) {
     motion = vec2(0.0);
   }
@@ -209,8 +252,9 @@ void main() {
   float depth = clamp((current.z + 0.9) / 1.8, 0.0, 1.0);
   float perspective = 1.0 / (1.55 - current.z * 0.5);
   
-  // Ajuste de tamaño para mayor visibilidad (notorias pero no protagonistas)
-  float baseSize = mix(6.5, 17.5, aShell) * aSize * perspective;
+  float baseSize = mix(6.0, 16.0, aShell) * aSize * perspective;
+  // Escalado y brillo mayor en modo focus para un efecto de halo brillante
+  baseSize = mix(baseSize, baseSize * 1.15, uFocusMode);
   baseSize *= mix(0.55, 1.35, depth);
 
   float stretch = clamp(1.0 + speed * 0.045, 1.0, 3.2);
@@ -225,11 +269,11 @@ void main() {
   gl_Position = vec4(clip * vec2(1.0, -1.0), current.z * 0.0001, 1.0);
   vCorner = aCorner;
   
-  // Brillo base un poco más alto para no perderse en el fondo oscuro
   float alpha = clamp(0.18 + aShell * 0.44 + speed * 0.025 + aAccent * 0.06, 0.12, 0.95);
-  vAlpha = alpha * mix(0.25, 1.0, depth);
+  // Incrementamos brillo global cuando se agrupan
+  vAlpha = mix(alpha, clamp(alpha * 1.35, 0.22, 0.98), uFocusMode) * mix(0.25, 1.0, depth);
   
-  vAccent = aAccent;
+  vAccent = mix(aAccent, 0.95, uFocusMode * 0.75); // Se vuelven más doradas al enfocarse
   vDepth = depth;
 }
 `;
@@ -250,10 +294,7 @@ void main() {
   vec2 p = vec2(vCorner.x * 0.7, vCorner.y);
   float dist = length(p);
   
-  // Brillo gaussiano ligeramente más expandido para visibilidad y suavidad
   float glow = exp(-dist * dist * 3.0);
-  
-  // Núcleo brillante
   float core = exp(-dist * dist * 24.0);
 
   vec3 white = vec3(0.96, 0.97, 1.0);
@@ -303,7 +344,7 @@ export function ParticleField() {
     const glContext = gl;
 
     const particleCount = clamp(
-      Math.round((window.innerWidth * window.innerHeight) / 4500),
+      Math.round((window.innerWidth * window.innerHeight) / 9500), // Densidad súper baja (estilo imagen fondo estrellas sueltas)
       PARTICLE_COUNT_MIN,
       PARTICLE_COUNT_MAX
     );
@@ -337,6 +378,7 @@ export function ParticleField() {
       uResolution: glContext.getUniformLocation(program, "uResolution"),
       uPointer: glContext.getUniformLocation(program, "uPointer"),
       uOpacity: glContext.getUniformLocation(program, "uOpacity"),
+      uFocusMode: glContext.getUniformLocation(program, "uFocusMode"),
     };
 
     const corners = new Float32Array([
@@ -391,6 +433,8 @@ export function ParticleField() {
     let targetPointer = { x: 0, y: 0 };
     const pointer = { x: 0, y: 0 };
     let entranceOpacity = 0.0;
+    let targetFocusMode = 0.0;
+    let focusMode = 0.0;
 
     const dpr = Math.max(1, window.devicePixelRatio || 1);
 
@@ -416,6 +460,18 @@ export function ParticleField() {
       targetPointer = { x: 0, y: 0 };
     }
 
+    // Oyentes globales de foco en cualquier input (para agrupar partículas alrededor del login)
+    function handleFocusIn(event: FocusEvent) {
+      const target = event.target as HTMLElement;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
+        targetFocusMode = 1.0;
+      }
+    }
+
+    function handleFocusOut() {
+      targetFocusMode = 0.0;
+    }
+
     function draw(timestamp: number) {
       const time = timestamp * 0.001;
 
@@ -425,6 +481,9 @@ export function ParticleField() {
       if (entranceOpacity < 1.0) {
         entranceOpacity = Math.min(1.0, entranceOpacity + 0.008);
       }
+
+      // Transición suave de focusMode
+      focusMode += (targetFocusMode - focusMode) * 0.06;
 
       glContext.clear(glContext.COLOR_BUFFER_BIT);
       glContext.useProgram(program);
@@ -436,6 +495,7 @@ export function ParticleField() {
       }
       if (uniforms.uPointer) glContext.uniform2f(uniforms.uPointer, pointer.x, pointer.y);
       if (uniforms.uOpacity) glContext.uniform1f(uniforms.uOpacity, entranceOpacity);
+      if (uniforms.uFocusMode) glContext.uniform1f(uniforms.uFocusMode, focusMode);
 
       glContext.drawArraysInstanced(glContext.TRIANGLE_STRIP, 0, 4, particleCount);
       glContext.bindVertexArray(null);
@@ -462,6 +522,8 @@ export function ParticleField() {
 
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerleave", handlePointerLeave);
+    window.addEventListener("focusin", handleFocusIn);
+    window.addEventListener("focusout", handleFocusOut);
 
     return () => {
       if (frameId !== 0) cancelAnimationFrame(frameId);
@@ -469,6 +531,8 @@ export function ParticleField() {
       resizeObserver.disconnect();
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerleave", handlePointerLeave);
+      window.removeEventListener("focusin", handleFocusIn);
+      window.removeEventListener("focusout", handleFocusOut);
       glContext.deleteBuffer(particleBuffer);
       glContext.deleteBuffer(cornerBuffer);
       glContext.deleteVertexArray(vao);

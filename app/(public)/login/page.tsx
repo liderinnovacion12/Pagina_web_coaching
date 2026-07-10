@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LoginForm } from "./LoginForm";
-import { LoginBranding } from "./LoginBranding";
+import { ParticleField } from "@/components/motion/ParticleField";
 
 export const metadata: Metadata = {
   title: "Iniciar sesión | Team 100% Real Estate",
@@ -18,42 +18,42 @@ export default async function LoginPage({
   const mostrarResetOk = params.reset === "ok";
 
   return (
-    <main className="grid min-h-screen bg-ink-950 lg:grid-cols-[55fr_45fr]">
-      <LoginBranding />
+    <main className="relative flex min-h-screen items-center justify-center bg-ink-950 overflow-hidden px-6 py-16 sm:px-10">
+      {/* Fondo de Partículas WebGL Nebulosa */}
+      <ParticleField />
 
-      <div className="flex flex-col items-center justify-center bg-grain px-6 py-16 sm:px-10">
-        <div className="w-full max-w-sm">
-          <Link
-            href="/"
-            className="flex justify-center rounded-sm font-display text-2xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
-          >
-            TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
-            <span className="text-gold-400"> •</span>
-          </Link>
+      {/* Tarjeta de Login Centrada en la Pantalla */}
+      <div className="relative z-10 w-full max-w-sm">
+        <Link
+          href="/"
+          className="flex justify-center rounded-sm font-display text-2xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+        >
+          TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
+          <span className="text-gold-400"> •</span>
+        </Link>
 
-          <div className="mt-10 text-center">
-            <h1 className="font-display text-[42px] font-bold leading-tight text-white">
-              Bienvenido de nuevo
-            </h1>
-            <p className="mt-2 text-lg text-mist-400">
-              Inicia sesión para continuar tu proceso de aprendizaje.
-            </p>
-          </div>
-
-          <div className="mt-10 rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-12 shadow-[0_0_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_40px_rgba(0,0,0,0.25),0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
-            <LoginForm mostrarResetOk={mostrarResetOk} />
-          </div>
-
-          <p className="mt-8 text-center text-sm text-mist-400">
-            ¿No tienes una cuenta?{" "}
-            <Link
-              href="/registro"
-              className="rounded-sm font-medium text-gold-300 transition duration-150 hover:text-gold-200 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
-            >
-              Crear cuenta
-            </Link>
+        <div className="mt-10 text-center">
+          <h1 className="font-display text-[42px] font-bold leading-tight text-white">
+            Bienvenido de nuevo
+          </h1>
+          <p className="mt-2 text-lg text-mist-400">
+            Inicia sesión para continuar tu proceso de aprendizaje.
           </p>
         </div>
+
+        <div className="mt-10 rounded-[20px] border border-white/[0.08] bg-ink-900/40 p-12 shadow-[0_0_50px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_40px_rgba(0,0,0,0.25),0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
+          <LoginForm mostrarResetOk={mostrarResetOk} />
+        </div>
+
+        <p className="mt-8 text-center text-sm text-mist-400">
+          ¿No tienes una cuenta?{" "}
+          <Link
+            href="/registro"
+            className="rounded-sm font-medium text-gold-300 transition duration-150 hover:text-gold-200 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+          >
+            Crear cuenta
+          </Link>
+        </p>
       </div>
     </main>
   );
