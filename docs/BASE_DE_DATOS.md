@@ -5,13 +5,15 @@ Postgres gestionado por Supabase. El esquema vive en `supabase/migrations/*.sql`
 ## Cómo aplicar el esquema desde cero
 
 ```
-000_drop_all.sql        -- opcional: destruye todo (tablas, funciones, triggers, tipos)
-001_esquema.sql         -- tipos, tablas, índices
-002_usuarios.sql        -- funciones (auto-alta, chequeo de rol, anti-escalada)
-003_triggers.sql        -- conecta los triggers a las funciones de 002
-004_rls.sql             -- activa RLS y define todas las políticas
-005_miembros_equipo.sql -- tabla de Team Leaders
-006_galeria_equipo.sql  -- tabla de fotos de galería
+000_drop_all.sql          -- opcional: destruye todo (tablas, funciones, triggers, tipos)
+001_esquema.sql           -- tipos, tablas, índices
+002_usuarios.sql          -- funciones (auto-alta, chequeo de rol, anti-escalada)
+003_triggers.sql          -- conecta los triggers a las funciones de 002
+004_rls.sql               -- activa RLS y define todas las políticas
+005_miembros_equipo.sql   -- tabla de Team Leaders
+006_galeria_equipo.sql    -- tabla de fotos de galería
+007_calendario.sql        -- tabla de clases del calendario semanal
+008_grupos_comunidad.sql  -- tabla de grupos de WhatsApp/Dropbox del equipo
 ```
 
 ## Tipos enumerados
@@ -122,6 +124,21 @@ Lectura pública (`select using (true)`), escritura solo admin. Consumida por `l
 
 Mismo patrón que `miembros_equipo`. Consumida por `lib/db/galeria.ts` → dashboard del estudiante.
 
+### `grupos_comunidad` (migración 008)
+| Columna | Tipo | Notas |
+|---|---|---|
+| `id` | uuid PK | |
+| `nombre` | text | |
+| `categoria` | `categoria_grupo_comunidad` | `grupo_principal`, `miami`, `orlando_centro_florida`, `venta_renta`, `otros` |
+| `detalle` | text | nullable — zona (ej. "Brickell, Miami") o tipo de proyecto (ej. "Constructor nacional") |
+| `tipo_canal` | `canal_grupo_comunidad` | `whatsapp` (default) o `dropbox` |
+| `enlace_url` | text | nullable — sembrado en NULL, se completa desde `/admin/herramientas` |
+| `orden` | int | orden dentro de la categoría |
+| `activo` | boolean | default true |
+| `creado_en` | timestamptz | |
+
+Mismo patrón que `miembros_equipo`/`clases_calendario`. Consumida por `lib/db/grupos-comunidad.ts` → `/herramientas` (estudiante) y `/admin/herramientas` (gestión).
+
 ## Funciones y triggers
 
 | Función | Tipo | Qué hace |
@@ -138,7 +155,7 @@ Todas las tablas tienen RLS activo. El patrón se repite:
 - **Dueño de la fila** (`usuario_id = auth.uid()` o equivalente) puede leer/escribir lo suyo.
 - **Admin** (`is_admin()`) tiene acceso total a todo, en todas las tablas.
 - **Coach** (`coach_id = auth.uid()` en `cursos`, o join a través de `cursos`/`lecciones` en las demás) puede leer/gestionar únicamente lo relacionado a sus propios cursos — incluye `cursos`, `lecciones`, `inscripciones` (solo lectura), `progreso` y `quiz_intentos` (solo lectura vía join).
-- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo` (`select using (true)`), gestionables solo por admin.
+- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad` (`select using (true)`), gestionables solo por admin.
 - **`cursos`/`lecciones`** son visibles al público solo si `publicado = true` (o eres admin/dueño).
 
 ## Scripts SQL de mantenimiento (`supabase/scripts/`, no son migraciones)
