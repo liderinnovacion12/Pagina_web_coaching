@@ -58,14 +58,14 @@ export function EstudianteShell({
 
   return (
     <div className="min-h-screen bg-ink-950">
-      <header className="border-b border-white/[0.08]">
+      <header className="sticky top-0 z-40 border-b border-white/[0.08] bg-ink-950/90 backdrop-blur-md">
         <div
           ref={navRef}
           className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-5"
         >
           <Link
             href="/dashboard"
-            className="font-display text-lg font-bold tracking-tight text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+            className="font-display text-lg font-bold tracking-tight text-white transition duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
           >
             TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
             <span className="text-gold-400"> •</span>
@@ -83,14 +83,19 @@ export function EstudianteShell({
                     }
                     aria-expanded={grupoAbierto === grupo.label}
                     aria-controls={panelId}
-                    className={`flex items-center gap-1 rounded-lg px-3 py-2 font-mono text-xs uppercase tracking-wider transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 ${
+                    className={`flex items-center gap-1 rounded-lg px-3 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 ${
                       grupo.items.some((item) => item.href === pathname)
                         ? "text-gold-300"
                         : "text-mist-400 hover:text-mist-300"
                     }`}
                   >
                     {grupo.label}
-                    <ChevronDown className="h-3 w-3" aria-hidden="true" />
+                    <ChevronDown
+                      className={`h-3 w-3 transition-transform duration-300 ${
+                        grupoAbierto === grupo.label ? "rotate-180" : ""
+                      }`}
+                      aria-hidden="true"
+                    />
                   </button>
 
                   {grupoAbierto === grupo.label && (
@@ -98,8 +103,8 @@ export function EstudianteShell({
                       id={panelId}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                      className="absolute left-0 top-full z-20 mt-2 flex w-64 flex-col gap-1 rounded-xl border border-white/[0.08] bg-ink-900 p-2 shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute left-0 top-full z-50 mt-2 flex w-64 flex-col gap-1 rounded-xl border border-white/10 bg-ink-950 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.65)] backdrop-blur-xl"
                     >
                       {grupo.items.map((item) => (
                         <NavLink
@@ -121,7 +126,7 @@ export function EstudianteShell({
             <form action={cerrarSesion}>
               <button
                 type="submit"
-                className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-mist-300 transition hover:border-gold-500/60 hover:bg-gold-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+                className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-mist-300 transition duration-200 hover:border-gold-500/60 hover:bg-gold-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
               >
                 Cerrar sesión
               </button>
@@ -132,7 +137,7 @@ export function EstudianteShell({
             type="button"
             onClick={() => setMenuMovilAbierto(true)}
             aria-label="Abrir menú"
-            className="text-mist-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 lg:hidden"
+            className="text-mist-300 transition duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 lg:hidden"
           >
             <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
