@@ -12,26 +12,21 @@ export type OcurrenciaClase = {
   finUtc: Date;
 };
 
-const ALTURA_HORA = 64;
-
-function sumarDias(fecha: Date, dias: number): Date {
-  return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate() + dias);
-}
-
-function obtenerDiasSemana(inicioSemana: Date): Date[] {
-  return Array.from({ length: 7 }, (_, indice) => sumarDias(inicioSemana, indice));
-}
+const ALTURA_HORA = 88;
 
 export function WeekGrid({
-  semanaActual,
+  dias,
   ocurrencias,
   onSeleccionarOcurrencia,
 }: {
-  semanaActual: Date;
+  dias: Date[];
   ocurrencias: OcurrenciaClase[];
   onSeleccionarOcurrencia: (ocurrencia: OcurrenciaClase) => void;
 }) {
-  const dias = obtenerDiasSemana(semanaActual);
+  const esVistaDia = dias.length === 1;
+  const columnas = esVistaDia ? "grid-cols-[64px_1fr]" : "grid-cols-[64px_repeat(7,1fr)]";
+  const anchoMinimo = esVistaDia ? "min-w-[320px]" : "min-w-[720px]";
+
   const rango = useMemo(() => getRangoHorasSemana(ocurrencias), [ocurrencias]);
   const horas = useMemo(
     () => Array.from({ length: rango.horaFin - rango.horaInicio }, (_, i) => rango.horaInicio + i),
@@ -47,20 +42,20 @@ export function WeekGrid({
 
   return (
     <section className="overflow-x-auto rounded-3xl border border-white/10 bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.28)]">
-      <div className="min-w-[720px]">
-        <div className="grid grid-cols-[64px_repeat(7,1fr)] border-b border-white/10 bg-white/[0.02]">
+      <div className={anchoMinimo}>
+        <div className={`grid ${columnas} border-b border-white/10 bg-white/[0.02]`}>
           <div />
           {dias.map((dia) => (
             <div key={aFechaISO(dia)} className="border-l border-white/10 px-3 py-3 text-center">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mist-500">
-                {dia.toLocaleDateString("es-CO", { weekday: "short" })}
+                {dia.toLocaleDateString("es-CO", { weekday: esVistaDia ? "long" : "short" })}
               </p>
               <p className="mt-1 text-lg font-semibold text-white">{dia.getDate()}</p>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-[64px_repeat(7,1fr)]">
+        <div className={`grid ${columnas}`}>
           <div className="relative">
             {horas.map((hora) => (
               <div
@@ -99,7 +94,7 @@ export function WeekGrid({
                     className="absolute inset-x-1"
                     style={{
                       top: (inicioDecimal - rango.horaInicio) * ALTURA_HORA,
-                      height: Math.max((finDecimal - inicioDecimal) * ALTURA_HORA, 32),
+                      height: Math.max((finDecimal - inicioDecimal) * ALTURA_HORA, ALTURA_HORA / 2),
                     }}
                   >
                     <EventCard ocurrencia={ocurrencia} onClick={onSeleccionarOcurrencia} />

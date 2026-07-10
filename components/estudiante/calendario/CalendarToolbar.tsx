@@ -2,18 +2,22 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const VISTAS = [
-  { label: "Día", disponible: false },
-  { label: "Semana", disponible: true },
-  { label: "Mes", disponible: false },
-  { label: "Agenda", disponible: false },
+export type VistaCalendario = "dia" | "semana";
+
+const VISTAS: { valor: VistaCalendario; label: string }[] = [
+  { valor: "dia", label: "Día" },
+  { valor: "semana", label: "Semana" },
 ];
 
 export function CalendarToolbar({
+  vista,
+  onCambiarVista,
   onHoy,
   onAnterior,
   onSiguiente,
 }: {
+  vista: VistaCalendario;
+  onCambiarVista: (vista: VistaCalendario) => void;
   onHoy: () => void;
   onAnterior: () => void;
   onSiguiente: () => void;
@@ -23,7 +27,7 @@ export function CalendarToolbar({
       <div className="flex items-center gap-1">
         <button
           type="button"
-          aria-label="Semana anterior"
+          aria-label={vista === "dia" ? "Día anterior" : "Semana anterior"}
           onClick={onAnterior}
           className="rounded-lg border border-white/10 p-2 text-mist-300 transition hover:border-gold-500/60 hover:bg-gold-500/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60"
         >
@@ -38,7 +42,7 @@ export function CalendarToolbar({
         </button>
         <button
           type="button"
-          aria-label="Semana siguiente"
+          aria-label={vista === "dia" ? "Día siguiente" : "Semana siguiente"}
           onClick={onSiguiente}
           className="rounded-lg border border-white/10 p-2 text-mist-300 transition hover:border-gold-500/60 hover:bg-gold-500/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60"
         >
@@ -47,18 +51,20 @@ export function CalendarToolbar({
       </div>
 
       <div className="flex items-center gap-1 rounded-lg border border-white/10 p-1">
-        {VISTAS.map((vista) => (
-          <span
-            key={vista.label}
-            title={vista.disponible ? undefined : "Próximamente"}
-            className={`rounded-md px-3 py-1.5 text-xs font-medium ${
-              vista.disponible
+        {VISTAS.map((v) => (
+          <button
+            key={v.valor}
+            type="button"
+            onClick={() => onCambiarVista(v.valor)}
+            aria-pressed={vista === v.valor}
+            className={`rounded-md px-3 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 ${
+              vista === v.valor
                 ? "bg-gold-500/10 text-gold-300"
-                : "cursor-not-allowed text-mist-500 opacity-50"
+                : "text-mist-400 hover:text-mist-200"
             }`}
           >
-            {vista.label}
-          </span>
+            {v.label}
+          </button>
         ))}
       </div>
     </div>

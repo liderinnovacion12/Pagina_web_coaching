@@ -33,14 +33,17 @@ export function EventCard({
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.15 }}
       onClick={() => onClick(ocurrencia)}
-      className="group flex h-full w-full flex-col overflow-hidden rounded-lg border border-white/10 bg-white/[0.05] p-2 text-left transition hover:border-gold-500/50 hover:bg-gold-500/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60"
+      className="group flex h-full w-full flex-col gap-0.5 overflow-hidden rounded-lg border border-white/10 bg-white/[0.05] p-2 text-left transition hover:border-gold-500/50 hover:bg-gold-500/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60"
     >
       <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-gold-300">
         <Icono className="h-3 w-3 shrink-0" />
-        {ETIQUETA_MODALIDAD[ocurrencia.clase.modalidad]}
+        <span className="truncate">
+          {horario} · {ETIQUETA_MODALIDAD[ocurrencia.clase.modalidad]}
+        </span>
       </div>
-      <p className="mt-1 truncate text-xs font-semibold text-white">{ocurrencia.clase.nombre}</p>
-      <p className="truncate text-[11px] text-mist-400">{horario}</p>
+      <p className="line-clamp-2 text-xs font-semibold leading-snug text-white">
+        {ocurrencia.clase.nombre}
+      </p>
       {ocurrencia.clase.dirigidoPor && (
         <p className="truncate text-[11px] text-mist-500">{ocurrencia.clase.dirigidoPor}</p>
       )}

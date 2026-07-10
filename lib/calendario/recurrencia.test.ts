@@ -5,6 +5,7 @@ import {
   zonedTimeToUtc,
   getRangoHorasSemana,
   formatRangoSemana,
+  formatFechaCompleta,
   formatHora,
   aFechaISO,
 } from "./recurrencia";
@@ -93,6 +94,12 @@ describe("formatRangoSemana", () => {
 
   it("formatea un rango que cruza de mes", () => {
     expect(formatRangoSemana(new Date(2026, 0, 26))).toBe("26 enero – 1 febrero 2026");
+  });
+});
+
+describe("formatFechaCompleta", () => {
+  it("formatea una fecha con día de la semana, día, mes y año", () => {
+    expect(formatFechaCompleta(new Date(2026, 0, 5))).toBe("lunes, 5 de enero de 2026");
   });
 });
 

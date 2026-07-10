@@ -61,7 +61,7 @@ export function EstudianteShell({
       <header className="sticky top-0 z-40 border-b border-white/[0.08] bg-ink-950/90 backdrop-blur-md">
         <div
           ref={navRef}
-          className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-5"
+          className="relative mx-auto flex max-w-[1440px] items-center justify-between px-6 py-5"
         >
           <Link
             href="/dashboard"
@@ -223,7 +223,7 @@ export function EstudianteShell({
         </motion.div>
       )}
 
-      <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
+      <main className="mx-auto max-w-[1440px] px-6 py-10">{children}</main>
     </div>
   );
 }

@@ -180,6 +180,15 @@ export function formatHora(hora: number, minuto: number): string {
   return `${horas12}:${String(minuto).padStart(2, "0")} ${sufijo}`;
 }
 
+export function formatFechaCompleta(fecha: Date): string {
+  return fecha.toLocaleDateString("es-CO", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export function aFechaISO(fecha: Date): string {
   const anio = fecha.getFullYear();
   const mes = String(fecha.getMonth() + 1).padStart(2, "0");
