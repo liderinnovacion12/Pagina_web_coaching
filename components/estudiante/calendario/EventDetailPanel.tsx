@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { ExternalLink, X } from "lucide-react";
 import { formatHora } from "@/lib/calendario/recurrencia";
-import { ETIQUETA_MODALIDAD } from "@/lib/db/calendario";
+import { ETIQUETA_MODALIDAD } from "@/lib/calendario/tipos";
 import type { OcurrenciaClase } from "./WeekGrid";
 
 const ETIQUETA_RECURRENCIA: Record<string, string> = {

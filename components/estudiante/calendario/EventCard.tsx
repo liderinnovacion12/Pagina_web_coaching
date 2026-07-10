@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import { MapPin, Video } from "lucide-react";
 import { formatHora } from "@/lib/calendario/recurrencia";
-import { ETIQUETA_MODALIDAD, type ClaseCalendario } from "@/lib/db/calendario";
+import { ETIQUETA_MODALIDAD } from "@/lib/calendario/tipos";
+import type { ClaseCalendario } from "@/lib/db/calendario";
 import type { OcurrenciaClase } from "./WeekGrid";
 
 function iconoModalidad(modalidad: ClaseCalendario["modalidad"]) {

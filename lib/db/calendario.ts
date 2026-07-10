@@ -1,14 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Recurrencia } from "@/lib/calendario/recurrencia";
+import type { ModalidadClase } from "@/lib/calendario/tipos";
 
-export type ModalidadClase = "online" | "presencial" | "hibrida";
+export type { ModalidadClase } from "@/lib/calendario/tipos";
+export { ETIQUETA_MODALIDAD } from "@/lib/calendario/tipos";
 export type RecurrenciaClase = Recurrencia;
-
-export const ETIQUETA_MODALIDAD: Record<ModalidadClase, string> = {
-  online: "Online",
-  presencial: "Presencial",
-  hibrida: "Híbrida",
-};
 
 export type ClaseCalendario = {
   id: string;
