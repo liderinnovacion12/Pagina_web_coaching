@@ -3,9 +3,9 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotionSafe } from "@/lib/motion";
 
-const PARTICLE_COUNT_MIN = 240;
-const PARTICLE_COUNT_MAX = 420;
-const ACCENT_RATIO = 0.1;
+const PARTICLE_COUNT_MIN = 500;
+const PARTICLE_COUNT_MAX = 1200;
+
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
@@ -65,17 +65,29 @@ function createProgram(
 function makeSeededParticles(count: number) {
   const particles = new Float32Array(count * 8);
   for (let index = 0; index < count; index += 1) {
-    const shell = Math.pow(Math.random(), 0.64);
+    const shell = Math.pow(Math.random(), 0.68); // Ligeramente sesgado hacia el centro para densidad
     const base = index * 8;
 
-    particles[base + 0] = index * 2.399963229728653 + (Math.random() - 0.5) * 0.5; // angle
-    particles[base + 1] = shell; // shell
+    // Distribución basada en espiral áurea
+    particles[base + 0] = index * 2.399963229728653 + (Math.random() - 0.5) * 0.45; // angle
+    particles[base + 1] = shell; // shell (radio normalizado)
     particles[base + 2] = Math.random() * Math.PI * 2; // phase
-    particles[base + 3] = 0.04 + shell * 0.22 + Math.random() * 0.04; // spin
-    particles[base + 4] = 0.12 + Math.random() * 0.18; // lift
-    particles[base + 5] = 0.72 + (1 - shell) * 1.7; // size
-    particles[base + 6] = Math.random() < ACCENT_RATIO ? 1 : 0; // accent
-    particles[base + 7] = Math.random() * 2.8 + shell * 1.4; // twist
+    particles[base + 3] = 0.05 + shell * 0.18 + Math.random() * 0.05; // spin base
+    particles[base + 4] = 0.08 + Math.random() * 0.16; // lift (frecuencia vertical)
+    particles[base + 5] = 0.65 + (1 - shell) * 1.8; // size factor
+
+    // Mezcla rica de colores: 12% oro puro, 20% bronce/ámbar, 68% blanco estelar
+    const rand = Math.random();
+    let accent = 0.0;
+    if (rand < 0.12) {
+      accent = 0.8 + Math.random() * 0.2; // Oro brillante (0.8 - 1.0)
+    } else if (rand < 0.32) {
+      accent = 0.35 + Math.random() * 0.35; // Cobre/Ámbar (0.35 - 0.7)
+    } else {
+      accent = Math.random() * 0.15; // Blanco/Plata con brillo sutil (0.0 - 0.15)
+    }
+    particles[base + 6] = accent; // accent float
+    particles[base + 7] = Math.random() * 2.2 + shell * 1.8; // twist
   }
 
   return particles;
@@ -116,42 +128,52 @@ vec3 rotateY(vec3 p, float angle) {
 }
 
 vec3 fieldPosition(float t) {
-  float breathWave = 0.5 + 0.5 * sin(t * 0.72 + aPhase);
-  float breath = mix(0.46, 1.0, breathWave);
-  float shellRadius = mix(0.28, 1.22, aShell) * breath;
-  float swirl = aAngle + t * (0.12 + aSpin) + aTwist * 0.18;
-  float lane = sin(t * aLift + aPhase * 1.6);
-  float ripple = cos(t * (aLift * 0.74 + 0.05) + aPhase * 1.2);
+  // Orbitación diferencial: partículas internas giran más rápido
+  float spinSpeed = (0.06 + aSpin * 0.12) * (1.0 / (0.18 + aShell * 0.82));
+  
+  // Ángulo de espiral dinámica
+  float swirl = aAngle + t * spinSpeed + aTwist * (1.1 + aShell * 1.6);
+  
+  // Onda vertical tridimensional que viaja radialmente hacia afuera
+  float heightWave = sin(t * aLift * 1.3 - aShell * 4.5 + aPhase * 2.0);
+  
+  // Respiración global del vórtice
+  float breath = mix(0.55, 1.15, 0.5 + 0.5 * sin(t * 0.42 + aPhase * 0.6));
+  float radius = mix(0.22, 1.36, aShell) * breath;
 
   vec3 p = vec3(
-    cos(swirl) * shellRadius,
-    lane * (0.12 + aShell * 0.18) + ripple * 0.04,
-    sin(swirl * 1.32 + aPhase) * shellRadius * 0.58
+    cos(swirl) * radius,
+    heightWave * (0.05 + (1.0 - aShell) * 0.14) + sin(swirl * 2.0 + aPhase) * 0.025,
+    sin(swirl) * radius
   );
 
-  p.x *= 1.0 - aShell * 0.14;
-  p.z *= mix(0.82, 1.14, aShell);
-  p.y += sin(swirl * 2.4 + aPhase) * shellRadius * 0.045;
+  // Inclinamos el plano de la galaxia por defecto para mejorar la perspectiva 3D
+  p = rotateX(p, 0.38);
 
   return p;
 }
 
 vec2 projectToScreen(vec3 p) {
-  float perspective = 1.0 / (1.82 - p.z * 0.72);
+  float perspective = 1.0 / (1.85 - p.z * 0.75);
   return vec2(
-    p.x * perspective * uResolution.y * 0.52,
-    p.y * perspective * uResolution.y * 0.37
+    p.x * perspective * uResolution.y * 0.54,
+    p.y * perspective * uResolution.y * 0.38
   );
 }
 
 void main() {
   vec3 current = fieldPosition(uTime);
-  float trailTime = 0.042 + aShell * 0.028;
+  float trailTime = 0.038 + aShell * 0.026;
   vec3 previous = fieldPosition(uTime - trailTime);
 
-  float cursorTiltX = uPointer.x * 0.92 + sin(uTime * 0.08) * 0.03;
-  float cursorTiltY = -uPointer.y * 0.72;
+  // Paneo autónomo lento + inclinación responsiva al cursor
+  float autoTiltX = sin(uTime * 0.12) * 0.08;
+  float autoTiltY = cos(uTime * 0.10) * 0.06;
 
+  float cursorTiltX = uPointer.x * 0.72 + autoTiltX;
+  float cursorTiltY = -uPointer.y * 0.52 + autoTiltY;
+
+  // Aplicamos rotación 3D en base al cursor
   current = rotateY(current, cursorTiltX);
   current = rotateX(current, cursorTiltY);
   previous = rotateY(previous, cursorTiltX);
@@ -161,19 +183,37 @@ void main() {
   vec2 currentPixel = center + projectToScreen(current);
   vec2 previousPixel = center + projectToScreen(previous);
 
-  currentPixel += vec2(uPointer.x * uResolution.x * 0.06, -uPointer.y * uResolution.y * 0.042);
+  // Desplazamiento global de la cámara
+  currentPixel += vec2(uPointer.x * uResolution.x * 0.05, -uPointer.y * uResolution.y * 0.038);
+  previousPixel += vec2(uPointer.x * uResolution.x * 0.05, -uPointer.y * uResolution.y * 0.038);
+
+  // EFECTO MAGNÉTICO LOCAL: Repulsión/atracción interactiva cerca del puntero
+  vec2 pointerPixel = center + vec2(uPointer.x * uResolution.x * 0.45, -uPointer.y * uResolution.y * 0.45);
+  vec2 toPointer = currentPixel - pointerPixel;
+  float distToPointer = length(toPointer);
+  if (distToPointer < 180.0) {
+    float influence = smoothstep(180.0, 0.0, distToPointer);
+    // Empuja las partículas suavemente lejos del cursor para simular viento magnético
+    currentPixel += normalize(toPointer + vec2(0.001)) * influence * 22.0 * (1.0 - aShell * 0.45);
+  }
 
   vec2 motion = currentPixel - previousPixel;
   float speed = length(motion);
   vec2 direction = speed > 0.0001 ? motion / speed : vec2(1.0, 0.0);
   vec2 perpendicular = vec2(-direction.y, direction.x);
 
-  float perspective = 1.0 / (1.82 - current.z * 0.72);
-  float baseSize = mix(6.0, 17.5, aShell) * aSize * perspective;
-  float stretch = clamp(1.0 + speed * 0.04, 1.0, 4.2);
+  // Profundidad de campo y atenuación
+  float depth = clamp((current.z + 0.95) / 1.9, 0.0, 1.0);
+  float perspective = 1.0 / (1.85 - current.z * 0.75);
+  
+  // Escala basada en perspectiva y profundidad de campo
+  float baseSize = mix(5.5, 16.5, aShell) * aSize * perspective;
+  baseSize *= mix(0.45, 1.25, depth); // Partículas frontales más grandes
+
+  float stretch = clamp(1.0 + speed * 0.045, 1.0, 3.8);
   vec2 local = vec2(
-    aCorner.x * baseSize * stretch * 1.25,
-    aCorner.y * baseSize * 0.88
+    aCorner.x * baseSize * stretch * 1.2,
+    aCorner.y * baseSize * 0.85
   );
 
   vec2 finalPixel = currentPixel + direction * local.x + perpendicular * local.y;
@@ -181,9 +221,13 @@ void main() {
 
   gl_Position = vec4(clip * vec2(1.0, -1.0), current.z * 0.0001, 1.0);
   vCorner = aCorner;
-  vAlpha = clamp(0.16 + aShell * 0.56 + speed * 0.022 + aAccent * 0.1, 0.1, 0.98);
+  
+  // Opacidad regulada por velocidad y profundidad de campo (desvanecimiento trasero)
+  float alpha = clamp(0.14 + aShell * 0.52 + speed * 0.02 + aAccent * 0.08, 0.08, 0.95);
+  vAlpha = alpha * mix(0.2, 1.0, depth);
+  
   vAccent = aAccent;
-  vDepth = clamp((current.z + 0.9) / 1.8, 0.0, 1.0);
+  vDepth = depth;
 }
 `;
 
@@ -198,15 +242,32 @@ in float vDepth;
 out vec4 outColor;
 
 void main() {
-  vec2 p = vec2(vCorner.x * 0.68, vCorner.y);
+  // Distancia elíptica suave
+  vec2 p = vec2(vCorner.x * 0.7, vCorner.y);
   float dist = length(p);
-  float glow = smoothstep(1.0, 0.0, dist);
-  float core = smoothstep(0.28, 0.0, dist);
+  
+  // Brillo gaussiano profesional (decaimiento exponencial suave)
+  float glow = exp(-dist * dist * 3.8);
+  
+  // Núcleo brillante concentrado
+  float core = exp(-dist * dist * 28.0);
 
-  vec3 white = vec3(1.0);
-  vec3 gold = vec3(0.8509804, 0.6549020, 0.2901961);
-  vec3 color = mix(white, gold, vAccent);
-  color *= 0.42 + core * 1.12 + vDepth * 0.14;
+  // Paleta de colores rica
+  vec3 white = vec3(0.96, 0.97, 1.0);
+  vec3 gold = vec3(0.92, 0.72, 0.36);
+  vec3 copper = vec3(0.85, 0.52, 0.24);
+  
+  vec3 color;
+  if (vAccent > 0.6) {
+    color = mix(gold, vec3(0.98, 0.85, 0.58), (vAccent - 0.6) / 0.4);
+  } else if (vAccent > 0.2) {
+    color = mix(copper, gold, (vAccent - 0.2) / 0.4);
+  } else {
+    color = mix(white, copper, vAccent / 0.2);
+  }
+
+  // Brillo proporcional a la profundidad
+  color *= 0.45 + core * 1.25 + vDepth * 0.12;
 
   float alpha = vAlpha * glow * glow;
   outColor = vec4(color, alpha);
@@ -240,7 +301,7 @@ export function ParticleField() {
     const glContext = gl;
 
     const particleCount = clamp(
-      Math.round((container.clientWidth * container.clientHeight) / 3200),
+      Math.round((container.clientWidth * container.clientHeight) / 1800), // Mayor densidad
       PARTICLE_COUNT_MIN,
       PARTICLE_COUNT_MAX
     );
@@ -439,12 +500,12 @@ export function ParticleField() {
     <div ref={rootRef} className="absolute inset-0 pointer-events-none overflow-hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 animate-vortex-pulse bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.16),transparent_18%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.1),transparent_36%),radial-gradient(circle_at_58%_50%,rgba(15,15,14,0.14),transparent_58%)]"
+        className="absolute inset-0 animate-vortex-pulse bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.14),transparent_22%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.08),transparent_42%),radial-gradient(circle_at_58%_50%,rgba(15,15,14,0.12),transparent_64%)]"
       />
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 animate-vortex-drift bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.08),transparent_16%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.05),transparent_34%)] mix-blend-screen"
+        className="absolute inset-0 animate-vortex-drift bg-[radial-gradient(circle_at_58%_50%,rgba(217,167,74,0.06),transparent_18%),radial-gradient(circle_at_58%_50%,rgba(255,255,255,0.04),transparent_38%)] mix-blend-screen"
       />
 
       <canvas
@@ -456,7 +517,7 @@ export function ParticleField() {
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_58%_50%,transparent_36%,rgba(15,15,14,0.34)_72%,rgba(15,15,14,0.9)_100%)]"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_58%_50%,transparent_38%,rgba(15,15,14,0.3)_70%,rgba(15,15,14,0.85)_100%)]"
       />
     </div>
   );

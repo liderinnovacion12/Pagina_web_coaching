@@ -11,6 +11,16 @@ export const fadeUp: Variants = {
   },
 };
 
+export const blurFadeUp: Variants = {
+  hidden: { opacity: 0, y: 22, filter: "blur(10px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.85, ease: EASE_OUT },
+  },
+};
+
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.5, ease: EASE_OUT } },

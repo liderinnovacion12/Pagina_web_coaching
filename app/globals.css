@@ -40,17 +40,37 @@
 @layer base {
   html {
     color-scheme: dark;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply antialiased;
-    background-color: #0f0f0e;
+    background-color: #07070b; /* Más profundo, a juego con ink-950 */
     color: #ffffff;
   }
 
   ::selection {
     background: rgba(217, 167, 74, 0.28);
     color: #fffdf7;
+  }
+
+  /* Custom Premium Scrollbar */
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #07070b;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(217, 167, 74, 0.4);
   }
 }
 
