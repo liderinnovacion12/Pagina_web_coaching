@@ -44,7 +44,7 @@ export function EventDetailPanel({
             exit={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             onClick={(evento) => evento.stopPropagation()}
-            className="w-full max-w-[582px] rounded-2xl border border-white/10 bg-ink-950 p-7 shadow-[0_20px_50px_rgba(0,0,0,0.65)] backdrop-blur-xl"
+            className="max-h-[85vh] w-full max-w-[582px] overflow-y-auto rounded-2xl border border-white/10 bg-ink-950 p-7 shadow-[0_20px_50px_rgba(0,0,0,0.65)] backdrop-blur-xl"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -66,13 +66,14 @@ export function EventDetailPanel({
             </div>
 
             {ocurrencia.clase.imagenUrl && esImagenPermitida(ocurrencia.clase.imagenUrl) && (
-              <div className="relative mt-4 h-[166px] w-full overflow-hidden rounded-xl">
+              <div className="mt-4 w-full overflow-hidden rounded-xl">
                 <Image
                   src={ocurrencia.clase.imagenUrl}
                   alt=""
-                  fill
+                  width={1200}
+                  height={1200}
                   sizes="582px"
-                  className="object-cover"
+                  className="h-auto w-full"
                 />
               </div>
             )}
