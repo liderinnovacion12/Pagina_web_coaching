@@ -23,7 +23,7 @@ Estado a 2026-07-14, basado en lectura directa del código (no en `PRODUCT.md` n
 
 ## Nota: desviación del cronograma interno
 
-`/cronograma` programó la **Épica A (control de acceso real a cursos)** para el 13/07 y la **Épica B (Stripe)** para 14–16/07. A la fecha de esta actualización (14/07) no hay commits que implementen la Épica A — sigue pendiente (ver ítem 1 abajo). Si se retoma el trabajo de producto siguiendo ese cronograma, está atrasado un día en la primera épica; conviene decidir si se re-planifica o si Épica A se hace en paralelo con el arranque de Épica B.
+`/cronograma` programó la **Épica A (control de acceso real a cursos)** para el 13/07 y la **Épica B (Stripe)** para 14–16/07. La Épica A se completó el 14/07 (un día tarde respecto al cronograma) — ver la entrada "Control de acceso real a cursos" en Hecho. La Épica B (Stripe, ítem 1 de Pendiente abajo) sigue sin arrancar; conviene decidir si se re-planifica el resto del cronograma o si se retoma tal cual, corriendo cada épica siguiente un día más tarde.
 
 ## Pendiente para el objetivo final (LMS con venta de cursos)
 
