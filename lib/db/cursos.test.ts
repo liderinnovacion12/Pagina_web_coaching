@@ -268,10 +268,21 @@ describe("getCursoDetalle", () => {
   const progresoEqUsuarioMock = vi.fn(() => ({ in: progresoInMock }));
   const progresoSelectMock = vi.fn(() => ({ eq: progresoEqUsuarioMock }));
 
+  const inscripcionMaybeSingleMock = vi.fn();
+  const inscripcionEqCursoMock = vi.fn(() => ({ maybeSingle: inscripcionMaybeSingleMock }));
+  const inscripcionEqUsuarioMock = vi.fn(() => ({ eq: inscripcionEqCursoMock }));
+  const inscripcionSelectMock = vi.fn(() => ({ eq: inscripcionEqUsuarioMock }));
+
+  const membresiaMaybeSingleMock = vi.fn();
+  const membresiaEqMock = vi.fn(() => ({ maybeSingle: membresiaMaybeSingleMock }));
+  const membresiaSelectMock = vi.fn(() => ({ eq: membresiaEqMock }));
+
   const fromMock = vi.fn((tabla: string) => {
     if (tabla === "cursos") return { select: cursoSelectMock };
     if (tabla === "lecciones") return { select: leccionesSelectMock };
     if (tabla === "progreso") return { select: progresoSelectMock };
+    if (tabla === "inscripciones") return { select: inscripcionSelectMock };
+    if (tabla === "membresia") return { select: membresiaSelectMock };
     throw new Error(`tabla inesperada: ${tabla}`);
   });
 
@@ -286,16 +297,32 @@ describe("getCursoDetalle", () => {
     progresoSelectMock.mockClear();
     progresoEqUsuarioMock.mockClear();
     progresoInMock.mockClear();
+    inscripcionSelectMock.mockClear();
+    inscripcionEqUsuarioMock.mockClear();
+    inscripcionEqCursoMock.mockClear();
+    inscripcionMaybeSingleMock.mockClear();
+    membresiaSelectMock.mockClear();
+    membresiaEqMock.mockClear();
+    membresiaMaybeSingleMock.mockClear();
 
     vi.resetModules();
     vi.doMock("@/lib/supabase/server", () => ({
       createClient: vi.fn(async () => ({ from: fromMock })),
     }));
+
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: null, error: null });
   });
 
-  it("retorna el curso con sus lecciones y progreso del usuario", async () => {
+  it("retorna el curso con sus lecciones, progreso del usuario y accesoCurso", async () => {
     cursoSingleMock.mockResolvedValue({
-      data: { id: "c1", titulo: "Negociación y Cierre", categoria: "sistema_100", publicado: true },
+      data: {
+        id: "c1",
+        titulo: "Negociación y Cierre",
+        categoria: "sistema_100",
+        publicado: true,
+        precio: 0,
+      },
       error: null,
     });
     leccionesOrderMock.mockResolvedValue({
@@ -317,11 +344,39 @@ describe("getCursoDetalle", () => {
       id: "c1",
       titulo: "Negociación y Cierre",
       categoria: "sistema_100",
+      accesoCurso: true,
       lecciones: [
         { id: "l1", titulo: "Psicología de la negociación", tipoContenido: "video", muxAssetId: null, storageKey: null, orden: 1, segundoActual: 120, completado: true },
         { id: "l2", titulo: "Técnicas de cierre", tipoContenido: "video", muxAssetId: null, storageKey: null, orden: 2, segundoActual: 0, completado: false },
       ],
     });
+  });
+
+  it("marca accesoCurso en false para un curso pago sin inscripción ni membresía", async () => {
+    cursoSingleMock.mockResolvedValue({
+      data: { id: "c1", titulo: "Curso Pago", categoria: "clases", publicado: true, precio: 49.99 },
+      error: null,
+    });
+    leccionesOrderMock.mockResolvedValue({ data: [], error: null });
+
+    const { getCursoDetalle } = await import("./cursos");
+    const resultado = await getCursoDetalle("c1", "u1");
+
+    expect(resultado?.accesoCurso).toBe(false);
+  });
+
+  it("marca accesoCurso en true para un curso pago con inscripción", async () => {
+    cursoSingleMock.mockResolvedValue({
+      data: { id: "c1", titulo: "Curso Pago", categoria: "clases", publicado: true, precio: 49.99 },
+      error: null,
+    });
+    leccionesOrderMock.mockResolvedValue({ data: [], error: null });
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: { id: "i1" }, error: null });
+
+    const { getCursoDetalle } = await import("./cursos");
+    const resultado = await getCursoDetalle("c1", "u1");
+
+    expect(resultado?.accesoCurso).toBe(true);
   });
 
   it("retorna null si el curso no existe o no está publicado", async () => {
@@ -335,7 +390,7 @@ describe("getCursoDetalle", () => {
 
   it("retorna null si el curso existe pero publicado es false", async () => {
     cursoSingleMock.mockResolvedValue({
-      data: { id: "c1", titulo: "Negociación y Cierre", categoria: "sistema_100", publicado: false },
+      data: { id: "c1", titulo: "Negociación y Cierre", categoria: "sistema_100", publicado: false, precio: 0 },
       error: null,
     });
 
@@ -347,7 +402,7 @@ describe("getCursoDetalle", () => {
 
   it("retorna lecciones vacías sin consultar progreso si el curso no tiene lecciones", async () => {
     cursoSingleMock.mockResolvedValue({
-      data: { id: "c1", titulo: "Curso Vacío", categoria: "clases", publicado: true },
+      data: { id: "c1", titulo: "Curso Vacío", categoria: "clases", publicado: true, precio: 0 },
       error: null,
     });
     leccionesOrderMock.mockResolvedValue({ data: [], error: null });
@@ -361,7 +416,7 @@ describe("getCursoDetalle", () => {
 
   it("lanza un error legible si falla la consulta de lecciones", async () => {
     cursoSingleMock.mockResolvedValue({
-      data: { id: "c1", titulo: "Curso A", categoria: "clases", publicado: true },
+      data: { id: "c1", titulo: "Curso A", categoria: "clases", publicado: true, precio: 0 },
       error: null,
     });
     leccionesOrderMock.mockResolvedValue({ data: null, error: { message: "fallo lecciones" } });
@@ -375,7 +430,7 @@ describe("getCursoDetalle", () => {
 
   it("lanza un error legible si falla la consulta de progreso", async () => {
     cursoSingleMock.mockResolvedValue({
-      data: { id: "c1", titulo: "Curso A", categoria: "clases", publicado: true },
+      data: { id: "c1", titulo: "Curso A", categoria: "clases", publicado: true, precio: 0 },
       error: null,
     });
     leccionesOrderMock.mockResolvedValue({

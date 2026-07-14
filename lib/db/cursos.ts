@@ -119,6 +119,7 @@ export type CursoDetalle = {
   id: string;
   titulo: string;
   categoria: CategoriaCurso;
+  accesoCurso: boolean;
   lecciones: LeccionConProgreso[];
 };
 
@@ -130,7 +131,7 @@ export async function getCursoDetalle(
 
   const { data: curso, error: cursoError } = await supabase
     .from("cursos")
-    .select("id, titulo, categoria, publicado")
+    .select("id, titulo, categoria, publicado, precio")
     .eq("id", cursoId)
     .single();
 
@@ -162,6 +163,8 @@ export async function getCursoDetalle(
     throw new Error(`No se pudo cargar el progreso: ${progresoError.message}`);
   }
 
+  const accesoCurso = await tieneAccesoCurso(curso.id, usuarioId, curso.precio);
+
   const progresoPorLeccion = new Map(
     (progresos ?? []).map((progreso) => [progreso.leccion_id, progreso])
   );
@@ -170,6 +173,7 @@ export async function getCursoDetalle(
     id: curso.id,
     titulo: curso.titulo,
     categoria: curso.categoria as CategoriaCurso,
+    accesoCurso,
     lecciones: (lecciones ?? []).map((leccion) => {
       const progreso = progresoPorLeccion.get(leccion.id);
       return {
