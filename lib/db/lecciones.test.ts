@@ -14,10 +14,21 @@ describe("getLeccionDetalle", () => {
   const progresoEqUsuarioMock = vi.fn(() => ({ eq: progresoEqLeccionMock }));
   const progresoSelectMock = vi.fn(() => ({ eq: progresoEqUsuarioMock }));
 
+  const inscripcionMaybeSingleMock = vi.fn();
+  const inscripcionEqCursoMock = vi.fn(() => ({ maybeSingle: inscripcionMaybeSingleMock }));
+  const inscripcionEqUsuarioMock = vi.fn(() => ({ eq: inscripcionEqCursoMock }));
+  const inscripcionSelectMock = vi.fn(() => ({ eq: inscripcionEqUsuarioMock }));
+
+  const membresiaMaybeSingleMock = vi.fn();
+  const membresiaEqMock = vi.fn(() => ({ maybeSingle: membresiaMaybeSingleMock }));
+  const membresiaSelectMock = vi.fn(() => ({ eq: membresiaEqMock }));
+
   const fromMock = vi.fn((tabla: string) => {
     if (tabla === "cursos") return { select: cursoSelectMock };
     if (tabla === "lecciones") return { select: leccionesSelectMock };
     if (tabla === "progreso") return { select: progresoSelectMock };
+    if (tabla === "inscripciones") return { select: inscripcionSelectMock };
+    if (tabla === "membresia") return { select: membresiaSelectMock };
     throw new Error(`tabla inesperada: ${tabla}`);
   });
 
@@ -33,16 +44,26 @@ describe("getLeccionDetalle", () => {
     progresoEqUsuarioMock.mockClear();
     progresoEqLeccionMock.mockClear();
     progresoMaybeSingleMock.mockClear();
+    inscripcionSelectMock.mockClear();
+    inscripcionEqUsuarioMock.mockClear();
+    inscripcionEqCursoMock.mockClear();
+    inscripcionMaybeSingleMock.mockClear();
+    membresiaSelectMock.mockClear();
+    membresiaEqMock.mockClear();
+    membresiaMaybeSingleMock.mockClear();
 
     vi.resetModules();
     vi.doMock("@/lib/supabase/server", () => ({
       createClient: vi.fn(async () => ({ from: fromMock })),
     }));
+
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: null, error: null });
   });
 
-  it("retorna la lección con navegación anterior/siguiente y progreso", async () => {
+  it("retorna la lección con navegación anterior/siguiente, progreso y accesoCurso", async () => {
     cursoSingleMock.mockResolvedValue({
-      data: { id: "c1", titulo: "Negociación y Cierre", publicado: true },
+      data: { id: "c1", titulo: "Negociación y Cierre", publicado: true, precio: 0 },
       error: null,
     });
     leccionesOrderMock.mockResolvedValue({
@@ -72,7 +93,25 @@ describe("getLeccionDetalle", () => {
       completado: false,
       leccionAnteriorId: "l1",
       leccionSiguienteId: "l3",
+      accesoCurso: true,
     });
+  });
+
+  it("marca accesoCurso en false para un curso pago sin inscripción ni membresía", async () => {
+    cursoSingleMock.mockResolvedValue({
+      data: { id: "c1", titulo: "Curso Pago", publicado: true, precio: 49.99 },
+      error: null,
+    });
+    leccionesOrderMock.mockResolvedValue({
+      data: [{ id: "l1", titulo: "Lección 1", tipo_contenido: "video", mux_asset_id: null, storage_key: null, orden: 1 }],
+      error: null,
+    });
+    progresoMaybeSingleMock.mockResolvedValue({ data: null });
+
+    const { getLeccionDetalle } = await import("./lecciones");
+    const resultado = await getLeccionDetalle("c1", "l1", "u1");
+
+    expect(resultado?.accesoCurso).toBe(false);
   });
 
   it("retorna null si el curso no existe o no está publicado", async () => {
@@ -86,7 +125,7 @@ describe("getLeccionDetalle", () => {
 
   it("retorna null si la lección no pertenece al curso", async () => {
     cursoSingleMock.mockResolvedValue({
-      data: { id: "c1", titulo: "Negociación y Cierre", publicado: true },
+      data: { id: "c1", titulo: "Negociación y Cierre", publicado: true, precio: 0 },
       error: null,
     });
     leccionesOrderMock.mockResolvedValue({
@@ -102,7 +141,7 @@ describe("getLeccionDetalle", () => {
 
   it("lanza un error legible si falla la consulta de progreso", async () => {
     cursoSingleMock.mockResolvedValue({
-      data: { id: "c1", titulo: "Negociación y Cierre", publicado: true },
+      data: { id: "c1", titulo: "Negociación y Cierre", publicado: true, precio: 0 },
       error: null,
     });
     leccionesOrderMock.mockResolvedValue({

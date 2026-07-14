@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { tieneAccesoCurso } from "./cursos";
 
 export type LeccionDetalle = {
   id: string;
@@ -12,6 +13,7 @@ export type LeccionDetalle = {
   completado: boolean;
   leccionAnteriorId: string | null;
   leccionSiguienteId: string | null;
+  accesoCurso: boolean;
 };
 
 export async function getLeccionDetalle(
@@ -23,7 +25,7 @@ export async function getLeccionDetalle(
 
   const { data: curso, error: cursoError } = await supabase
     .from("cursos")
-    .select("id, titulo, publicado")
+    .select("id, titulo, publicado, precio")
     .eq("id", cursoId)
     .single();
 
@@ -61,6 +63,8 @@ export async function getLeccionDetalle(
     throw new Error(`No se pudo cargar el progreso: ${progresoError.message}`);
   }
 
+  const accesoCurso = await tieneAccesoCurso(curso.id, usuarioId, curso.precio);
+
   return {
     id: leccion.id,
     titulo: leccion.titulo,
@@ -74,6 +78,7 @@ export async function getLeccionDetalle(
     leccionAnteriorId: indice > 0 ? listaLecciones[indice - 1].id : null,
     leccionSiguienteId:
       indice < listaLecciones.length - 1 ? listaLecciones[indice + 1].id : null,
+    accesoCurso,
   };
 }
 
