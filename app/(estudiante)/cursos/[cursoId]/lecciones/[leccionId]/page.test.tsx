@@ -6,6 +6,9 @@ const getLeccionDetalleMock = vi.fn();
 const notFoundMock = vi.fn(() => {
   throw new Error("NEXT_NOT_FOUND");
 });
+const redirectMock = vi.fn((url: string) => {
+  throw new Error(`NEXT_REDIRECT:${url}`);
+});
 
 vi.mock("@/lib/auth/session", () => ({
   getSesionUsuario: getSesionUsuarioMock,
@@ -17,6 +20,7 @@ vi.mock("@/lib/db/lecciones", () => ({
 
 vi.mock("next/navigation", () => ({
   notFound: notFoundMock,
+  redirect: redirectMock,
 }));
 
 vi.mock("./LeccionPlayer", () => ({
@@ -30,6 +34,7 @@ describe("LeccionPage", () => {
     getSesionUsuarioMock.mockReset();
     getLeccionDetalleMock.mockReset();
     notFoundMock.mockClear();
+    redirectMock.mockClear();
     getSesionUsuarioMock.mockResolvedValue({ id: "u1", email: "a@a.com", rol: "estudiante" });
   });
 
@@ -46,6 +51,7 @@ describe("LeccionPage", () => {
       completado: false,
       leccionAnteriorId: "l1",
       leccionSiguienteId: "l3",
+      accesoCurso: true,
     });
 
     const LeccionPage = (await import("./page")).default;
@@ -77,6 +83,7 @@ describe("LeccionPage", () => {
       completado: false,
       leccionAnteriorId: null,
       leccionSiguienteId: "l2",
+      accesoCurso: true,
     });
 
     const LeccionPage = (await import("./page")).default;
@@ -95,5 +102,29 @@ describe("LeccionPage", () => {
     await expect(
       LeccionPage({ params: Promise.resolve({ cursoId: "c1", leccionId: "no-existe" }) })
     ).rejects.toThrow("NEXT_NOT_FOUND");
+  });
+
+  it("redirige a la portada del curso si no hay acceso", async () => {
+    getLeccionDetalleMock.mockResolvedValue({
+      id: "l2",
+      titulo: "Introducción a rentas",
+      cursoId: "c1",
+      cursoTitulo: "Maestría en Rentas",
+      tipoContenido: "video",
+      muxAssetId: "mux-123",
+      storageKey: null,
+      segundoActual: 0,
+      completado: false,
+      leccionAnteriorId: null,
+      leccionSiguienteId: null,
+      accesoCurso: false,
+    });
+
+    const LeccionPage = (await import("./page")).default;
+
+    await expect(
+      LeccionPage({ params: Promise.resolve({ cursoId: "c1", leccionId: "l2" }) })
+    ).rejects.toThrow("NEXT_REDIRECT:/cursos/c1?bloqueado=1");
+    expect(redirectMock).toHaveBeenCalledWith("/cursos/c1?bloqueado=1");
   });
 });

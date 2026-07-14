@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getSesionUsuario } from "@/lib/auth/session";
 import { getLeccionDetalle } from "@/lib/db/lecciones";
@@ -16,6 +16,10 @@ export default async function LeccionPage({
 
   if (!leccion) {
     notFound();
+  }
+
+  if (!leccion.accesoCurso) {
+    redirect(`/cursos/${cursoId}?bloqueado=1`);
   }
 
   return (
