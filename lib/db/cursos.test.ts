@@ -393,3 +393,141 @@ describe("getCursoDetalle", () => {
     );
   });
 });
+
+describe("tieneAccesoCurso", () => {
+  const inscripcionMaybeSingleMock = vi.fn();
+  const inscripcionEqCursoMock = vi.fn(() => ({ maybeSingle: inscripcionMaybeSingleMock }));
+  const inscripcionEqUsuarioMock = vi.fn(() => ({ eq: inscripcionEqCursoMock }));
+  const inscripcionSelectMock = vi.fn(() => ({ eq: inscripcionEqUsuarioMock }));
+
+  const membresiaMaybeSingleMock = vi.fn();
+  const membresiaEqMock = vi.fn(() => ({ maybeSingle: membresiaMaybeSingleMock }));
+  const membresiaSelectMock = vi.fn(() => ({ eq: membresiaEqMock }));
+
+  const fromMock = vi.fn((tabla: string) => {
+    if (tabla === "inscripciones") return { select: inscripcionSelectMock };
+    if (tabla === "membresia") return { select: membresiaSelectMock };
+    throw new Error(`tabla inesperada: ${tabla}`);
+  });
+
+  beforeEach(() => {
+    fromMock.mockClear();
+    inscripcionSelectMock.mockClear();
+    inscripcionEqUsuarioMock.mockClear();
+    inscripcionEqCursoMock.mockClear();
+    inscripcionMaybeSingleMock.mockClear();
+    membresiaSelectMock.mockClear();
+    membresiaEqMock.mockClear();
+    membresiaMaybeSingleMock.mockClear();
+
+    vi.resetModules();
+    vi.doMock("@/lib/supabase/server", () => ({
+      createClient: vi.fn(async () => ({ from: fromMock })),
+    }));
+  });
+
+  it("da acceso a un curso gratuito sin consultar Supabase", async () => {
+    const { tieneAccesoCurso } = await import("./cursos");
+    const acceso = await tieneAccesoCurso("c1", "u1", 0);
+
+    expect(acceso).toBe(true);
+    expect(fromMock).not.toHaveBeenCalled();
+  });
+
+  it("da acceso si existe una inscripción individual", async () => {
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: { id: "i1" }, error: null });
+
+    const { tieneAccesoCurso } = await import("./cursos");
+    const acceso = await tieneAccesoCurso("c1", "u1", 49.99);
+
+    expect(fromMock).toHaveBeenCalledWith("inscripciones");
+    expect(inscripcionEqUsuarioMock).toHaveBeenCalledWith("usuario_id", "u1");
+    expect(inscripcionEqCursoMock).toHaveBeenCalledWith("curso_id", "c1");
+    expect(acceso).toBe(true);
+  });
+
+  it("da acceso si la membresía está activa sin fecha de corte", async () => {
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({
+      data: { estado: "activa", periodo_fin: null },
+      error: null,
+    });
+
+    const { tieneAccesoCurso } = await import("./cursos");
+    const acceso = await tieneAccesoCurso("c1", "u1", 49.99);
+
+    expect(fromMock).toHaveBeenCalledWith("membresia");
+    expect(membresiaEqMock).toHaveBeenCalledWith("usuario_id", "u1");
+    expect(acceso).toBe(true);
+  });
+
+  it("da acceso si la membresía está activa y el período aún no vence", async () => {
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({
+      data: { estado: "activa", periodo_fin: "2099-01-01T00:00:00.000Z" },
+      error: null,
+    });
+
+    const { tieneAccesoCurso } = await import("./cursos");
+    const acceso = await tieneAccesoCurso("c1", "u1", 49.99);
+
+    expect(acceso).toBe(true);
+  });
+
+  it("niega acceso si la membresía está activa pero el período ya venció", async () => {
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({
+      data: { estado: "activa", periodo_fin: "2000-01-01T00:00:00.000Z" },
+      error: null,
+    });
+
+    const { tieneAccesoCurso } = await import("./cursos");
+    const acceso = await tieneAccesoCurso("c1", "u1", 49.99);
+
+    expect(acceso).toBe(false);
+  });
+
+  it("niega acceso si la membresía está cancelada", async () => {
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({
+      data: { estado: "cancelada", periodo_fin: null },
+      error: null,
+    });
+
+    const { tieneAccesoCurso } = await import("./cursos");
+    const acceso = await tieneAccesoCurso("c1", "u1", 49.99);
+
+    expect(acceso).toBe(false);
+  });
+
+  it("niega acceso si no hay inscripción ni membresía", async () => {
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+
+    const { tieneAccesoCurso } = await import("./cursos");
+    const acceso = await tieneAccesoCurso("c1", "u1", 49.99);
+
+    expect(acceso).toBe(false);
+  });
+
+  it("lanza un error legible si falla la consulta de inscripciones", async () => {
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: { message: "timeout" } });
+
+    const { tieneAccesoCurso } = await import("./cursos");
+
+    await expect(tieneAccesoCurso("c1", "u1", 49.99)).rejects.toThrow(
+      "No se pudo verificar el acceso al curso: timeout"
+    );
+  });
+
+  it("lanza un error legible si falla la consulta de membresía", async () => {
+    inscripcionMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    membresiaMaybeSingleMock.mockResolvedValue({ data: null, error: { message: "timeout" } });
+
+    const { tieneAccesoCurso } = await import("./cursos");
+
+    await expect(tieneAccesoCurso("c1", "u1", 49.99)).rejects.toThrow(
+      "No se pudo verificar el acceso al curso: timeout"
+    );
+  });
+});

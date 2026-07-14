@@ -185,3 +185,40 @@ export async function getCursoDetalle(
     }),
   };
 }
+
+export async function tieneAccesoCurso(
+  cursoId: string,
+  usuarioId: string,
+  precio: number
+): Promise<boolean> {
+  if (precio === 0) return true;
+
+  const supabase = await createClient();
+
+  const { data: inscripcion, error: inscripcionError } = await supabase
+    .from("inscripciones")
+    .select("id")
+    .eq("usuario_id", usuarioId)
+    .eq("curso_id", cursoId)
+    .maybeSingle();
+
+  if (inscripcionError) {
+    throw new Error(`No se pudo verificar el acceso al curso: ${inscripcionError.message}`);
+  }
+
+  if (inscripcion) return true;
+
+  const { data: membresia, error: membresiaError } = await supabase
+    .from("membresia")
+    .select("estado, periodo_fin")
+    .eq("usuario_id", usuarioId)
+    .maybeSingle();
+
+  if (membresiaError) {
+    throw new Error(`No se pudo verificar el acceso al curso: ${membresiaError.message}`);
+  }
+
+  if (!membresia || membresia.estado !== "activa") return false;
+
+  return membresia.periodo_fin === null || new Date(membresia.periodo_fin) > new Date();
+}
