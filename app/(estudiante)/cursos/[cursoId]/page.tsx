@@ -26,8 +26,11 @@ export default async function CursoDetallePage({
         {curso.titulo}
       </h1>
 
-      {bloqueado === "1" && (
-        <p className="rounded-xl border border-gold-500/30 bg-gold-500/10 px-4 py-3 text-sm text-gold-200">
+      {bloqueado === "1" && !curso.accesoCurso && (
+        <p
+          role="status"
+          className="rounded-xl border border-gold-500/30 bg-gold-500/10 px-4 py-3 text-sm text-gold-200"
+        >
           No tienes acceso a este curso todavía — habla con tu coach para inscribirte.
         </p>
       )}
@@ -55,6 +58,7 @@ export default async function CursoDetallePage({
                 <Lock className="h-5 w-5 shrink-0 text-mist-500" aria-hidden="true" />
                 <span className="font-mono text-xs text-mist-500">{indice + 1}</span>
                 <span className="text-mist-400">{leccion.titulo}</span>
+                <span className="sr-only">(bloqueada)</span>
               </div>
             </li>
           )

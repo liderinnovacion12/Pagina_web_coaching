@@ -99,6 +99,28 @@ describe("CursoDetallePage", () => {
     ).toBeInTheDocument();
   });
 
+  it("no muestra el banner si bloqueado=1 pero el curso ya tiene acceso (URL obsoleta)", async () => {
+    getCursoDetalleMock.mockResolvedValue({
+      id: "c1",
+      titulo: "Maestría en Rentas",
+      categoria: "clases",
+      accesoCurso: true,
+      lecciones: [],
+    });
+
+    const CursoDetallePage = (await import("./page")).default;
+    render(
+      await CursoDetallePage({
+        params: Promise.resolve({ cursoId: "c1" }),
+        searchParams: Promise.resolve({ bloqueado: "1" }),
+      })
+    );
+
+    expect(
+      screen.queryByText(/no tienes acceso a este curso todavía/i)
+    ).not.toBeInTheDocument();
+  });
+
   it("llama a notFound si el curso no existe", async () => {
     getCursoDetalleMock.mockResolvedValue(null);
 
