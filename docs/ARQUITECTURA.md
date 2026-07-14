@@ -21,7 +21,9 @@ app/
   layout.tsx      layout raíz: fuentes (Bricolage Grotesque, IBM Plex Mono), metadata global
 components/
   motion/         componentes de animación (ParticleField)
-  estudiante/     UI compartida del área de alumno (shell, nav, tarjetas de curso)
+  estudiante/     UI compartida del área de alumno (shell, nav, tarjetas de curso, herramientas/)
+  cronograma/     dashboard interno de reporting (CronogramaPagina), compartido por los 3 roles
+  admin/          UI de gestión (formularios/filas de calendario y herramientas)
   SiteHeader.tsx  header de la landing pública
 lib/
   auth/           sesión, control de roles, redirecciones de middleware, logout
@@ -45,9 +47,12 @@ scripts/          scripts Node de seed (`seed-admin.mjs`, `seed-contenido.mjs`)
 | `/dashboard` (estudiante) | Construido | Bienvenida: video, WhatsApp CTA, equipo, misión/visión/galería |
 | `/sistema-100`, `/clases` | Construido | Catálogo de cursos por categoría, con búsqueda/filtro en `/clases` |
 | `/cursos/[cursoId]` y `/lecciones/[leccionId]` | Construido | Detalle de curso, reproductor Mux, progreso por lección |
-| `/calendario`, `/herramientas`, `/marketing`, `/soporte` (estudiante) | Placeholder | "En construcción", sin funcionalidad |
-| `/coach` | Placeholder | Solo gating de rol, sin UI |
-| `/admin` | Placeholder | Solo gating de rol, sin UI |
+| `/calendario` (estudiante) | Construido | Vista semanal/diaria de clases, mini calendario, panel de detalle |
+| `/herramientas` (estudiante) | Construido | Directorio de 51 grupos de WhatsApp/Dropbox del equipo, con búsqueda/filtro/paginación |
+| `/cronograma` (estudiante, coach, admin) | Construido | Dashboard interno de reporting (tiempo invertido, velocidad, hoja de ruta) — no es funcionalidad de producto |
+| `/marketing`, `/soporte` (estudiante) | Placeholder | "En construcción", sin funcionalidad |
+| `/coach` | Placeholder | Solo gating de rol, sin UI (excepto `/coach/cronograma`) |
+| `/admin` | Placeholder | Solo gating de rol; ya tiene `/admin/calendario` y `/admin/herramientas` como CRUD reales |
 
 La navegación completa objetivo (incluye ítems aún sin ruta, como CRM, Transacciones, Eventos) está en [components/estudiante/nav-config.ts](../components/estudiante/nav-config.ts) — los `href: null` marcan lo que falta.
 

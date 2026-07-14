@@ -1,6 +1,6 @@
 # Tareas: hecho vs. pendiente
 
-Estado a 2026-07-10, basado en lectura directa del código (no en `PRODUCT.md` ni en los docs del sitio anterior, que describen objetivos/referencias, no lo ya construido).
+Estado a 2026-07-14, basado en lectura directa del código (no en `PRODUCT.md` ni en los docs del sitio anterior, que describen objetivos/referencias, no lo ya construido).
 
 ## Hecho
 
@@ -14,8 +14,15 @@ Estado a 2026-07-10, basado en lectura directa del código (no en `PRODUCT.md` n
 - **Contenido de equipo/cultura** gestionado en base de datos (`miembros_equipo`, `galeria_equipo`), no hardcodeado.
 - **Calendario de clases** (`/calendario`): reemplaza el stub — vista semanal/diaria real con mini calendario, selector de año, toolbar, grilla horaria, tarjetas de clase y panel de detalle; tabla `clases_calendario` con RLS, lógica pura de recurrencia/zona horaria y datos semilla.
 - **Gestión de clases en admin** (`/admin/calendario`): primera pantalla funcional del panel de admin — CRUD (crear/editar/listar) de `clases_calendario` vía server actions.
+- **Herramientas y Comunicación** (`/herramientas`): reemplaza el stub — directorio de 51 grupos de WhatsApp/Dropbox del equipo, con hero, grupo principal, indicadores, búsqueda/filtro por categoría/orden/paginación y toggle grid/lista; tabla `grupos_comunidad` con RLS y datos semilla (enlaces cargados manualmente desde admin).
+- **Gestión de grupos en admin** (`/admin/herramientas`): CRUD de `grupos_comunidad` vía server actions — mismo patrón que `/admin/calendario`.
+- **Cronograma interno** (`/cronograma`, visible en estudiante/coach/admin): dashboard de reporting hacia el cliente — tiempo invertido (commits reales), velocidad observada y hoja de ruta estimada (épicas A–I, ~96.5h netas / 114.6h con margen, 13/07–06/08). No es una funcionalidad del producto LMS; es transparencia de avance del desarrollo. **Vive hardcodeado en `components/cronograma/CronogramaPagina.tsx`** — hay que actualizarlo a mano conforme avance el trabajo real (ver nota de desviación abajo).
 - **Seeds y mantenimiento**: scripts de seed de admin y contenido, scripts SQL de datos de prueba y promoción de roles.
 - **CI**: lint + typecheck + test + build en cada PR/push a `main`.
+
+## Nota: desviación del cronograma interno
+
+`/cronograma` programó la **Épica A (control de acceso real a cursos)** para el 13/07 y la **Épica B (Stripe)** para 14–16/07. A la fecha de esta actualización (14/07) no hay commits que implementen la Épica A — sigue pendiente (ver ítem 1 abajo). Si se retoma el trabajo de producto siguiendo ese cronograma, está atrasado un día en la primera épica; conviene decidir si se re-planifica o si Épica A se hace en paralelo con el arranque de Épica B.
 
 ## Pendiente para el objetivo final (LMS con venta de cursos)
 
@@ -25,7 +32,7 @@ Ordenado por lo que bloquea el objetivo de negocio (vender y controlar acceso a 
 2. **Cobro/Stripe** — `usuarios.stripe_customer_id`, `inscripciones.stripe_payment_id` y `membresia.stripe_subscription_id` están reservados en el esquema pero no hay integración de Stripe en ningún lado del código. Sin esto no hay forma real de que un estudiante compre un curso o se suscriba.
 3. **Panel de coach** (`/coach`) — hoy es un stub con solo gating de rol. Falta UI para que un coach cree/edite sus propios cursos y lecciones (la RLS de `cursos_coach_*`/`lecciones_coach_own` ya soporta esto).
 4. **Panel de admin** (`/admin`) — la home sigue siendo un stub sin UI y ya tiene la primera sección real (`/admin/calendario`, gestión de clases). Falta gestión de usuarios/roles, cursos, equipo/galería (hoy esas dos últimas solo se editan a mano por SQL).
-5. **Secciones "en construcción" del área de estudiante**: `/herramientas`, `/marketing`, `/soporte` (`/calendario` ya se implementó). Ver alcance objetivo en `docs/descripcion_contenido_pagina.txt` (sitio de referencia).
+5. **Secciones "en construcción" del área de estudiante**: `/marketing`, `/soporte` (`/calendario` y `/herramientas` ya se implementaron). Ver alcance objetivo en `docs/descripcion_contenido_pagina.txt` (sitio de referencia).
 6. **Ítems de navegación sin ruta** (`components/estudiante/nav-config.ts`, `href: null`): Curso de Rentas, Acelerador Pro/Starter, Proyectos Inmobiliarios Aliados, Aliados Estratégicos, Transacciones, CRM, Eventos, Construcción de Equipo, Oficinas.
 7. **Gamificación sin UI**: `quiz_intentos`, `xp_eventos`, `insignias`, `insignias_usuario` existen en el esquema y en datos de prueba, pero ninguna pantalla los muestra ni los alimenta desde una acción real de usuario.
 8. **Edge Functions sin invocar**: `nexus-chat` (asistente IA) y `send-email` (emails transaccionales) están desplegables pero no hay ningún punto del frontend/backend que las llame.
