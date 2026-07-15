@@ -72,18 +72,22 @@ Al hacer scroll desde el tope de la página hacia `#cursos`:
     - `bgOpacity`: `1 → 0`
     - `bgY`: `0 → ~80px` (fondo, parallax más lento)
     - `contentY`: `0 → ~40px` (contenido, se mueve menos que el fondo)
-- `HeroBackground` y el wrapper de `ParticleField` se envuelven en un
-  `motion.div` con `style={{ opacity: bgOpacity, y: bgY }}`.
-- **Efecto colateral deseado**: aplicar un `transform` (aunque sea vía
-  `style.y` animado) a un ancestro de `ParticleField` convierte a ese ancestro
-  en el *containing block* del `position: fixed` interno del canvas (regla CSS
-  estándar: `transform`/`filter`/`will-change: transform` en un ancestro
-  "atrapa" a los descendientes `fixed`). Esto además resuelve el bug lateral
-  detectado: hoy el canvas fijo se ve detrás del catálogo de cursos sin motivo;
-  con el wrapper, queda contenido dentro de la sección hero.
-- `HeroContent` recibe `style={{ y: contentY }}` en su `motion.section` raíz,
-  sumado a las animaciones de entrada (`stagger`/`blurFadeUp`) que ya tiene —
-  no se reemplazan, se combinan.
+- `HeroBackground` se envuelve en un `motion.div` con
+  `style={{ opacity: bgOpacity, y: bgY }}` (fondo con fade + parallax). El
+  wrapper de `ParticleField` recibe **solo** `style={{ opacity: bgOpacity }}`
+  (sin `y`): se descartó aplicarle también el parallax porque eso convertiría
+  a ese wrapper en el *containing block* del `position: fixed` interno del
+  canvas (regla CSS: un `transform` en un ancestro "atrapa" a los
+  descendientes `fixed`), lo cual interactúa mal con que `ParticleField` fija
+  el tamaño del `<canvas>` vía JS a `window.innerWidth/innerHeight` — el
+  canvas terminaría recortado/mal alineado dentro del wrapper en vez de
+  cubrir el viewport limpiamente. En su lugar, el bug de que el canvas se vea
+  detrás del catálogo de cursos se resuelve solo con el fade de opacidad: al
+  llegar a `scrollYProgress = 1`, `bgOpacity` es `0` y el canvas (aunque
+  sigue técnicamente `fixed` al viewport) queda invisible.
+- `HeroContent` se envuelve en un `motion.div` con `style={{ y: contentY }}`
+  dentro de `HeroScrollLayer` — no recibe un prop `style` propio, sus
+  animaciones de entrada (`stagger`/`blurFadeUp`) internas no se tocan.
 
 ### Accesibilidad
 
