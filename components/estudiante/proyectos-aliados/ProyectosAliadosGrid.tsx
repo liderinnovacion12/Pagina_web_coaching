@@ -18,7 +18,7 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
           Proyectos Inmobiliarios Aliados
         </h1>
         <p className="mt-2 text-lg text-mist-400">
-          Desarrollos y proyectos con los que trabajamos junto al equipo.
+          Desarrollos y proyectos con los que trabajamos junto al Team Wilmar & Samuel.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <span className="rounded-full border border-white/10 px-4 py-1.5 text-sm text-mist-300">
