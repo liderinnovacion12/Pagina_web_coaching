@@ -18,7 +18,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Sistema 100+", href: "/sistema-100" },
       { label: "Clases", href: "/clases" },
-      { label: "Curso de Rentas", href: null },
+      { label: "Curso de Rentas", href: "/curso-de-rentas" },
       { label: "Acelerador Pro", href: null },
       { label: "Acelerador Starter", href: null },
     ],
