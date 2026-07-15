@@ -11,10 +11,19 @@ describe("NAV_GROUPS", () => {
     expect(totalItems).toBe(17);
   });
 
-  it("Bienvenida, Sistema 100+, Clases, Calendario, Herramientas, Marketing y Soporte tienen href navegable", () => {
+  it("Bienvenida, Sistema 100+, Clases, Calendario, Herramientas, Marketing, Proyectos Inmobiliarios Aliados y Soporte tienen href navegable", () => {
     const conHref = NAV_GROUPS.flatMap((grupo) => grupo.items).filter((item) => item.href !== null);
     expect(conHref.map((item) => item.href).sort()).toEqual(
-      ["/calendario", "/clases", "/dashboard", "/herramientas", "/marketing", "/sistema-100", "/soporte"].sort()
+      [
+        "/calendario",
+        "/clases",
+        "/dashboard",
+        "/herramientas",
+        "/marketing",
+        "/proyectos-inmobiliarios-aliados",
+        "/sistema-100",
+        "/soporte",
+      ].sort()
     );
   });
 });
