@@ -15,6 +15,7 @@ Postgres gestionado por Supabase. El esquema vive en `supabase/migrations/*.sql`
 007_calendario.sql        -- tabla de clases del calendario semanal
 008_grupos_comunidad.sql  -- tabla de grupos de WhatsApp/Dropbox del equipo
 009_proyectos_aliados.sql -- tabla de proyectos inmobiliarios aliados
+010_aliados.sql            -- tabla de aliados estratégicos (proveedores externos)
 ```
 
 ## Tipos enumerados
@@ -157,6 +158,22 @@ Mismo patrón que `miembros_equipo`/`clases_calendario`. Consumida por `lib/db/g
 
 Mismo patrón que `grupos_comunidad`/`clases_calendario`. Consumida por `lib/db/proyectos-aliados.ts` → `/proyectos-inmobiliarios-aliados` (estudiante) y `/admin/proyectos-inmobiliarios-aliados` (gestión).
 
+### `aliados` (migración 010)
+| Columna | Tipo | Notas |
+|---|---|---|
+| `id` | uuid PK | |
+| `servicio` | text | nombre del servicio/proveedor |
+| `descripcion` | text | |
+| `contacto_nombre` | text | una línea por contacto (`\n` si hay más de uno, ej. "Anahis\nAntonio") |
+| `contacto_telefono` | text | mismo orden que `contacto_nombre`, una línea por contacto |
+| `contacto_correo` | text | mismo orden que `contacto_nombre`, una línea por contacto |
+| `imagen_url` | text | nullable — a diferencia de `proyectos_aliados`, se sembró completo (las 4 fotos ya estaban subidas) |
+| `orden` | int | orden de aparición en el catálogo |
+| `activo` | boolean | default true |
+| `creado_en` | timestamptz | |
+
+Sin tabla relacional para contactos: `contacto_nombre`/`contacto_telefono`/`contacto_correo` alinean varios contactos por índice de línea (ver `parsearContactos()` en `lib/db/aliados.types.ts`). Mismo patrón de catálogo que `proyectos_aliados`. Consumida por `lib/db/aliados.ts` → `/aliados` (estudiante) y `/admin/aliados` (gestión).
+
 ## Funciones y triggers
 
 | Función | Tipo | Qué hace |
@@ -173,7 +190,7 @@ Todas las tablas tienen RLS activo. El patrón se repite:
 - **Dueño de la fila** (`usuario_id = auth.uid()` o equivalente) puede leer/escribir lo suyo.
 - **Admin** (`is_admin()`) tiene acceso total a todo, en todas las tablas.
 - **Coach** (`coach_id = auth.uid()` en `cursos`, o join a través de `cursos`/`lecciones` en las demás) puede leer/gestionar únicamente lo relacionado a sus propios cursos — incluye `cursos`, `lecciones`, `inscripciones` (solo lectura), `progreso` y `quiz_intentos` (solo lectura vía join).
-- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad`, `proyectos_aliados` (`select using (true)`), gestionables solo por admin.
+- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad`, `proyectos_aliados`, `aliados` (`select using (true)`), gestionables solo por admin.
 - **`cursos`/`lecciones`** son visibles al público solo si `publicado = true` (o eres admin/dueño).
 
 ## Scripts SQL de mantenimiento (`supabase/scripts/`, no son migraciones)
