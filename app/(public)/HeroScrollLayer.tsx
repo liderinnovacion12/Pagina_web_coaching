@@ -21,23 +21,11 @@ export function HeroScrollLayer({
     offset: ["start start", "end start"],
   });
 
+  // Progreso de scroll a lo largo de la sección hero: 0 al inicio, 1 cuando el
+  // borde inferior del hero llega al top del viewport (hero completamente scrolleado).
   const bgOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const bgY = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, 40]);
-
-  if (reducedMotion) {
-    return (
-      <div
-        ref={heroRef}
-        data-testid="hero-scroll-layer"
-        className="relative overflow-hidden bg-grain"
-      >
-        {background}
-        {particles}
-        {children}
-      </div>
-    );
-  }
 
   return (
     <div
@@ -45,11 +33,29 @@ export function HeroScrollLayer({
       data-testid="hero-scroll-layer"
       className="relative overflow-hidden bg-grain"
     >
-      <motion.div style={{ opacity: bgOpacity, y: bgY }}>
-        {background}
-      </motion.div>
-      <motion.div style={{ opacity: bgOpacity }}>{particles}</motion.div>
-      <motion.div style={{ y: contentY }}>{children}</motion.div>
+      {reducedMotion ? (
+        <>
+          {background}
+          {particles}
+          {children}
+        </>
+      ) : (
+        <>
+          <motion.div
+            style={{ opacity: bgOpacity, y: bgY }}
+            className="absolute inset-0"
+          >
+            {background}
+          </motion.div>
+          <motion.div
+            style={{ opacity: bgOpacity }}
+            className="absolute inset-0"
+          >
+            {particles}
+          </motion.div>
+          <motion.div style={{ y: contentY }}>{children}</motion.div>
+        </>
+      )}
     </div>
   );
 }
