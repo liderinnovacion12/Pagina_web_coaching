@@ -21,4 +21,16 @@ describe("HeroContent", () => {
     // "Líderes" también existe en un <dt> sr-only; se apunta al <p> visible.
     expect(screen.getByText("Líderes", { selector: "p" })).toBeInTheDocument();
   });
+
+  it("aplica un estilo externo (parallax) al contenedor raíz cuando se provee", () => {
+    const { container } = render(
+      <HeroContent
+        estadisticas={[{ valor: "2,000+", etiqueta: "Líderes" }]}
+        style={{ opacity: 0.5 }}
+      />
+    );
+
+    const section = container.querySelector("section");
+    expect(section).toHaveStyle({ opacity: "0.5" });
+  });
 });

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, animate } from "framer-motion";
+import { motion, animate, type MotionStyle } from "framer-motion";
 import { blurFadeUp, fadeUp, staggerContainer, useReducedMotionSafe } from "@/lib/motion";
 
 type Estadistica = { valor: string; etiqueta: string };
@@ -54,8 +54,10 @@ function AnimatedCounter({ value }: { value: string }) {
 
 export function HeroContent({
   estadisticas,
+  style,
 }: {
   estadisticas: Estadistica[];
+  style?: MotionStyle;
 }) {
   const reducedMotion = useReducedMotionSafe();
   const animVariant = reducedMotion ? fadeUp : blurFadeUp;
@@ -65,6 +67,7 @@ export function HeroContent({
       initial="hidden"
       animate="visible"
       variants={staggerContainer(0.08, 0.1)}
+      style={style}
       className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 pb-24 pt-12 text-center sm:pt-20"
     >
       <motion.span
