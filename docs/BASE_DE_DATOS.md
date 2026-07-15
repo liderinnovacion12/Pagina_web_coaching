@@ -14,6 +14,7 @@ Postgres gestionado por Supabase. El esquema vive en `supabase/migrations/*.sql`
 006_galeria_equipo.sql    -- tabla de fotos de galería
 007_calendario.sql        -- tabla de clases del calendario semanal
 008_grupos_comunidad.sql  -- tabla de grupos de WhatsApp/Dropbox del equipo
+009_proyectos_aliados.sql -- tabla de proyectos inmobiliarios aliados
 ```
 
 ## Tipos enumerados
@@ -139,6 +140,23 @@ Mismo patrón que `miembros_equipo`. Consumida por `lib/db/galeria.ts` → dashb
 
 Mismo patrón que `miembros_equipo`/`clases_calendario`. Consumida por `lib/db/grupos-comunidad.ts` → `/herramientas` (estudiante) y `/admin/herramientas` (gestión).
 
+### `proyectos_aliados` (migración 009)
+| Columna | Tipo | Notas |
+|---|---|---|
+| `id` | uuid PK | |
+| `nombre` | text | |
+| `descripcion` | text | |
+| `precio_desde` | text | nullable — texto libre ("Desde $480K"); 2 de 10 proyectos no tienen precio en el contenido fuente |
+| `contacto_nombre` | text | contacto "In House" del proyecto |
+| `contacto_telefono` | text | |
+| `whatsapp_url` | text | enlace de invitación al grupo del proyecto — sembrado completo, a diferencia de `grupos_comunidad.enlace_url` |
+| `imagen_url` | text | nullable — sembrado en NULL, se completa desde `/admin/proyectos-inmobiliarios-aliados` tras subir la foto a Supabase Storage |
+| `orden` | int | orden de aparición en el catálogo |
+| `activo` | boolean | default true |
+| `creado_en` | timestamptz | |
+
+Mismo patrón que `grupos_comunidad`/`clases_calendario`. Consumida por `lib/db/proyectos-aliados.ts` → `/proyectos-inmobiliarios-aliados` (estudiante) y `/admin/proyectos-inmobiliarios-aliados` (gestión).
+
 ## Funciones y triggers
 
 | Función | Tipo | Qué hace |
@@ -155,7 +173,7 @@ Todas las tablas tienen RLS activo. El patrón se repite:
 - **Dueño de la fila** (`usuario_id = auth.uid()` o equivalente) puede leer/escribir lo suyo.
 - **Admin** (`is_admin()`) tiene acceso total a todo, en todas las tablas.
 - **Coach** (`coach_id = auth.uid()` en `cursos`, o join a través de `cursos`/`lecciones` en las demás) puede leer/gestionar únicamente lo relacionado a sus propios cursos — incluye `cursos`, `lecciones`, `inscripciones` (solo lectura), `progreso` y `quiz_intentos` (solo lectura vía join).
-- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad` (`select using (true)`), gestionables solo por admin.
+- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad`, `proyectos_aliados` (`select using (true)`), gestionables solo por admin.
 - **`cursos`/`lecciones`** son visibles al público solo si `publicado = true` (o eres admin/dueño).
 
 ## Scripts SQL de mantenimiento (`supabase/scripts/`, no son migraciones)
