@@ -27,7 +27,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Negocio",
     items: [
       { label: "Proyectos Inmobiliarios Aliados", href: "/proyectos-inmobiliarios-aliados" },
-      { label: "Aliados Estratégicos", href: null },
+      { label: "Aliados Estratégicos", href: "/aliados" },
       { label: "Transacciones", href: null },
       { label: "CRM", href: null },
       { label: "Marketing", href: "/marketing" },
