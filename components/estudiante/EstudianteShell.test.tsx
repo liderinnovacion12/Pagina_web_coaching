@@ -48,7 +48,7 @@ describe("EstudianteShell", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /formación/i }));
 
-    const label = screen.getByText("Curso de Rentas");
+    const label = screen.getByText("Acelerador Pro");
     const item = label.closest("span[aria-disabled]");
     expect(item?.tagName).not.toBe("A");
     expect(item).toHaveAttribute("aria-disabled", "true");
