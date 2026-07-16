@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { CatalogoList } from "./CatalogoList";
 import { HeroBackground } from "./HeroBackground";
 import { HeroContent } from "./HeroContent";
+import { HeroScrollLayer } from "./HeroScrollLayer";
 import { ParticleField } from "@/components/motion/ParticleField";
 
 export const metadata: Metadata = {
@@ -25,11 +26,12 @@ export default async function LandingPage() {
     <main className="bg-ink-950">
       <SiteHeader />
 
-      <div className="relative overflow-hidden bg-grain">
-        <HeroBackground />
-        <ParticleField />
+      <HeroScrollLayer
+        background={<HeroBackground />}
+        particles={<ParticleField />}
+      >
         <HeroContent estadisticas={ESTADISTICAS} />
-      </div>
+      </HeroScrollLayer>
 
       <section id="cursos" className="mx-auto max-w-6xl px-6 py-20">
         <h2 className="font-display text-3xl font-bold text-white">
