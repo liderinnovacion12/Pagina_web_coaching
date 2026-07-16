@@ -36,6 +36,10 @@ describe("HeroScrollLayer", () => {
       "absolute",
       "inset-0"
     );
+    expect(screen.getByTestId("mock-particles").parentElement).toHaveClass(
+      "absolute",
+      "inset-0"
+    );
   });
 
   it("no rompe el render cuando el usuario prefiere reduced motion", () => {
