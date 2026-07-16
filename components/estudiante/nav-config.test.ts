@@ -11,7 +11,7 @@ describe("NAV_GROUPS", () => {
     expect(totalItems).toBe(17);
   });
 
-  it("Bienvenida, Sistema 100+, Clases, Curso de Rentas, Calendario, Herramientas, Marketing, Proyectos Inmobiliarios Aliados, Aliados Estratégicos, CRM y Soporte tienen href navegable", () => {
+  it("Bienvenida, Sistema 100+, Clases, Curso de Rentas, Calendario, Herramientas, Marketing, Proyectos Inmobiliarios Aliados, Aliados Estratégicos, CRM, Oficinas y Soporte tienen href navegable", () => {
     const conHref = NAV_GROUPS.flatMap((grupo) => grupo.items).filter((item) => item.href !== null);
     expect(conHref.map((item) => item.href).sort()).toEqual(
       [
@@ -23,6 +23,7 @@ describe("NAV_GROUPS", () => {
         "/dashboard",
         "/herramientas",
         "/marketing",
+        "/oficinas",
         "/proyectos-inmobiliarios-aliados",
         "/sistema-100",
         "/soporte",

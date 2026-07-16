@@ -46,7 +46,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Soporte",
     items: [
       { label: "Soporte", href: "/soporte" },
-      { label: "Oficinas", href: null },
+      { label: "Oficinas", href: "/oficinas" },
     ],
   },
 ];
