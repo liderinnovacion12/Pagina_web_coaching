@@ -6,9 +6,9 @@ describe("NAV_GROUPS", () => {
     expect(NAV_GROUPS).toHaveLength(5);
   });
 
-  it("incluye los 17 módulos del mapa de referencia en total", () => {
+  it("incluye los 16 módulos del mapa de referencia en total", () => {
     const totalItems = NAV_GROUPS.reduce((suma, grupo) => suma + grupo.items.length, 0);
-    expect(totalItems).toBe(17);
+    expect(totalItems).toBe(16);
   });
 
   it("Bienvenida, Sistema 100+, Clases, Curso de Rentas, Calendario, Herramientas, Marketing, Proyectos Inmobiliarios Aliados, Aliados Estratégicos, CRM, Oficinas y Soporte tienen href navegable", () => {

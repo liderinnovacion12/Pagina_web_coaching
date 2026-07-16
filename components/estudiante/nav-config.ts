@@ -39,7 +39,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Calendario", href: "/calendario" },
       { label: "Eventos", href: null },
       { label: "Herramientas", href: "/herramientas" },
-      { label: "Construcción de Equipo", href: null },
     ],
   },
   {
