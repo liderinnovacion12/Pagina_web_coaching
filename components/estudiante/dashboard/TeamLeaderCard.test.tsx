@@ -54,4 +54,15 @@ describe("TeamLeaderCard", () => {
       screen.getByRole("heading", { name: "Wilmar Sosa" })
     ).toBeInTheDocument();
   });
+
+  it("muestra un relleno cuando el miembro no tiene foto", () => {
+    render(
+      <TeamLeaderCard miembro={{ ...miembro, fotoUrl: null }} variants={{}} />
+    );
+
+    expect(screen.queryByAltText("Wilmar Sosa")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Wilmar Sosa" })
+    ).toBeInTheDocument();
+  });
 });
