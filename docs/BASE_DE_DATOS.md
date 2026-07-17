@@ -16,6 +16,7 @@ Postgres gestionado por Supabase. El esquema vive en `supabase/migrations/*.sql`
 008_grupos_comunidad.sql  -- tabla de grupos de WhatsApp/Dropbox del equipo
 009_proyectos_aliados.sql -- tabla de proyectos inmobiliarios aliados
 010_aliados.sql            -- tabla de aliados estratégicos (proveedores externos)
+011_eventos.sql            -- tablas de eventos del equipo y sus fechas
 ```
 
 ## Tipos enumerados
@@ -25,6 +26,7 @@ Postgres gestionado por Supabase. El esquema vive en `supabase/migrations/*.sql`
 | `rol_usuario` | `admin`, `estudiante`, `coach` |
 | `origen_inscripcion` | `compra_individual`, `membresia` |
 | `estado_membresia` | `activa`, `cancelada`, `vencida` |
+| `categoria_evento` | `internacional`, `nacional_eeuu` |
 
 ## Tablas
 
@@ -174,6 +176,29 @@ Mismo patrón que `grupos_comunidad`/`clases_calendario`. Consumida por `lib/db/
 
 Sin tabla relacional para contactos: `contacto_nombre`/`contacto_telefono`/`contacto_correo` alinean varios contactos por índice de línea (ver `parsearContactos()` en `lib/db/aliados.types.ts`). Mismo patrón de catálogo que `proyectos_aliados`. Consumida por `lib/db/aliados.ts` → `/aliados` (estudiante) y `/admin/aliados` (gestión).
 
+### `eventos` / `eventos_fechas` (migración 011)
+| Columna (`eventos`) | Tipo | Notas |
+|---|---|---|
+| `id` | uuid PK | |
+| `categoria` | `categoria_evento` | `internacional` o `nacional_eeuu` — los títulos/subtítulos de cada categoría viven hardcodeados en `CATEGORIA_EVENTO_INFO` (`lib/db/eventos.types.ts`), no en la base de datos |
+| `titulo` | text | |
+| `subtitulo` | text | |
+| `youtube_url` | text | nullable — link normal de YouTube (`watch?v=...`), se convierte a URL de embed en tiempo de render con `extraerIdVideoYoutube()` |
+| `orden` | int | orden dentro de la categoría |
+| `activo` | boolean | default true |
+| `creado_en` | timestamptz | |
+
+| Columna (`eventos_fechas`) | Tipo | Notas |
+|---|---|---|
+| `id` | uuid PK | |
+| `evento_id` | uuid | FK a `eventos(id) on delete cascade` |
+| `fecha_inicio` | date | |
+| `fecha_fin` | date | igual a `fecha_inicio` si el evento dura un solo día; `check (fecha_fin >= fecha_inicio)` |
+| `ubicacion` | text | |
+| `creado_en` | timestamptz | |
+
+A diferencia del resto del catálogo, acá sí hay una tabla hija real (no columnas de texto paralelas como en `aliados`) porque cada evento tiene entre 2 y 6 fechas con datos estructurados. El estado de cada fecha ("Realizado con éxito" / "En ejecución" / próximo) **no se guarda** — se calcula en tiempo de render con `calcularEstadoFecha()` comparando `fecha_inicio`/`fecha_fin` con la fecha actual. Consumida por `lib/db/eventos.ts` → `/eventos` (estudiante) y `/admin/eventos` (gestión).
+
 ## Funciones y triggers
 
 | Función | Tipo | Qué hace |
@@ -190,7 +215,7 @@ Todas las tablas tienen RLS activo. El patrón se repite:
 - **Dueño de la fila** (`usuario_id = auth.uid()` o equivalente) puede leer/escribir lo suyo.
 - **Admin** (`is_admin()`) tiene acceso total a todo, en todas las tablas.
 - **Coach** (`coach_id = auth.uid()` en `cursos`, o join a través de `cursos`/`lecciones` en las demás) puede leer/gestionar únicamente lo relacionado a sus propios cursos — incluye `cursos`, `lecciones`, `inscripciones` (solo lectura), `progreso` y `quiz_intentos` (solo lectura vía join).
-- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad`, `proyectos_aliados`, `aliados` (`select using (true)`), gestionables solo por admin.
+- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad`, `proyectos_aliados`, `aliados`, `eventos`, `eventos_fechas` (`select using (true)`), gestionables solo por admin.
 - **`cursos`/`lecciones`** son visibles al público solo si `publicado = true` (o eres admin/dueño).
 
 ## Scripts SQL de mantenimiento (`supabase/scripts/`, no son migraciones)
