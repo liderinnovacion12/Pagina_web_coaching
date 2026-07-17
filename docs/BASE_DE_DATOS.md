@@ -17,6 +17,7 @@ Postgres gestionado por Supabase. El esquema vive en `supabase/migrations/*.sql`
 009_proyectos_aliados.sql -- tabla de proyectos inmobiliarios aliados
 010_aliados.sql            -- tabla de aliados estratégicos (proveedores externos)
 011_eventos.sql            -- tablas de eventos del equipo y sus fechas
+012_contactos_soporte.sql  -- tabla de contactos del equipo corporativo
 ```
 
 ## Tipos enumerados
@@ -199,6 +200,22 @@ Sin tabla relacional para contactos: `contacto_nombre`/`contacto_telefono`/`cont
 
 A diferencia del resto del catálogo, acá sí hay una tabla hija real (no columnas de texto paralelas como en `aliados`) porque cada evento tiene entre 2 y 6 fechas con datos estructurados. El estado de cada fecha ("Realizado con éxito" / "En ejecución" / próximo) **no se guarda** — se calcula en tiempo de render con `calcularEstadoFecha()` comparando `fecha_inicio`/`fecha_fin` con la fecha actual. Consumida por `lib/db/eventos.ts` → `/eventos` (estudiante) y `/admin/eventos` (gestión).
 
+### `contactos_soporte` (migración 012)
+| Columna | Tipo | Notas |
+|---|---|---|
+| `id` | uuid PK | |
+| `nombre` | text | |
+| `cargo` | text | título del rol, ej. "DIRECTOR – MARKETING" o "CEO" |
+| `descripcion_cargo` | text | descripción corta en español |
+| `telefono` | text | |
+| `correo` | text | |
+| `foto_url` | text | nullable — sembrado completo, las 9 fotos ya estaban subidas |
+| `orden` | int | orden de aparición en el catálogo |
+| `activo` | boolean | default true |
+| `creado_en` | timestamptz | |
+
+Tabla dedicada y separada de `miembros_equipo` — esta última alimenta la sección "Team Leaders" del dashboard del estudiante, un contexto distinto; mezclar ambos conceptos sin un campo distintivo habría sido confuso. Un solo contacto por fila (a diferencia de `aliados`, no hay caso de múltiples personas por tarjeta). Consumida por `lib/db/contactos-soporte.ts` → `/soporte` (estudiante) y `/admin/soporte` (gestión).
+
 ## Funciones y triggers
 
 | Función | Tipo | Qué hace |
@@ -215,7 +232,7 @@ Todas las tablas tienen RLS activo. El patrón se repite:
 - **Dueño de la fila** (`usuario_id = auth.uid()` o equivalente) puede leer/escribir lo suyo.
 - **Admin** (`is_admin()`) tiene acceso total a todo, en todas las tablas.
 - **Coach** (`coach_id = auth.uid()` en `cursos`, o join a través de `cursos`/`lecciones` en las demás) puede leer/gestionar únicamente lo relacionado a sus propios cursos — incluye `cursos`, `lecciones`, `inscripciones` (solo lectura), `progreso` y `quiz_intentos` (solo lectura vía join).
-- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad`, `proyectos_aliados`, `aliados`, `eventos`, `eventos_fechas` (`select using (true)`), gestionables solo por admin.
+- **Catálogos públicos de solo lectura**: `insignias`, `miembros_equipo`, `galeria_equipo`, `clases_calendario`, `grupos_comunidad`, `proyectos_aliados`, `aliados`, `eventos`, `eventos_fechas`, `contactos_soporte` (`select using (true)`), gestionables solo por admin.
 - **`cursos`/`lecciones`** son visibles al público solo si `publicado = true` (o eres admin/dueño).
 
 ## Scripts SQL de mantenimiento (`supabase/scripts/`, no son migraciones)
