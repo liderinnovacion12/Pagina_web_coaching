@@ -37,7 +37,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Comunidad",
     items: [
       { label: "Calendario", href: "/calendario" },
-      { label: "Eventos", href: null },
+      { label: "Eventos", href: "/eventos" },
       { label: "Herramientas", href: "/herramientas" },
     ],
   },
