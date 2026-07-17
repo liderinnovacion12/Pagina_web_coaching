@@ -155,6 +155,12 @@ caso en cada ciclo de Fase B, nunca por defecto en todas las páginas:
   separador de sección editorial (visto en coach-128.webflow.io) — técnica
   nueva para este proyecto, a evaluar puntualmente si alguna página la pide.
 
+**Principio de contenido (agregado tras feedback del usuario en el ciclo de
+Bienvenida):** evitar badges/pills decorativos con metadata de bajo valor
+(duración, contadores sin función, etiquetas que no ayudan a decidir nada).
+Reservar ese tipo de elemento para datos accionables (ej. el badge
+"Completado" de `CursoCard`, que sí le dice algo útil al estudiante).
+
 ## Explícitamente fuera de este proceso
 
 - Cualquier librería nueva (GSAP, Lenis, Three.js, Spline, etc.).

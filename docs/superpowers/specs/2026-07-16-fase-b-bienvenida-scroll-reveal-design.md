@@ -132,6 +132,26 @@ cada tarjeta es independiente de la otra). El componente:
   elementos: el hover mueve la tarjeta completa, el parallax mueve solo la
   imagen adentro).
 
+### 3. Limpieza de metadata decorativa
+
+Feedback del usuario al revisar el spec: el badge `4 min` en la sección de
+Video de Bienvenida (`<span className="rounded-full bg-white/[0.04] ...">4
+min</span>`, junto al label "Video de inducción") es información de bajo
+valor que no aporta nada al estudiante — se elimina.
+
+Esto es contenido/copy, no mecanismo de revelado, así que amplía
+puntualmente el alcance de este spec (que originalmente excluía cambios de
+contenido) para este único elemento. No se tocan la etiqueta "Video de
+inducción" ni el resto de esa sección.
+
+**Principio general (aplica también a las próximas páginas de la Fase B,
+anotado también en la Fase A):** evitar badges/pills decorativos que
+muestren metadata de bajo valor (duración, contadores, etiquetas sin
+función) — usar ese tipo de elemento solo cuando el dato realmente le sirve
+al usuario para decidir algo (ej. el badge de "Completado" en `CursoCard` sí
+es información accionable; un badge de "4 min" en un video que se ve una
+sola vez no lo es).
+
 ### Accesibilidad
 
 - `whileInView` respeta `prefers-reduced-motion` de la misma forma que
@@ -171,4 +191,6 @@ cada tarjeta es independiente de la otra). El componente:
 - Cambios de contenido, copy, o al orden de las 10 secciones — este spec es
   puramente sobre el mecanismo de revelado, no reorganiza qué dice cada
   sección (eso ya se decidió que no aplica para Bienvenida en la Fase A).
+  Única excepción: el badge `4 min` (ver "3. Limpieza de metadata
+  decorativa" arriba), que se elimina por ser metadata de bajo valor.
 - Cualquier otra página de la Fase A.
