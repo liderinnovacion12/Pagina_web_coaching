@@ -2,23 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { crearEvento, actualizarEvento, eliminarEvento } from "@/lib/db/eventos";
-import type { CategoriaEvento, EventoInput, FechaEventoInput } from "@/lib/db/eventos.types";
+import type { CategoriaEvento, EventoInput } from "@/lib/db/eventos.types";
+import { leerFechas } from "./parsear-fechas";
 
 export type EventoFormState = { error: string | null };
-
-export function leerFechas(formData: FormData): FechaEventoInput[] {
-  const inicios = formData.getAll("fechaInicio").map(String);
-  const fines = formData.getAll("fechaFin").map(String);
-  const ubicaciones = formData.getAll("ubicacion").map(String);
-
-  return inicios
-    .map((fechaInicio, indice) => ({
-      fechaInicio,
-      fechaFin: fines[indice] ?? "",
-      ubicacion: ubicaciones[indice] ?? "",
-    }))
-    .filter((fecha) => fecha.fechaInicio !== "" && fecha.fechaFin !== "" && fecha.ubicacion !== "");
-}
 
 function leerInput(formData: FormData): EventoInput {
   return {

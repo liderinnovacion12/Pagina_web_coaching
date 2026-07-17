@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { leerFechas } from "./actions";
+import { leerFechas } from "./parsear-fechas";
 
 describe("leerFechas", () => {
   it("zippea los arrays paralelos de fechaInicio/fechaFin/ubicacion por índice", () => {
