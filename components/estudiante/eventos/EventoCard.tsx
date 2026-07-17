@@ -1,15 +1,11 @@
 import { Calendar, MapPin } from "lucide-react";
 import type { Evento } from "@/lib/db/eventos.types";
-import { calcularEstadoFecha, extraerIdVideoYoutube, formatearRangoFecha } from "@/lib/db/eventos.types";
+import { calcularEstadoFecha, extraerIdVideoYoutube, formatearRangoFecha, hoyIso } from "@/lib/db/eventos.types";
 
 const ETIQUETA_ESTADO: Record<"realizado" | "en_ejecucion", string> = {
   realizado: "Realizado con éxito",
   en_ejecucion: "En ejecución",
 };
-
-function hoyIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 export function EventoCard({ evento }: { evento: Evento }) {
   const idVideo = evento.youtubeUrl ? extraerIdVideoYoutube(evento.youtubeUrl) : null;

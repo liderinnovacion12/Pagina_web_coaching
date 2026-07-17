@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calcularEstadoFecha, extraerIdVideoYoutube, formatearRangoFecha } from "./eventos.types";
+import { calcularEstadoFecha, extraerIdVideoYoutube, formatearRangoFecha, hoyIso } from "./eventos.types";
 
 describe("calcularEstadoFecha", () => {
   it("retorna 'proximo' cuando hoy es antes de la fecha de inicio", () => {
@@ -48,6 +48,12 @@ describe("extraerIdVideoYoutube", () => {
 
   it("extrae el id de una URL de embed", () => {
     expect(extraerIdVideoYoutube("https://www.youtube.com/embed/jV468IGkYtg")).toBe("jV468IGkYtg");
+  });
+});
+
+describe("hoyIso", () => {
+  it("retorna la fecha actual en formato YYYY-MM-DD", () => {
+    expect(hoyIso()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });
 

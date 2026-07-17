@@ -54,6 +54,15 @@ export function calcularEstadoFecha(fechaInicio: string, fechaFin: string, hoyIs
   return "en_ejecucion";
 }
 
+export function hoyIso(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
 export function extraerIdVideoYoutube(url: string): string | null {
   const coincidenciaParametro = url.match(/[?&]v=([^&]+)/);
   if (coincidenciaParametro) return coincidenciaParametro[1];

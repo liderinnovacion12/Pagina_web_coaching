@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { EventoCard } from "./EventoCard";
-import type { Evento } from "@/lib/db/eventos.types";
+import { hoyIso, type Evento } from "@/lib/db/eventos.types";
 
 function crearEvento(overrides: Partial<Evento> & { id: string; titulo: string }): Evento {
   return {
@@ -63,7 +63,7 @@ describe("EventoCard", () => {
   });
 
   it("muestra el badge 'En ejecución' para una fecha que incluye hoy", () => {
-    const hoy = new Date().toISOString().slice(0, 10);
+    const hoy = hoyIso();
     const evento = crearEvento({
       id: "e1",
       titulo: "Evento en Curso",
