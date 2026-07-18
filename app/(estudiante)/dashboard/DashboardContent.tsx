@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import type { MiembroEquipo } from "@/lib/db/equipo";
 import type { FotoGaleria } from "@/lib/db/galeria";
-import { SCROLL_REVEAL_VIEWPORT } from "@/lib/motion";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { TeamLeaderCard } from "@/components/estudiante/dashboard/TeamLeaderCard";
 
 const PASOS_USO = [
@@ -105,25 +105,16 @@ export function DashboardContent({
   return (
     <div className="flex flex-col gap-12">
       {/* 1. Cabecera Principal */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={SCROLL_REVEAL_VIEWPORT}
-        variants={cardVariants}
-        className="relative"
-      >
+      <ScrollReveal variants={cardVariants} className="relative">
         <h1 className="font-display text-[46px] font-bold leading-tight tracking-tight text-white sm:text-[54px]">
           Bienvenido a <span className="text-gradient-gold">Team 100% Real Estate</span>
         </h1>
         <p className="mt-2 text-lg text-mist-400">by Wilmar Sosa y Samuel Oropeza</p>
         <div className="absolute -left-4 top-1/2 h-16 w-1 -translate-y-1/2 rounded-r-md bg-gold-500/80" />
-      </motion.div>
+      </ScrollReveal>
 
       {/* 2. Video de Bienvenida */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={SCROLL_REVEAL_VIEWPORT}
+      <ScrollReveal
         variants={cardVariants}
         className="group relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-7 transition-all duration-300 hover:border-gold-500/20 hover:shadow-[0_0_50px_rgba(217,169,78,0.05)]"
       >
@@ -142,13 +133,10 @@ export function DashboardContent({
             className="h-full w-full opacity-90 transition-opacity duration-300 group-hover:opacity-100"
           />
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* 3. Banner de Comunidad WhatsApp */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={SCROLL_REVEAL_VIEWPORT}
+      <ScrollReveal
         variants={cardVariants}
         className="relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-gradient-to-r from-whatsapp/10 via-transparent to-transparent p-8 sm:p-10 transition-all duration-300 hover:border-whatsapp/30 hover:shadow-[0_0_40px_rgba(37,211,102,0.05)]"
       >
@@ -172,16 +160,10 @@ export function DashboardContent({
           <MessageCircle className="h-5 w-5" aria-hidden="true" />
           Únete a los Grupos y Comunidades de WhatsApp
         </Link>
-      </motion.div>
+      </ScrollReveal>
 
       {/* 4. Dos Columnas: Inducción & Accesos */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={SCROLL_REVEAL_VIEWPORT}
-        variants={containerVariants}
-        className="grid gap-6 sm:grid-cols-2"
-      >
+      <ScrollReveal variants={containerVariants} className="grid gap-6 sm:grid-cols-2">
         {/* Cómo Usar */}
         <motion.div
           variants={cardVariants}
@@ -231,52 +213,29 @@ export function DashboardContent({
             ))}
           </ul>
         </motion.div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* Separador de Sección */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={SCROLL_REVEAL_VIEWPORT}
-        variants={cardVariants}
-        className="my-2 border-t border-white/[0.06]"
-      />
+      <ScrollReveal variants={cardVariants} className="my-2 border-t border-white/[0.06]" />
 
       {/* 5. Cabecera Cultura */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={SCROLL_REVEAL_VIEWPORT}
-        variants={cardVariants}
-      >
+      <ScrollReveal variants={cardVariants}>
         <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Cultura y Equipo
         </h2>
         <p className="mt-2.5 text-lg text-mist-400">
           Conoce a los líderes y los principios que nos guían.
         </p>
-      </motion.div>
+      </ScrollReveal>
 
       {/* 6. Team Leaders */}
       <div className="flex flex-col gap-6">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={SCROLL_REVEAL_VIEWPORT}
-          variants={cardVariants}
-          className="flex items-center gap-2.5 px-1"
-        >
+        <ScrollReveal variants={cardVariants} className="flex items-center gap-2.5 px-1">
           <Users className="h-5 w-5 text-gold-400" aria-hidden="true" />
           <h3 className="font-display text-xl font-bold text-white">Team Leaders</h3>
-        </motion.div>
+        </ScrollReveal>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={SCROLL_REVEAL_VIEWPORT}
-          variants={containerVariants}
-          className="grid gap-6 sm:grid-cols-2"
-        >
+        <ScrollReveal variants={containerVariants} className="grid gap-6 sm:grid-cols-2">
           {miembrosEquipo.map((miembro) => (
             <TeamLeaderCard
               key={miembro.id}
@@ -284,17 +243,11 @@ export function DashboardContent({
               variants={teamLeaderCardVariants}
             />
           ))}
-        </motion.div>
+        </ScrollReveal>
       </div>
 
       {/* 7. Misión & Visión */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={SCROLL_REVEAL_VIEWPORT}
-        variants={containerVariants}
-        className="grid gap-6 sm:grid-cols-2"
-      >
+      <ScrollReveal variants={containerVariants} className="grid gap-6 sm:grid-cols-2">
         <motion.div
           variants={cardVariants}
           whileHover={{ y: -4 }}
@@ -325,28 +278,16 @@ export function DashboardContent({
             agente opere su negocio con claridad, estructura y mentalidad de liderazgo.
           </p>
         </motion.div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* 8. Nuestros Valores */}
       <div className="flex flex-col gap-6">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={SCROLL_REVEAL_VIEWPORT}
-          variants={cardVariants}
-          className="flex items-center gap-2.5 px-1"
-        >
+        <ScrollReveal variants={cardVariants} className="flex items-center gap-2.5 px-1">
           <Heart className="h-5 w-5 text-gold-400" aria-hidden="true" />
           <h3 className="font-display text-xl font-bold text-white">Nuestros Valores</h3>
-        </motion.div>
+        </ScrollReveal>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={SCROLL_REVEAL_VIEWPORT}
-          variants={containerVariants}
-          className="grid gap-4 sm:grid-cols-2"
-        >
+        <ScrollReveal variants={containerVariants} className="grid gap-4 sm:grid-cols-2">
           {VALORES.map((valor) => (
             <motion.div
               key={valor.nombre}
@@ -361,14 +302,11 @@ export function DashboardContent({
               <p className="mt-1.5 text-sm leading-relaxed text-mist-300">{valor.descripcion}</p>
             </motion.div>
           ))}
-        </motion.div>
+        </ScrollReveal>
       </div>
 
       {/* 9. Filosofía de Equipo */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={SCROLL_REVEAL_VIEWPORT}
+      <ScrollReveal
         variants={cardVariants}
         className="relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent p-8 sm:p-10 transition-all duration-300 hover:border-gold-500/25"
       >
@@ -389,28 +327,16 @@ export function DashboardContent({
             Aquí no estamos solo para recibir información. Estamos para dar, aportar y sumar valor al equipo.
           </p>
         </div>
-      </motion.div>
+      </ScrollReveal>
 
       {/* 10. Galería de Equipo */}
       <div className="flex flex-col gap-6">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={SCROLL_REVEAL_VIEWPORT}
-          variants={cardVariants}
-          className="flex items-center gap-2.5 px-1"
-        >
+        <ScrollReveal variants={cardVariants} className="flex items-center gap-2.5 px-1">
           <ImageIcon className="h-5 w-5 text-gold-400" aria-hidden="true" />
           <h3 className="font-display text-xl font-bold text-white">Galería del Equipo</h3>
-        </motion.div>
+        </ScrollReveal>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={SCROLL_REVEAL_VIEWPORT}
-          variants={containerVariants}
-          className="grid grid-cols-2 gap-4 sm:grid-cols-4"
-        >
+        <ScrollReveal variants={containerVariants} className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {galeriaEquipo.map((foto) => (
             <motion.div
               key={foto.id}
@@ -429,7 +355,7 @@ export function DashboardContent({
               <div className="absolute inset-0 bg-gradient-to-t from-ink-950/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </motion.div>
           ))}
-        </motion.div>
+        </ScrollReveal>
       </div>
     </div>
   );
