@@ -368,7 +368,7 @@ export function DashboardContent({
         <ScrollReveal
           variants={containerVariants}
           once={false}
-          className="grid gap-4 overflow-x-hidden sm:grid-cols-2"
+          className="grid gap-4 sm:grid-cols-2"
         >
           {VALORES.map((valor, indice) => (
             <motion.div
@@ -432,7 +432,7 @@ export function DashboardContent({
         <ScrollReveal
           variants={containerVariants}
           once={false}
-          className="grid grid-cols-2 gap-4 overflow-x-hidden sm:grid-cols-4"
+          className="grid grid-cols-2 gap-4 sm:grid-cols-4"
         >
           {galeriaEquipo.map((foto, indice) => (
             <motion.div
