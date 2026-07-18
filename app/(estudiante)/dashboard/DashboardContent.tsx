@@ -272,14 +272,21 @@ export function DashboardContent({
       />
 
       {/* 5. Cabecera Cultura */}
-      <ScrollReveal variants={revealLeft} once={false}>
-        <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          Cultura y Equipo
-        </h2>
-        <p className="mt-2.5 text-lg text-mist-400">
-          Conoce a los líderes y los principios que nos guían.
-        </p>
-      </ScrollReveal>
+      {/* El overflow-x-hidden vive en este wrapper estático (no en el
+          ScrollReveal) porque revealLeft traslada el propio ScrollReveal en
+          su estado "hidden" (x: -40) — recortar en el mismo elemento que se
+          traslada no sirve, ya que el área de recorte se mueve junto con el
+          contenido. */}
+      <div className="overflow-x-hidden">
+        <ScrollReveal variants={revealLeft} once={false}>
+          <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Cultura y Equipo
+          </h2>
+          <p className="mt-2.5 text-lg text-mist-400">
+            Conoce a los líderes y los principios que nos guían.
+          </p>
+        </ScrollReveal>
+      </div>
 
       {/* 6. Team Leaders */}
       <div className="flex flex-col gap-6">
@@ -349,7 +356,11 @@ export function DashboardContent({
       </ScrollReveal>
 
       {/* 8. Nuestros Valores */}
-      <div className="flex flex-col gap-6">
+      {/* overflow-x-hidden vive en este wrapper (no en el ScrollReveal del
+          encabezado) porque revealRight traslada el propio ScrollReveal en
+          su estado "hidden" (x: 40) — recortar en el mismo elemento que se
+          traslada no sirve. */}
+      <div className="flex flex-col gap-6 overflow-x-hidden">
         <ScrollReveal variants={revealRight} once={false} className="flex items-center px-1">
           <h3 className="font-display text-xl font-bold text-white">Nuestros Valores</h3>
         </ScrollReveal>
@@ -405,7 +416,11 @@ export function DashboardContent({
       </ScrollReveal>
 
       {/* 10. Galería de Equipo */}
-      <div className="flex flex-col gap-6">
+      {/* overflow-x-hidden vive en este wrapper (no en el ScrollReveal del
+          encabezado) porque revealLeft traslada el propio ScrollReveal en
+          su estado "hidden" (x: -40) — recortar en el mismo elemento que se
+          traslada no sirve. */}
+      <div className="flex flex-col gap-6 overflow-x-hidden">
         <ScrollReveal
           variants={revealLeft}
           once={false}
