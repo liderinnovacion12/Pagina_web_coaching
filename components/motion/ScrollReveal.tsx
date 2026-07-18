@@ -25,6 +25,7 @@ export function ScrollReveal({
       animate={isInView ? "visible" : "hidden"}
       variants={variants}
       className={className}
+      inert={!isInView}
     >
       {children}
     </motion.div>

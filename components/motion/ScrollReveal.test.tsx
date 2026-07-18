@@ -16,6 +16,7 @@ vi.mock("framer-motion", async () => {
 describe("ScrollReveal", () => {
   afterEach(() => {
     useInViewMock.mockClear();
+    useInViewMock.mockReturnValue(true);
   });
 
   it("renderiza sus children", () => {
@@ -65,5 +66,25 @@ describe("ScrollReveal", () => {
       expect.anything(),
       expect.objectContaining({ once: false })
     );
+  });
+
+  it("marca el contenedor inert cuando el contenido no esta en vista", () => {
+    useInViewMock.mockReturnValue(false);
+    const { container } = render(
+      <ScrollReveal variants={{}}>
+        <a href="/test">enlace</a>
+      </ScrollReveal>
+    );
+    expect(container.firstElementChild).toHaveAttribute("inert");
+  });
+
+  it("no marca el contenedor inert cuando el contenido esta en vista", () => {
+    useInViewMock.mockReturnValue(true);
+    const { container } = render(
+      <ScrollReveal variants={{}}>
+        <a href="/test">enlace</a>
+      </ScrollReveal>
+    );
+    expect(container.firstElementChild).not.toHaveAttribute("inert");
   });
 });
