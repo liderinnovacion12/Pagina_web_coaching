@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { ScrollReveal } from "./ScrollReveal";
 
 const useInViewMock = vi.fn().mockReturnValue(true);
+const useReducedMotionSafeMock = vi.fn().mockReturnValue(false);
 
 vi.mock("framer-motion", async () => {
   const actual =
@@ -13,10 +14,21 @@ vi.mock("framer-motion", async () => {
   };
 });
 
+vi.mock("@/lib/motion", async () => {
+  const actual =
+    await vi.importActual<typeof import("@/lib/motion")>("@/lib/motion");
+  return {
+    ...actual,
+    useReducedMotionSafe: () => useReducedMotionSafeMock(),
+  };
+});
+
 describe("ScrollReveal", () => {
   afterEach(() => {
     useInViewMock.mockClear();
     useInViewMock.mockReturnValue(true);
+    useReducedMotionSafeMock.mockClear();
+    useReducedMotionSafeMock.mockReturnValue(false);
   });
 
   it("renderiza sus children", () => {
@@ -86,5 +98,27 @@ describe("ScrollReveal", () => {
       </ScrollReveal>
     );
     expect(container.firstElementChild).not.toHaveAttribute("inert");
+  });
+
+  it("se muestra de inmediato y no queda inert cuando el usuario prefiere reduced motion, sin importar el scroll", () => {
+    useInViewMock.mockReturnValue(false);
+    useReducedMotionSafeMock.mockReturnValue(true);
+    const { container } = render(
+      <ScrollReveal variants={{}}>
+        <p>x</p>
+      </ScrollReveal>
+    );
+    expect(container.firstElementChild).not.toHaveAttribute("inert");
+  });
+
+  it("respeta useInView cuando el usuario no prefiere reduced motion", () => {
+    useInViewMock.mockReturnValue(false);
+    useReducedMotionSafeMock.mockReturnValue(false);
+    const { container } = render(
+      <ScrollReveal variants={{}}>
+        <p>x</p>
+      </ScrollReveal>
+    );
+    expect(container.firstElementChild).toHaveAttribute("inert");
   });
 });
