@@ -76,22 +76,7 @@ const cardVariants: Variants = {
   },
 };
 
-// Variant "protagonista" para Team Leaders: más recorrido, más blur, más
-// duración que cardVariants — se siente más pesada al revelarse.
-const teamLeaderCardVariants: Variants = {
-  hidden: { opacity: 0, y: 40, filter: "blur(6px)" },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: {
-      duration: 0.9,
-      ease: [0.16, 1, 0.3, 1] as const,
-    },
-  },
-};
-
-// ── Coreografía de encabezados: 4 direcciones de entrada/salida ──────────
+// ── Coreografía de encabezados y tarjetas ─────────────────────────────────
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const revealUp: Variants = {
@@ -134,6 +119,33 @@ const revealScale: Variants = {
   },
 };
 
+// Entrada lateral pronunciada para tarjetas dentro de grillas (Dos
+// Columnas, Team Leaders, Valores, Galería) — mucho más recorrido y una
+// leve rotación frente a revealLeft/revealRight, para que se sienta como
+// que la tarjeta "cae" desde fuera de la pantalla en vez de un simple
+// desplazamiento.
+const revealFromLeftFar: Variants = {
+  hidden: { opacity: 0, x: -130, rotate: -4, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    rotate: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.9, ease: EASE },
+  },
+};
+
+const revealFromRightFar: Variants = {
+  hidden: { opacity: 0, x: 130, rotate: 4, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    rotate: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.9, ease: EASE },
+  },
+};
+
 interface DashboardContentProps {
   miembrosEquipo: MiembroEquipo[];
   galeriaEquipo: FotoGaleria[];
@@ -154,14 +166,8 @@ export function DashboardContent({
         <div className="absolute -left-4 top-1/2 h-16 w-1 -translate-y-1/2 rounded-r-md bg-gold-500/80" />
       </ScrollReveal>
 
-      {/* 2. Video de Bienvenida (sin marco) */}
+      {/* 2. Video de Bienvenida (sin marco, sin etiqueta) */}
       <ScrollReveal variants={revealUp} once={false}>
-        <div className="flex items-center gap-2 px-1 pb-4">
-          <span className="flex h-2 w-2 rounded-full bg-gold-400 animate-pulse" />
-          <p className="font-mono text-xs uppercase tracking-wider text-mist-400">
-            Video de inducción
-          </p>
-        </div>
         <div className="relative aspect-video overflow-hidden rounded-xl">
           <iframe
             src="https://www.loom.com/embed/cb856608ad54454a95f79ccdbaa07de1"
@@ -209,7 +215,7 @@ export function DashboardContent({
       >
         {/* Cómo Usar */}
         <motion.div
-          variants={cardVariants}
+          variants={revealFromLeftFar}
           className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
         >
           <h3 className="font-display text-lg font-bold text-white">
@@ -236,7 +242,7 @@ export function DashboardContent({
 
         {/* Accesos Rápidos */}
         <motion.div
-          variants={cardVariants}
+          variants={revealFromRightFar}
           className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
         >
           <h3 className="font-display text-lg font-bold text-white">
@@ -266,17 +272,11 @@ export function DashboardContent({
       />
 
       {/* 5. Cabecera Cultura */}
-      <ScrollReveal variants={revealLeft} once={false} className="relative">
-        <span
-          aria-hidden="true"
-          className="absolute -left-2 -top-6 font-mono text-7xl font-bold text-gold-500/10 sm:text-8xl"
-        >
-          01
-        </span>
-        <h2 className="relative font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      <ScrollReveal variants={revealLeft} once={false}>
+        <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Cultura y Equipo
         </h2>
-        <p className="relative mt-2.5 text-lg text-mist-400">
+        <p className="mt-2.5 text-lg text-mist-400">
           Conoce a los líderes y los principios que nos guían.
         </p>
       </ScrollReveal>
@@ -300,11 +300,11 @@ export function DashboardContent({
           once={false}
           className="grid gap-6 sm:grid-cols-2"
         >
-          {miembrosEquipo.map((miembro) => (
+          {miembrosEquipo.map((miembro, indice) => (
             <TeamLeaderCard
               key={miembro.id}
               miembro={miembro}
-              variants={teamLeaderCardVariants}
+              variants={indice % 2 === 0 ? revealFromLeftFar : revealFromRightFar}
             />
           ))}
         </ScrollReveal>
@@ -350,15 +350,8 @@ export function DashboardContent({
 
       {/* 8. Nuestros Valores */}
       <div className="flex flex-col gap-6">
-        <ScrollReveal
-          variants={revealRight}
-          once={false}
-          className="relative flex items-center gap-3 px-1"
-        >
+        <ScrollReveal variants={revealRight} once={false} className="flex items-center px-1">
           <h3 className="font-display text-xl font-bold text-white">Nuestros Valores</h3>
-          <span aria-hidden="true" className="font-mono text-4xl font-bold text-gold-500/15">
-            02
-          </span>
         </ScrollReveal>
 
         <ScrollReveal
@@ -366,10 +359,10 @@ export function DashboardContent({
           once={false}
           className="grid gap-4 sm:grid-cols-2"
         >
-          {VALORES.map((valor) => (
+          {VALORES.map((valor, indice) => (
             <motion.div
               key={valor.nombre}
-              variants={cardVariants}
+              variants={indice % 2 === 0 ? revealFromLeftFar : revealFromRightFar}
               whileHover={{ scale: 1.01 }}
               className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/[0.12]"
             >
@@ -416,11 +409,8 @@ export function DashboardContent({
         <ScrollReveal
           variants={revealLeft}
           once={false}
-          className="relative flex flex-col items-center gap-1 px-1 text-center"
+          className="flex flex-col items-center px-1 text-center"
         >
-          <span aria-hidden="true" className="font-mono text-2xl font-bold text-gold-500/20">
-            03
-          </span>
           <h3 className="font-display text-xl font-bold text-white">Galería del Equipo</h3>
         </ScrollReveal>
 
@@ -429,10 +419,10 @@ export function DashboardContent({
           once={false}
           className="grid grid-cols-2 gap-4 sm:grid-cols-4"
         >
-          {galeriaEquipo.map((foto) => (
+          {galeriaEquipo.map((foto, indice) => (
             <motion.div
               key={foto.id}
-              variants={cardVariants}
+              variants={indice % 2 === 0 ? revealFromLeftFar : revealFromRightFar}
               whileHover={{ scale: 1.03, y: -2 }}
               transition={{ duration: 0.2 }}
               className="group relative aspect-square overflow-hidden rounded-xl border border-white/[0.06] bg-ink-900 cursor-pointer shadow-lg"
