@@ -2,13 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
   Check,
   Eye,
-  Heart,
-  Image as ImageIcon,
   Lightbulb,
   MessageCircle,
   Target,
@@ -54,7 +52,7 @@ const VALORES = [
 
 // Contenedor de grilla con stagger para los hijos, disparado cuando la
 // grilla entra en el viewport (no al montar la página).
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -65,7 +63,7 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 25, filter: "blur(4px)" },
   visible: {
     opacity: 1,
@@ -80,7 +78,7 @@ const cardVariants = {
 
 // Variant "protagonista" para Team Leaders: más recorrido, más blur, más
 // duración que cardVariants — se siente más pesada al revelarse.
-const teamLeaderCardVariants = {
+const teamLeaderCardVariants: Variants = {
   hidden: { opacity: 0, y: 40, filter: "blur(6px)" },
   visible: {
     opacity: 1,
@@ -90,6 +88,49 @@ const teamLeaderCardVariants = {
       duration: 0.9,
       ease: [0.16, 1, 0.3, 1] as const,
     },
+  },
+};
+
+// ── Coreografía de encabezados: 4 direcciones de entrada/salida ──────────
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+const revealUp: Variants = {
+  hidden: { opacity: 0, y: 25, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: EASE },
+  },
+};
+
+const revealLeft: Variants = {
+  hidden: { opacity: 0, x: -40, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: EASE },
+  },
+};
+
+const revealRight: Variants = {
+  hidden: { opacity: 0, x: 40, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: EASE },
+  },
+};
+
+const revealScale: Variants = {
+  hidden: { opacity: 0, scale: 0.92, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: EASE },
   },
 };
 
@@ -105,7 +146,7 @@ export function DashboardContent({
   return (
     <div className="flex flex-col gap-12">
       {/* 1. Cabecera Principal */}
-      <ScrollReveal variants={cardVariants} className="relative">
+      <ScrollReveal variants={revealUp} once={false} className="relative">
         <h1 className="font-display text-[46px] font-bold leading-tight tracking-tight text-white sm:text-[54px]">
           Bienvenido a <span className="text-gradient-gold">Team 100% Real Estate</span>
         </h1>
@@ -113,31 +154,29 @@ export function DashboardContent({
         <div className="absolute -left-4 top-1/2 h-16 w-1 -translate-y-1/2 rounded-r-md bg-gold-500/80" />
       </ScrollReveal>
 
-      {/* 2. Video de Bienvenida */}
-      <ScrollReveal
-        variants={cardVariants}
-        className="group relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-7 transition-all duration-300 hover:border-gold-500/20 hover:shadow-[0_0_50px_rgba(217,169,78,0.05)]"
-      >
+      {/* 2. Video de Bienvenida (sin marco) */}
+      <ScrollReveal variants={revealUp} once={false}>
         <div className="flex items-center gap-2 px-1 pb-4">
           <span className="flex h-2 w-2 rounded-full bg-gold-400 animate-pulse" />
           <p className="font-mono text-xs uppercase tracking-wider text-mist-400">
             Video de inducción
           </p>
         </div>
-        <div className="relative aspect-video overflow-hidden rounded-xl border border-white/[0.08] bg-ink-950 shadow-2xl">
+        <div className="relative aspect-video overflow-hidden rounded-xl">
           <iframe
             src="https://www.loom.com/embed/cb856608ad54454a95f79ccdbaa07de1"
             title="Video de bienvenida — Team 100% Real Estate"
             allow="fullscreen"
             allowFullScreen
-            className="h-full w-full opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+            className="h-full w-full"
           />
         </div>
       </ScrollReveal>
 
       {/* 3. Banner de Comunidad WhatsApp */}
       <ScrollReveal
-        variants={cardVariants}
+        variants={revealUp}
+        once={false}
         className="relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-gradient-to-r from-whatsapp/10 via-transparent to-transparent p-8 sm:p-10 transition-all duration-300 hover:border-whatsapp/30 hover:shadow-[0_0_40px_rgba(37,211,102,0.05)]"
       >
         {/* Glow de fondo */}
@@ -163,7 +202,11 @@ export function DashboardContent({
       </ScrollReveal>
 
       {/* 4. Dos Columnas: Inducción & Accesos */}
-      <ScrollReveal variants={containerVariants} className="grid gap-6 sm:grid-cols-2">
+      <ScrollReveal
+        variants={containerVariants}
+        once={false}
+        className="grid gap-6 sm:grid-cols-2"
+      >
         {/* Cómo Usar */}
         <motion.div
           variants={cardVariants}
@@ -216,26 +259,47 @@ export function DashboardContent({
       </ScrollReveal>
 
       {/* Separador de Sección */}
-      <ScrollReveal variants={cardVariants} className="my-2 border-t border-white/[0.06]" />
+      <ScrollReveal
+        variants={revealUp}
+        once={false}
+        className="my-2 border-t border-white/[0.06]"
+      />
 
       {/* 5. Cabecera Cultura */}
-      <ScrollReveal variants={cardVariants}>
-        <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      <ScrollReveal variants={revealLeft} once={false} className="relative">
+        <span
+          aria-hidden="true"
+          className="absolute -left-2 -top-6 font-mono text-7xl font-bold text-gold-500/10 sm:text-8xl"
+        >
+          01
+        </span>
+        <h2 className="relative font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Cultura y Equipo
         </h2>
-        <p className="mt-2.5 text-lg text-mist-400">
+        <p className="relative mt-2.5 text-lg text-mist-400">
           Conoce a los líderes y los principios que nos guían.
         </p>
       </ScrollReveal>
 
       {/* 6. Team Leaders */}
       <div className="flex flex-col gap-6">
-        <ScrollReveal variants={cardVariants} className="flex items-center gap-2.5 px-1">
-          <Users className="h-5 w-5 text-gold-400" aria-hidden="true" />
-          <h3 className="font-display text-xl font-bold text-white">Team Leaders</h3>
+        <ScrollReveal
+          variants={revealScale}
+          once={false}
+          className="relative flex items-center px-1"
+        >
+          <Users
+            aria-hidden="true"
+            className="absolute -left-3 -top-2 h-16 w-16 text-gold-500/10 sm:h-20 sm:w-20"
+          />
+          <h3 className="relative font-display text-xl font-bold text-white">Team Leaders</h3>
         </ScrollReveal>
 
-        <ScrollReveal variants={containerVariants} className="grid gap-6 sm:grid-cols-2">
+        <ScrollReveal
+          variants={containerVariants}
+          once={false}
+          className="grid gap-6 sm:grid-cols-2"
+        >
           {miembrosEquipo.map((miembro) => (
             <TeamLeaderCard
               key={miembro.id}
@@ -247,7 +311,11 @@ export function DashboardContent({
       </div>
 
       {/* 7. Misión & Visión */}
-      <ScrollReveal variants={containerVariants} className="grid gap-6 sm:grid-cols-2">
+      <ScrollReveal
+        variants={containerVariants}
+        once={false}
+        className="grid gap-6 sm:grid-cols-2"
+      >
         <motion.div
           variants={cardVariants}
           whileHover={{ y: -4 }}
@@ -282,12 +350,22 @@ export function DashboardContent({
 
       {/* 8. Nuestros Valores */}
       <div className="flex flex-col gap-6">
-        <ScrollReveal variants={cardVariants} className="flex items-center gap-2.5 px-1">
-          <Heart className="h-5 w-5 text-gold-400" aria-hidden="true" />
+        <ScrollReveal
+          variants={revealRight}
+          once={false}
+          className="relative flex items-center gap-3 px-1"
+        >
           <h3 className="font-display text-xl font-bold text-white">Nuestros Valores</h3>
+          <span aria-hidden="true" className="font-mono text-4xl font-bold text-gold-500/15">
+            02
+          </span>
         </ScrollReveal>
 
-        <ScrollReveal variants={containerVariants} className="grid gap-4 sm:grid-cols-2">
+        <ScrollReveal
+          variants={containerVariants}
+          once={false}
+          className="grid gap-4 sm:grid-cols-2"
+        >
           {VALORES.map((valor) => (
             <motion.div
               key={valor.nombre}
@@ -307,22 +385,26 @@ export function DashboardContent({
 
       {/* 9. Filosofía de Equipo */}
       <ScrollReveal
-        variants={cardVariants}
+        variants={revealUp}
+        once={false}
         className="relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent p-8 sm:p-10 transition-all duration-300 hover:border-gold-500/25"
       >
-        {/* Adorno visual */}
+        {/* Adorno visual existente */}
         <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-gold-500/5 blur-[50px] -z-10" />
 
-        <Lightbulb className="h-6 w-6 text-gold-400" aria-hidden="true" />
-        <h2 className="mt-3.5 font-display text-2xl font-bold text-white">
+        <Lightbulb
+          aria-hidden="true"
+          className="absolute right-6 top-6 h-20 w-20 text-gold-500/10"
+        />
+        <h2 className="relative mt-3.5 font-display text-2xl font-bold text-white">
           Filosofía de Equipo
         </h2>
-        <p className="mt-3.5 text-base leading-relaxed text-mist-300">
+        <p className="relative mt-3.5 text-base leading-relaxed text-mist-300">
           Creemos firmemente en el trabajo en equipo, la transformación continua y la dedicación
           diaria. Somos una comunidad colaborativa donde nos apoyamos unos a otros, compartimos
           conocimiento y buscamos crecer juntos.
         </p>
-        <div className="mt-5 border-l-2 border-gold-500/60 pl-4">
+        <div className="relative mt-5 border-l-2 border-gold-500/60 pl-4">
           <p className="text-base font-semibold text-white">
             Aquí no estamos solo para recibir información. Estamos para dar, aportar y sumar valor al equipo.
           </p>
@@ -331,12 +413,22 @@ export function DashboardContent({
 
       {/* 10. Galería de Equipo */}
       <div className="flex flex-col gap-6">
-        <ScrollReveal variants={cardVariants} className="flex items-center gap-2.5 px-1">
-          <ImageIcon className="h-5 w-5 text-gold-400" aria-hidden="true" />
+        <ScrollReveal
+          variants={revealLeft}
+          once={false}
+          className="relative flex flex-col items-center gap-1 px-1 text-center"
+        >
+          <span aria-hidden="true" className="font-mono text-2xl font-bold text-gold-500/20">
+            03
+          </span>
           <h3 className="font-display text-xl font-bold text-white">Galería del Equipo</h3>
         </ScrollReveal>
 
-        <ScrollReveal variants={containerVariants} className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <ScrollReveal
+          variants={containerVariants}
+          once={false}
+          className="grid grid-cols-2 gap-4 sm:grid-cols-4"
+        >
           {galeriaEquipo.map((foto) => (
             <motion.div
               key={foto.id}
