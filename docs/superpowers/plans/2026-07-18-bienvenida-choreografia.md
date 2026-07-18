@@ -770,3 +770,22 @@ everything.
   Valores/Galería's grid wrappers. This doesn't change anything visually
   from what was demonstrated during brainstorming; it only clarifies which
   named constant applies where.
+
+## Post-implementation addendum
+
+During code review of the executed plan, two real accessibility bugs were
+found in `ScrollReveal` (not anticipated by this plan or its spec) and
+fixed in two follow-up commits before merge:
+
+1. Hidden/exited content (`once={false}`) stayed focusable and clickable —
+   fixed by adding `inert={!isInView}` to `ScrollReveal`'s root element.
+2. `ScrollReveal` never checked `prefers-reduced-motion` at all — fixed by
+   adding a `useReducedMotionSafe()` check that forces content to be
+   immediately visible and non-`inert` regardless of scroll position when
+   reduced motion is active.
+
+Both fixes live entirely in `components/motion/ScrollReveal.tsx` (no
+changes to `DashboardContent.tsx`). See the "Accesibilidad" section of
+`docs/superpowers/specs/2026-07-18-bienvenida-choreografia-design.md` for
+full detail, including a documented (non-bug) caveat about focus being
+dropped when a focused element's section becomes `inert` mid-scroll.

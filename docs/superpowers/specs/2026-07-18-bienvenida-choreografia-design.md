@@ -238,13 +238,40 @@ cambio.
 - Todos los elementos decorativos (índices numéricos, íconos reposicionados)
   llevan `aria-hidden="true"` — no son contenido, son parte del fondo
   visual del título, igual que ya se hace hoy con los íconos existentes.
-- `once={false}` no cambia nada de accesibilidad: `useInView`/`animate`
-  siguen siendo puramente visuales (opacity/transform/blur), el contenido
-  del DOM no se desmonta ni se oculta con `display:none` en ningún momento
-  — sigue siendo legible por lectores de pantalla y navegable por teclado
-  igual que hoy.
-- `prefers-reduced-motion` sigue cubierto igual que hoy: ninguna de estas
-  variantes toca el soporte global existente.
+
+**Correcciones encontradas durante la revisión de código (no previstas en
+la redacción original de este spec):**
+
+- **`once={false}` sí tenía una consecuencia de accesibilidad real que este
+  spec subestimó**: al ser puramente visual (opacity/blur), el contenido
+  oculto seguía siendo enfocable por teclado y clickeable aunque invisible
+  — un enlace podía "desaparecer" pero seguir en el tab order. Se corrigió
+  agregando el atributo HTML `inert={!isInView}` al `motion.div` raíz de
+  `ScrollReveal` (afecta a las 14 instancias de esta página automáticamente,
+  sin tocar cada call site). `inert` saca todo el subárbol del tab order,
+  del click y del árbol de accesibilidad mientras el contenido está oculto.
+  **Efecto secundario documentado, no un bug**: si un usuario de teclado
+  enfoca un enlace dentro de una sección (ej. el banner de WhatsApp o
+  "Enlaces de Interés") y luego sigue scrolleando sin volver a tabular, al
+  salir esa sección del viewport se vuelve `inert` y el navegador quita el
+  foco automáticamente (típicamente a `<body>`) — es el comportamiento
+  estándar de `inert` con contenido enfocado, no un error de esta
+  implementación.
+- **`prefers-reduced-motion` NO estaba cubierto por `ScrollReveal`,
+  contrario a lo que decía la versión original de este párrafo.** La regla
+  global de `app/globals.css` solo acorta `animation-duration`/
+  `transition-duration` vía CSS, y Framer Motion anima `animate` vía JS, no
+  vía esas propiedades CSS — así que no había ningún mecanismo real
+  evitando que un usuario con reduced motion viera secciones ocultas
+  (`opacity: 0`, y tras el fix de arriba, también `inert`) hasta scrollear
+  exactamente a esa sección. Se corrigió agregando `useReducedMotionSafe()`
+  (el hook ya usado en `ParticleField`/`HeroContent`/`TeamLeaderCard`) a
+  `ScrollReveal`: cuando reduced motion está activo, el contenido se
+  muestra de inmediato y nunca queda `inert`, sin importar la posición de
+  scroll.
+
+Ambas correcciones viven enteramente en `components/motion/ScrollReveal.tsx`
+— ninguna requirió tocar `DashboardContent.tsx`.
 
 ### Testing
 
