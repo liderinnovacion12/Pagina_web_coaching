@@ -654,3 +654,19 @@ everything.
   expect a `Variants` value — no mismatch. `teamLeaderCardVariants` is
   fully removed (no leftover references) since `revealFromLeftFar`/
   `revealFromRightFar` replace it everywhere it was used.
+
+## Post-implementation addendum
+
+During review, the ±130px/±40px lateral entrance caused real horizontal
+page overflow (empirically confirmed at 768px/1024px), fixed across 3
+follow-up commits: an initial root-level `overflow-x-hidden` (reverted —
+it invisibly clipped two pre-existing edge-flush decorative elements, the
+header's gold accent bar and Team Leaders' oversized `Users` icon), a
+scoped fix on the 4 grid containers (fixed the decorative-element
+regression but left a smaller overflow from 3 `revealLeft`/`revealRight`
+headers), and a final fix placing `overflow-x-hidden` on non-transformed
+wrapper `<div>`s around those 3 headers (a self-translating element can't
+clip its own transform). See the "Corrección encontrada durante la
+revisión: overflow horizontal" section of
+`docs/superpowers/specs/2026-07-18-bienvenida-entrada-lateral-design.md`
+for full detail.
