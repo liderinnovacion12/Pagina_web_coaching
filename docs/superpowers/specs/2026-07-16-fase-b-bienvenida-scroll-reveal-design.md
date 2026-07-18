@@ -58,47 +58,93 @@ se convierte en su propio punto de disparo, usando `whileInView` en vez de
 `lib/motion.ts` (`{ once: true, margin: "-10% 0px" }`) pero hoy no se usa en
 ningún lugar del proyecto:
 
+**Corrección tras verificación manual:** la primera implementación usó
+`whileInView` directamente (prop de Framer Motion). Se descubrió en
+verificación en navegador que `whileInView` **no oculta el contenido en el
+HTML renderizado por el servidor** — es un comportamiento intencional de
+Framer Motion (para no dejar contenido invisible si JavaScript falla en
+cargar), pero como efecto secundario, en una carga fresca de `/dashboard`
+(recarga, URL directa, pestaña nueva) **todas las secciones aparecen
+visibles de inmediato, sin revelado alguno** — contrario al objetivo de este
+spec. Se reemplaza por un componente compartido `ScrollReveal`
+(`components/motion/ScrollReveal.tsx`) que usa el hook `useInView` +
+la prop `animate` (en vez de la prop `whileInView`) — `animate` sí respeta
+el estado inicial oculto durante el renderizado en servidor (es el mismo
+mecanismo que ya usa `HeroContent.tsx` con éxito), y `useInView` retorna
+`false` en el servidor, así que el HTML inicial sale oculto de verdad:
+
+```tsx
+// components/motion/ScrollReveal.tsx
+"use client";
+
+import { useRef, type ReactNode } from "react";
+import { motion, useInView, type Variants } from "framer-motion";
+import { SCROLL_REVEAL_VIEWPORT } from "@/lib/motion";
+
+export function ScrollReveal({
+  variants,
+  className,
+  children,
+}: {
+  variants: Variants;
+  className?: string;
+  children: ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, SCROLL_REVEAL_VIEWPORT);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={variants}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+```
+
+Uso en `DashboardContent.tsx` — cada uno de los puntos de disparo (bloque
+único o grilla) se envuelve con `<ScrollReveal>` en vez del `motion.div`
+crudo:
+
 ```tsx
 // Patrón para una sección de bloque único (ej. Cabecera, Video, Banner WhatsApp,
 // Cabecera Cultura, Misión/Visión, Filosofía):
-<motion.div
-  initial="hidden"
-  whileInView="visible"
-  viewport={SCROLL_REVEAL_VIEWPORT}
-  variants={cardVariants}
->
+<ScrollReveal variants={cardVariants}>
   {/* contenido de la sección, sin cambios */}
-</motion.div>
+</ScrollReveal>
 ```
 
 ```tsx
 // Patrón para una sección con grilla interna (ej. Team Leaders, Valores,
 // Galería, y el bloque de Dos Columnas): el contenedor de la sección dispara
 // por scroll, sus hijos mantienen el stagger interno que ya tienen hoy.
-<motion.div
-  initial="hidden"
-  whileInView="visible"
-  viewport={SCROLL_REVEAL_VIEWPORT}
-  variants={containerVariants}
-  className="grid gap-6 sm:grid-cols-2"
->
+<ScrollReveal variants={containerVariants} className="grid gap-6 sm:grid-cols-2">
   {items.map((item) => (
     <motion.div key={item.id} variants={cardVariants}>
       {/* tarjeta, sin cambios */}
     </motion.div>
   ))}
-</motion.div>
+</ScrollReveal>
 ```
 
 `cardVariants` y `containerVariants` (ya definidos en el archivo, sin
 cambios en sus valores) se reutilizan tal cual — el lenguaje visual de la
-transición (fade + `y` + blur, ease-out premium) es idéntico al actual, lo
-único que cambia es **cuándo** se dispara cada sección.
+transición (fade + `y` + blur, ease-out premium) es idéntico al planeado
+originalmente, lo único que cambió es el mecanismo de disparo (`ScrollReveal`
+con `useInView`+`animate` en vez de `whileInView` crudo), para que funcione
+correctamente en cargas frescas de página, no solo en navegación interna
+tipo SPA.
 
-Las secciones que ya están visibles al cargar la página (Cabecera, Video)
-disparan de inmediato igual que hoy — es el comportamiento por defecto de
-`whileInView` cuando el elemento ya está dentro del viewport en el primer
-render, así que no hay regresión visible en la carga inicial.
+`ScrollReveal` vive en `components/motion/` (no en
+`components/estudiante/dashboard/`) porque es un primitivo reutilizable —
+cualquier página futura de la Fase B que necesite revelado por scroll SSR-
+seguro debería usar este mismo componente en vez de reimplementar el patrón
+`whileInView` con el mismo bug.
 
 ### 2. Team Leaders: sección protagonista
 
