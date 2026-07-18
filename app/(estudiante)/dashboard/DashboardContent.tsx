@@ -156,7 +156,7 @@ export function DashboardContent({
   galeriaEquipo,
 }: DashboardContentProps) {
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-12 overflow-x-hidden">
       {/* 1. Cabecera Principal */}
       <ScrollReveal variants={revealUp} once={false} className="relative">
         <h1 className="font-display text-[46px] font-bold leading-tight tracking-tight text-white sm:text-[54px]">
