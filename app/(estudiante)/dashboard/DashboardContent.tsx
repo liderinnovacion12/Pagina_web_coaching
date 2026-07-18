@@ -156,7 +156,7 @@ export function DashboardContent({
   galeriaEquipo,
 }: DashboardContentProps) {
   return (
-    <div className="flex flex-col gap-12 overflow-x-hidden">
+    <div className="flex flex-col gap-12">
       {/* 1. Cabecera Principal */}
       <ScrollReveal variants={revealUp} once={false} className="relative">
         <h1 className="font-display text-[46px] font-bold leading-tight tracking-tight text-white sm:text-[54px]">
@@ -211,7 +211,7 @@ export function DashboardContent({
       <ScrollReveal
         variants={containerVariants}
         once={false}
-        className="grid gap-6 sm:grid-cols-2"
+        className="grid gap-6 overflow-x-hidden sm:grid-cols-2"
       >
         {/* Cómo Usar */}
         <motion.div
@@ -298,7 +298,7 @@ export function DashboardContent({
         <ScrollReveal
           variants={containerVariants}
           once={false}
-          className="grid gap-6 sm:grid-cols-2"
+          className="grid gap-6 overflow-x-hidden sm:grid-cols-2"
         >
           {miembrosEquipo.map((miembro, indice) => (
             <TeamLeaderCard
@@ -357,7 +357,7 @@ export function DashboardContent({
         <ScrollReveal
           variants={containerVariants}
           once={false}
-          className="grid gap-4 sm:grid-cols-2"
+          className="grid gap-4 overflow-x-hidden sm:grid-cols-2"
         >
           {VALORES.map((valor, indice) => (
             <motion.div
@@ -417,7 +417,7 @@ export function DashboardContent({
         <ScrollReveal
           variants={containerVariants}
           once={false}
-          className="grid grid-cols-2 gap-4 sm:grid-cols-4"
+          className="grid grid-cols-2 gap-4 overflow-x-hidden sm:grid-cols-4"
         >
           {galeriaEquipo.map((foto, indice) => (
             <motion.div
