@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionValueEvent,
@@ -61,11 +61,15 @@ function HorizontalPanels() {
     setVideoInert(value < 0.5);
   });
 
+  useEffect(() => {
+    setVideoInert(scrollYProgress.get() < 0.5);
+  }, [scrollYProgress]);
+
   return (
     <div
       ref={runwayRef}
       data-testid="horizontal-intro-runway"
-      className="relative h-[200vh]"
+      className="relative h-[200vh] w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]"
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <motion.div style={{ x: trackX }} className="flex h-full w-[200vw]">
