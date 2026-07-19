@@ -33,7 +33,6 @@ export function ProyectoCard({
       whileHover={{ y: -6 }}
       className="group relative flex h-[440px] w-[320px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
     >
-      {/* Zona de imagen: brillo completo, sin degradado ni texto encima */}
       <div className="relative h-56 shrink-0 overflow-hidden">
         {proyecto.imagenUrl ? (
           <Image
@@ -48,7 +47,6 @@ export function ProyectoCard({
         )}
       </div>
 
-      {/* Panel de texto: fondo sólido, nunca se superpone a la imagen */}
       <div className="flex flex-1 flex-col gap-2 p-6">
         <div className="flex items-start justify-between gap-3">
           <h3 className="font-display text-lg font-bold text-white">
