@@ -30,7 +30,7 @@ export function TeamLeaderCard({
       variants={variants}
       whileHover={{ y: -6 }}
       transition={{ duration: 0.3 }}
-      className="group relative aspect-[3/4] overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950"
+      className="group relative aspect-square overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950"
     >
       {miembro.fotoUrl ? (
         <motion.div
