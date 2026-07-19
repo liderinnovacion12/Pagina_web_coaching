@@ -6,21 +6,36 @@ import { motion } from "framer-motion";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
 import { useReducedMotionSafe } from "@/lib/motion";
 
+const SCALE_LEJANA = 0.82;
+const SCALE_CENTRO = 1.12;
+const OPACITY_LEJANA = 0.45;
+const OPACITY_CENTRO = 1;
+
+function interpolar(min: number, max: number, t: number) {
+  return min + (max - min) * t;
+}
+
+export function calcularEstiloFoco(intensidad: number, reducedMotion: boolean) {
+  if (reducedMotion) {
+    return { scale: 1, opacity: 1 };
+  }
+  return {
+    scale: interpolar(SCALE_LEJANA, SCALE_CENTRO, intensidad),
+    opacity: interpolar(OPACITY_LEJANA, OPACITY_CENTRO, intensidad),
+  };
+}
+
 export const ProyectoCard = forwardRef<
   HTMLDivElement,
-  { proyecto: ProyectoAliado; enFoco: boolean }
->(function ProyectoCard({ proyecto, enFoco }, ref) {
+  { proyecto: ProyectoAliado; intensidad: number }
+>(function ProyectoCard({ proyecto, intensidad }, ref) {
   const reducedMotion = useReducedMotionSafe();
 
   return (
     <motion.div
       ref={ref}
-      animate={
-        reducedMotion
-          ? { scale: 1, opacity: 1 }
-          : { scale: enFoco ? 1.04 : 0.94, opacity: enFoco ? 1 : 0.75 }
-      }
-      transition={{ duration: 0.3 }}
+      animate={calcularEstiloFoco(intensidad, reducedMotion)}
+      transition={{ duration: 0.1 }}
       whileHover={{ y: -6 }}
       className="group relative flex h-[440px] w-[320px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
     >
