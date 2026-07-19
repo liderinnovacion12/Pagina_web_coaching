@@ -38,9 +38,9 @@ export const ProyectoCard = forwardRef<
       animate={calcularEstiloFoco(intensidad, reducedMotion)}
       transition={{ duration: 0.1 }}
       whileHover={{ y: -6 }}
-      className="group relative flex h-[504px] w-[320px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
+      className="group relative flex h-[568px] w-[320px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
     >
-      <div className="relative h-72 shrink-0 overflow-hidden">
+      <div className="relative h-[352px] shrink-0 overflow-hidden">
         {proyecto.imagenUrl ? (
           <Image
             src={proyecto.imagenUrl}
