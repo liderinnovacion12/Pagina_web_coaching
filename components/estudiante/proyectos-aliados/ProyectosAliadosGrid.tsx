@@ -1,11 +1,25 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
-import { staggerContainer, blurFadeUp } from "@/lib/motion";
+import { staggerContainer, blurFadeUp, useReducedMotionSafe } from "@/lib/motion";
 import { ProyectoCard } from "./ProyectoCard";
 
+const SCROLL_AMOUNT_PX = 400;
+
 export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotionSafe();
+
+  function desplazar(direccion: 1 | -1) {
+    scrollRef.current?.scrollBy({
+      left: SCROLL_AMOUNT_PX * direccion,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+  }
+
   return (
     <motion.div
       initial="hidden"
@@ -30,11 +44,33 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
         </div>
       </motion.div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        {proyectos.map((proyecto) => (
-          <ProyectoCard key={proyecto.id} proyecto={proyecto} />
-        ))}
-      </div>
+      <motion.div variants={blurFadeUp} className="relative">
+        <div
+          ref={scrollRef}
+          className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
+        >
+          {proyectos.map((proyecto) => (
+            <ProyectoCard key={proyecto.id} proyecto={proyecto} />
+          ))}
+        </div>
+
+        <button
+          type="button"
+          aria-label="Proyecto anterior"
+          onClick={() => desplazar(-1)}
+          className="absolute -left-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-ink-950/90 text-white backdrop-blur-md transition hover:border-gold-500/40 hover:text-gold-300 sm:flex"
+        >
+          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          aria-label="Proyecto siguiente"
+          onClick={() => desplazar(1)}
+          className="absolute -right-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-ink-950/90 text-white backdrop-blur-md transition hover:border-gold-500/40 hover:text-gold-300 sm:flex"
+        >
+          <ChevronRight className="h-5 w-5" aria-hidden="true" />
+        </button>
+      </motion.div>
     </motion.div>
   );
 }

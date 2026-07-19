@@ -53,4 +53,11 @@ describe("ProyectosAliadosGrid", () => {
     expect(screen.getByText(/comisión regular/i)).toBeInTheDocument();
     expect(screen.getByText(/comisión para el equipo/i)).toBeInTheDocument();
   });
+
+  it("tiene botones de navegación con su aria-label", () => {
+    render(<ProyectosAliadosGrid proyectos={PROYECTOS} />);
+
+    expect(screen.getByRole("button", { name: "Proyecto anterior" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Proyecto siguiente" })).toBeInTheDocument();
+  });
 });

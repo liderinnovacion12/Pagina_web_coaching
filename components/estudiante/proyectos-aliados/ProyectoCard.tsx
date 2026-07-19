@@ -3,15 +3,13 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
-import { blurFadeUp } from "@/lib/motion";
 
 export function ProyectoCard({ proyecto }: { proyecto: ProyectoAliado }) {
   return (
     <motion.div
-      variants={blurFadeUp}
       whileHover={{ y: -6 }}
       transition={{ duration: 0.3 }}
-      className="group relative h-[440px] overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950"
+      className="group relative h-[440px] w-[320px] shrink-0 snap-center overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
     >
       {proyecto.imagenUrl ? (
         <Image
