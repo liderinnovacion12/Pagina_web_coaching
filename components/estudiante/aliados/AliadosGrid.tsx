@@ -57,7 +57,7 @@ export function AliadosGrid({ aliados }: { aliados: Aliado[] }) {
 
         {/* Panel de detalle */}
         <div className="min-w-0 flex-1 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8">
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {seleccionado && (
               <motion.div
                 key={seleccionado.id}
