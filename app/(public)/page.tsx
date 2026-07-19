@@ -35,7 +35,7 @@ export default async function LandingPage() {
         <HeroContent estadisticas={ESTADISTICAS} />
       </HeroScrollLayer>
 
-      <section id="cursos" className="relative mx-auto max-w-6xl px-6 py-20">
+      <section id="cursos" className="relative isolate mx-auto max-w-6xl px-6 py-20">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64 bg-[radial-gradient(circle_at_30%_20%,rgba(217,169,78,0.08),transparent_60%)]"
