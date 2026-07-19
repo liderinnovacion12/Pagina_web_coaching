@@ -138,6 +138,30 @@ const revealFromRightFar: Variants = {
   },
 };
 
+// Deslizamiento horizontal limpio, sin rotación — a diferencia de
+// revealFromLeftFar/revealFromRightFar (que sí rotan), esta variante evita
+// que el desplazamiento se lea como un "tambaleo/caída" en vez de un
+// deslizamiento lateral fluido. Usada en Dos Columnas y Nuestros Valores.
+const revealSlideLeft: Variants = {
+  hidden: { opacity: 0, x: -130, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.5, ease: EASE },
+  },
+};
+
+const revealSlideRight: Variants = {
+  hidden: { opacity: 0, x: 130, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.5, ease: EASE },
+  },
+};
+
 interface DashboardContentProps {
   miembrosEquipo: MiembroEquipo[];
   galeriaEquipo: FotoGaleria[];
@@ -188,13 +212,13 @@ export function DashboardContent({
       >
         {/* Cómo Usar */}
         <motion.div
-          variants={revealFromLeftFar}
-          className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
+          variants={revealSlideLeft}
+          className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-10 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
         >
-          <h3 className="font-display text-lg font-bold text-white">
+          <h3 className="font-display text-xl font-bold text-white">
             Cómo Usar la Plataforma
           </h3>
-          <ol className="mt-6 flex flex-col gap-5">
+          <ol className="mt-7 flex flex-col gap-6">
             {PASOS_USO.map((paso, indice) => (
               <motion.li
                 key={paso}
@@ -202,10 +226,10 @@ export function DashboardContent({
                 transition={{ duration: 0.2 }}
                 className="flex gap-4 group"
               >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gold-500/10 font-mono text-xs font-bold text-gold-300 border border-gold-500/20 group-hover:bg-gold-500/20 transition-all duration-200">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gold-500/10 font-mono text-sm font-bold text-gold-300 border border-gold-500/20 group-hover:bg-gold-500/20 transition-all duration-200">
                   {indice + 1}
                 </span>
-                <span className="text-sm leading-relaxed text-mist-300 group-hover:text-white transition-colors duration-200">
+                <span className="text-base leading-relaxed text-mist-300 group-hover:text-white transition-colors duration-200">
                   {paso}
                 </span>
               </motion.li>
@@ -215,18 +239,18 @@ export function DashboardContent({
 
         {/* Accesos Rápidos */}
         <motion.div
-          variants={revealFromRightFar}
-          className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
+          variants={revealSlideRight}
+          className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-10 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
         >
-          <h3 className="font-display text-lg font-bold text-white">
+          <h3 className="font-display text-xl font-bold text-white">
             Enlaces de Interés
           </h3>
-          <ul className="mt-5 flex flex-col gap-1.5">
+          <ul className="mt-6 flex flex-col gap-2">
             {ACCESOS_RAPIDOS.map((acceso) => (
               <li key={acceso.href}>
                 <Link
                   href={acceso.href}
-                  className="group flex items-center justify-between rounded-xl border border-transparent px-4 py-3.5 text-sm text-mist-300 transition-all duration-200 hover:border-white/5 hover:bg-white/[0.02] hover:text-gold-300"
+                  className="group flex items-center justify-between rounded-xl border border-transparent px-5 py-4 text-base text-mist-300 transition-all duration-200 hover:border-white/5 hover:bg-white/[0.02] hover:text-gold-300"
                 >
                   <span className="font-medium">{acceso.label}</span>
                   <ArrowRight className="h-4 w-4 transform transition-transform duration-200 group-hover:translate-x-1 text-mist-500 group-hover:text-gold-300" aria-hidden="true" />
@@ -341,20 +365,20 @@ export function DashboardContent({
         <ScrollReveal
           variants={containerVariants}
           once={false}
-          className="grid gap-4 sm:grid-cols-2"
+          className="grid gap-6 sm:grid-cols-2"
         >
           {VALORES.map((valor, indice) => (
             <motion.div
               key={valor.nombre}
-              variants={indice % 2 === 0 ? revealFromLeftFar : revealFromRightFar}
+              variants={indice % 2 === 0 ? revealSlideLeft : revealSlideRight}
               whileHover={{ scale: 1.01 }}
-              className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/[0.12]"
+              className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-white/[0.12]"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold-500/10 border border-gold-500/20">
-                <Check className="h-4.5 w-4.5 text-gold-300" aria-hidden="true" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-500/10 border border-gold-500/20">
+                <Check className="h-5 w-5 text-gold-300" aria-hidden="true" />
               </div>
-              <h4 className="mt-3 font-display font-bold text-white">{valor.nombre}</h4>
-              <p className="mt-1.5 text-sm leading-relaxed text-mist-300">{valor.descripcion}</p>
+              <h4 className="mt-4 font-display text-lg font-bold text-white">{valor.nombre}</h4>
+              <p className="mt-2 text-sm leading-relaxed text-mist-300">{valor.descripcion}</p>
             </motion.div>
           ))}
         </ScrollReveal>
