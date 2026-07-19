@@ -121,4 +121,13 @@
     animation: vortex-glide 14s ease-in-out infinite;
     will-change: transform;
   }
+
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

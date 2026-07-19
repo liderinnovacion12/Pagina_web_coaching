@@ -167,7 +167,7 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
         <div
           ref={scrollRef}
           onScroll={actualizarIntensidad}
-          className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
+          className="scrollbar-hide flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden"
         >
           {tarjetas.map(({ clave, segmento, proyecto }) => (
             <ProyectoCard
