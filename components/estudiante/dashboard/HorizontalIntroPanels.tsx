@@ -64,9 +64,13 @@ function HorizontalPanels() {
     }
   }, []);
 
+  // El progreso debe llegar a 0 justo cuando el panel se fija (top:
+  // headerHeight), no cuando el runway toca el borde absoluto del
+  // viewport (y=0) — si no, hay una ventana de scroll puramente
+  // vertical antes de que arranque el movimiento lateral.
   const { scrollYProgress } = useScroll({
     target: runwayRef,
-    offset: ["start start", "end end"],
+    offset: [`start ${headerHeight}px`, "end end"],
   });
 
   // El progreso crudo del scroll queda pegado 1:1 al mouse/trackpad, lo
