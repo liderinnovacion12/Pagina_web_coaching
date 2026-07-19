@@ -71,16 +71,16 @@ export function AliadosGrid({ aliados }: { aliados: Aliado[] }) {
                     <Image
                       src={seleccionado.imagenUrl}
                       alt={seleccionado.servicio}
-                      width={56}
-                      height={56}
-                      className="h-14 w-14 shrink-0 rounded-full border border-white/10 object-cover"
+                      width={112}
+                      height={112}
+                      className="h-28 w-28 shrink-0 rounded-full border border-white/10 object-cover"
                     />
                   ) : (
                     <span
-                      className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-gold-500/20 bg-gold-500/10 text-gold-300"
+                      className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full border border-gold-500/20 bg-gold-500/10 text-gold-300"
                       aria-hidden="true"
                     >
-                      <Building2 className="h-6 w-6" />
+                      <Building2 className="h-12 w-12" />
                     </span>
                   )}
                   <h2 className="font-display text-xl font-bold text-white">
