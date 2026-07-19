@@ -32,6 +32,29 @@ export const revealUp: Variants = {
   },
 };
 
+// Deslizamiento horizontal limpio, sin rotación — el blur pronunciado
+// (10px) hace que el elemento se sienta "materializándose" en vez de un
+// objeto ya formado que todavía está deslizando a los tirones.
+export const revealSlideLeft: Variants = {
+  hidden: { opacity: 0, x: -130, filter: "blur(10px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.5, ease: EASE_OUT },
+  },
+};
+
+export const revealSlideRight: Variants = {
+  hidden: { opacity: 0, x: 130, filter: "blur(10px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.5, ease: EASE_OUT },
+  },
+};
+
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.5, ease: EASE_OUT } },

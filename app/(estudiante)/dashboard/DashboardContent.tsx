@@ -13,7 +13,7 @@ import {
 import type { MiembroEquipo } from "@/lib/db/equipo";
 import type { FotoGaleria } from "@/lib/db/galeria";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
-import { revealUp } from "@/lib/motion";
+import { revealSlideLeft, revealSlideRight, revealUp } from "@/lib/motion";
 import { TeamLeaderCard } from "@/components/estudiante/dashboard/TeamLeaderCard";
 import { HorizontalIntroPanels } from "@/components/estudiante/dashboard/HorizontalIntroPanels";
 
@@ -131,33 +131,6 @@ const revealFromRightFar: Variants = {
     opacity: 1,
     x: 0,
     rotate: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.5, ease: EASE },
-  },
-};
-
-// Deslizamiento horizontal limpio, sin rotación — a diferencia de
-// revealFromLeftFar/revealFromRightFar (que sí rotan), esta variante evita
-// que el desplazamiento se lea como un "tambaleo/caída" en vez de un
-// deslizamiento lateral fluido. Usada en Dos Columnas y Nuestros Valores.
-// El blur más pronunciado (10px, igual que blurFadeUp del resto del sitio)
-// hace que la tarjeta se sienta "materializándose" en vez de un objeto ya
-// formado que todavía está deslizando a los tirones.
-const revealSlideLeft: Variants = {
-  hidden: { opacity: 0, x: -130, filter: "blur(10px)" },
-  visible: {
-    opacity: 1,
-    x: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.5, ease: EASE },
-  },
-};
-
-const revealSlideRight: Variants = {
-  hidden: { opacity: 0, x: 130, filter: "blur(10px)" },
-  visible: {
-    opacity: 1,
-    x: 0,
     filter: "blur(0px)",
     transition: { duration: 0.5, ease: EASE },
   },

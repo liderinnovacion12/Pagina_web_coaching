@@ -21,6 +21,8 @@ import {
   useReducedMotionSafe,
   useIsDesktop,
   revealUp,
+  revealSlideLeft,
+  revealSlideRight,
 } from "./motion";
 
 describe("variantes de motion", () => {
@@ -63,6 +65,34 @@ describe("variantes de motion", () => {
       y: 0,
       filter: "blur(0px)",
       transition: { duration: 0.6, ease: EASE_OUT },
+    });
+  });
+
+  it("revealSlideLeft entra desde la izquierda con blur pronunciado, sin rotación", () => {
+    expect(revealSlideLeft.hidden).toEqual({
+      opacity: 0,
+      x: -130,
+      filter: "blur(10px)",
+    });
+    expect(revealSlideLeft.visible).toMatchObject({
+      opacity: 1,
+      x: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.5, ease: EASE_OUT },
+    });
+  });
+
+  it("revealSlideRight entra desde la derecha con blur pronunciado, sin rotación", () => {
+    expect(revealSlideRight.hidden).toEqual({
+      opacity: 0,
+      x: 130,
+      filter: "blur(10px)",
+    });
+    expect(revealSlideRight.visible).toMatchObject({
+      opacity: 1,
+      x: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.5, ease: EASE_OUT },
     });
   });
 });
