@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, MessageCircle } from "lucide-react";
 import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
-import { staggerContainer, blurFadeUp } from "@/lib/motion";
+import { staggerContainer, blurFadeUp, blurFadeUpConDelay } from "@/lib/motion";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { GrupoPrincipalCard } from "./GrupoPrincipalCard";
 import { IndicadoresPanel } from "./IndicadoresPanel";
 import { HerramientasToolbar, type OrdenGrupos, type VistaGrupos } from "./HerramientasToolbar";
@@ -97,6 +98,15 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
           <p className="mt-4 font-mono text-xs uppercase tracking-wider text-whatsapp">
             Prioridad #1 para nuevos agentes
           </p>
+          <div className="mt-4 flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-whatsapp opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-whatsapp" />
+            </span>
+            <span className="font-mono text-xs uppercase tracking-wider text-whatsapp">
+              En vivo
+            </span>
+          </div>
           <h1 className="mt-2 font-display text-[42px] font-bold leading-tight text-white">
             Herramientas y Comunicación
           </h1>
@@ -116,9 +126,14 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
         <motion.div
           variants={blurFadeUp}
           aria-hidden="true"
-          className="hidden items-center justify-center sm:flex"
+          className="hidden flex-col items-center justify-center gap-1 sm:flex"
         >
-          <div className="h-40 w-40 rounded-full bg-whatsapp/10 blur-2xl" />
+          <span className="font-display text-6xl font-bold text-white">
+            {gruposDeProyecto.length}
+          </span>
+          <span className="font-mono text-xs uppercase tracking-wider text-mist-400">
+            Grupos activos
+          </span>
         </motion.div>
       </motion.div>
 
@@ -145,17 +160,19 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
       {gruposFiltrados.length === 0 ? (
         <p className="text-mist-400">No encontramos grupos con ese nombre.</p>
       ) : (
-        <motion.div
+        <div
           key={`${vista}-${paginaSegura}`}
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer(0.04)}
           className={vista === "grid" ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3" : "flex flex-col gap-3"}
         >
-          {gruposPagina.map((grupo) => (
-            <GrupoCard key={grupo.id} grupo={grupo} vista={vista} />
+          {gruposPagina.map((grupo, indice) => (
+            <ScrollReveal
+              key={grupo.id}
+              variants={blurFadeUpConDelay(Math.min(indice, 8) * 0.05)}
+            >
+              <GrupoCard grupo={grupo} vista={vista} />
+            </ScrollReveal>
           ))}
-        </motion.div>
+        </div>
       )}
 
       <Paginacion
