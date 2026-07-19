@@ -325,11 +325,11 @@ export function DashboardContent({
           whileHover={{ y: -4 }}
           className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-gold-500/20"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500/10 border border-gold-500/20 text-gold-300">
-            <Target className="h-5 w-5" aria-hidden="true" />
+          <div className="flex items-center gap-4">
+            <Target className="h-11 w-11 shrink-0 text-gold-400" aria-hidden="true" />
+            <h3 className="font-display text-xl font-bold text-white">Nuestra Misión</h3>
           </div>
-          <h3 className="mt-4.5 font-display text-xl font-bold text-white">Nuestra Misión</h3>
-          <p className="mt-3 text-sm leading-relaxed text-mist-300">
+          <p className="mt-4 text-sm leading-relaxed text-mist-300">
             Empoderar a cada agente para que alcance su máximo potencial, brindándole las
             herramientas, el acompañamiento y el entorno correcto para crecer de manera
             profesional y personal.
@@ -341,11 +341,11 @@ export function DashboardContent({
           whileHover={{ y: -4 }}
           className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-gold-500/20"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500/10 border border-gold-500/20 text-gold-300">
-            <Eye className="h-5 w-5" aria-hidden="true" />
+          <div className="flex items-center gap-4">
+            <Eye className="h-11 w-11 shrink-0 text-gold-400" aria-hidden="true" />
+            <h3 className="font-display text-xl font-bold text-white">Nuestra Visión</h3>
           </div>
-          <h3 className="mt-4.5 font-display text-xl font-bold text-white">Nuestra Visión</h3>
-          <p className="mt-3 text-sm leading-relaxed text-mist-300">
+          <p className="mt-4 text-sm leading-relaxed text-mist-300">
             Construir un equipo sólido, colaborativo y en constante crecimiento, donde cada
             agente opere su negocio con claridad, estructura y mentalidad de liderazgo.
           </p>
@@ -374,11 +374,11 @@ export function DashboardContent({
               whileHover={{ scale: 1.01 }}
               className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-white/[0.12]"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-500/10 border border-gold-500/20">
-                <Check className="h-5 w-5 text-gold-300" aria-hidden="true" />
+              <div className="flex items-center gap-3">
+                <Check className="h-8 w-8 shrink-0 text-gold-400" aria-hidden="true" />
+                <h4 className="font-display text-lg font-bold text-white">{valor.nombre}</h4>
               </div>
-              <h4 className="mt-4 font-display text-lg font-bold text-white">{valor.nombre}</h4>
-              <p className="mt-2 text-sm leading-relaxed text-mist-300">{valor.descripcion}</p>
+              <p className="mt-3 text-sm leading-relaxed text-mist-300">{valor.descripcion}</p>
             </motion.div>
           ))}
         </ScrollReveal>
