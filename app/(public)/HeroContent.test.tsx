@@ -20,5 +20,8 @@ describe("HeroContent", () => {
     expect(screen.getByText("2,000+")).toBeInTheDocument();
     // "Líderes" también existe en un <dt> sr-only; se apunta al <p> visible.
     expect(screen.getByText("Líderes", { selector: "p" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /descubrí nuestros cursos/i })
+    ).toHaveAttribute("href", "#cursos");
   });
 });

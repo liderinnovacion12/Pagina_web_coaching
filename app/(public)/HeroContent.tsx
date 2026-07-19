@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import { motion, animate } from "framer-motion";
 import { blurFadeUp, fadeUp, staggerContainer, useReducedMotionSafe } from "@/lib/motion";
 
@@ -116,20 +117,40 @@ export function HeroContent({
       </motion.div>
 
       {/* Grid de Estadísticas con Contadores */}
-      <motion.dl
+      <motion.div variants={animVariant} className="relative mt-16 w-full">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_30%_20%,rgba(217,169,78,0.10),transparent_60%)]"
+        />
+        <dl className="grid gap-10 text-left sm:grid-cols-3 sm:gap-16">
+          {estadisticas.map((stat) => (
+            <div key={stat.etiqueta} className="border-t border-white/10 pt-5">
+              <dt className="sr-only">{stat.etiqueta}</dt>
+              <dd className="font-mono text-5xl font-semibold text-gold-400 sm:text-6xl">
+                <AnimatedCounter value={stat.valor} />
+              </dd>
+              <p className="mt-2 text-sm text-mist-500">{stat.etiqueta}</p>
+            </div>
+          ))}
+        </dl>
+      </motion.div>
+
+      {/* Indicador de scroll hacia el catálogo */}
+      <motion.a
+        href="#cursos"
         variants={animVariant}
-        className="mt-16 grid gap-10 text-left sm:grid-cols-3 sm:gap-16"
+        className="mt-14 flex flex-col items-center gap-2 text-mist-500 transition-colors duration-200 hover:text-gold-300"
       >
-        {estadisticas.map((stat) => (
-          <div key={stat.etiqueta}>
-            <dt className="sr-only">{stat.etiqueta}</dt>
-            <dd className="font-mono text-3xl font-semibold text-gold-400">
-              <AnimatedCounter value={stat.valor} />
-            </dd>
-            <p className="mt-1 text-sm text-mist-500">{stat.etiqueta}</p>
-          </div>
-        ))}
-      </motion.dl>
+        <span className="font-mono text-xs uppercase tracking-wider">
+          Descubrí nuestros cursos
+        </span>
+        <motion.span
+          animate={reducedMotion ? undefined : { y: [0, 8, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <ChevronDown className="h-5 w-5" aria-hidden="true" />
+        </motion.span>
+      </motion.a>
     </motion.section>
   );
 }
