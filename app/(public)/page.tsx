@@ -6,6 +6,8 @@ import { HeroBackground } from "./HeroBackground";
 import { HeroContent } from "./HeroContent";
 import { HeroScrollLayer } from "./HeroScrollLayer";
 import { ParticleField } from "@/components/motion/ParticleField";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { revealUp } from "@/lib/motion";
 
 export const metadata: Metadata = {
   title: "Team 100% Real Estate | Transforma tu Liderazgo",
@@ -33,13 +35,23 @@ export default async function LandingPage() {
         <HeroContent estadisticas={ESTADISTICAS} />
       </HeroScrollLayer>
 
-      <section id="cursos" className="mx-auto max-w-6xl px-6 py-20">
-        <h2 className="font-display text-3xl font-bold text-white">
-          Catálogo de cursos
-        </h2>
-        <p className="mt-2 text-mist-400">
-          Programas diseñados por coaches ejecutivos con experiencia real.
-        </p>
+      <section id="cursos" className="relative mx-auto max-w-6xl px-6 py-20">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64 bg-[radial-gradient(circle_at_30%_20%,rgba(217,169,78,0.08),transparent_60%)]"
+        />
+        <ScrollReveal
+          variants={revealUp}
+          once={false}
+          className="border-t border-white/10 pt-10"
+        >
+          <h2 className="font-display text-4xl font-bold text-gradient-gold sm:text-5xl">
+            Catálogo de cursos
+          </h2>
+          <p className="mt-4 max-w-xl text-mist-400">
+            Programas diseñados por coaches ejecutivos con experiencia real.
+          </p>
+        </ScrollReveal>
         <div className="mt-10">
           <CatalogoList cursos={cursos} />
         </div>
