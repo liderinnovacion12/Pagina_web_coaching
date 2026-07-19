@@ -37,6 +37,9 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
 
   useEffect(() => {
     actualizarEnFoco();
+
+    window.addEventListener("resize", actualizarEnFoco);
+    return () => window.removeEventListener("resize", actualizarEnFoco);
   }, [actualizarEnFoco, proyectos]);
 
   function desplazar(direccion: 1 | -1) {
