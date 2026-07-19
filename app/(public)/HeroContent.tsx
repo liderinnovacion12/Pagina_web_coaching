@@ -36,7 +36,7 @@ function AnimatedCounter({ value }: { value: string }) {
     const hasCommas = value.includes(",");
 
     const controls = animate(0, numericPart, {
-      duration: 1.8,
+      duration: 2.6,
       ease: [0.16, 1, 0.3, 1], // Easeout premium
       onUpdate(latest) {
         const rounded = Math.floor(latest);
@@ -68,17 +68,9 @@ export function HeroContent({
       variants={staggerContainer(0.08, 0.1)}
       className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 pb-24 pt-12 text-center sm:pt-20"
     >
-      <motion.span
-        variants={animVariant}
-        className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/5 px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-gold-300 backdrop-blur-md"
-      >
-        <span className="h-1.5 w-1.5 rounded-full bg-gold-400 animate-pulse" />
-        Coaching Executive Platform
-      </motion.span>
-
       <motion.h1
         variants={animVariant}
-        className="mt-8 font-display text-5xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-7xl"
+        className="font-display text-6xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-8xl"
       >
         Transforma tu
         <br />
@@ -117,23 +109,20 @@ export function HeroContent({
       </motion.div>
 
       {/* Grid de Estadísticas con Contadores */}
-      <motion.div variants={animVariant} className="relative mt-16 w-full">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_30%_20%,rgba(217,169,78,0.10),transparent_60%)]"
-        />
-        <dl className="grid gap-10 text-left sm:grid-cols-3 sm:gap-16">
-          {estadisticas.map((stat) => (
-            <div key={stat.etiqueta} className="border-t border-white/10 pt-5">
-              <dt className="sr-only">{stat.etiqueta}</dt>
-              <dd className="font-mono text-5xl font-semibold text-gold-400 sm:text-6xl">
-                <AnimatedCounter value={stat.valor} />
-              </dd>
-              <p className="mt-2 text-sm text-mist-500">{stat.etiqueta}</p>
-            </div>
-          ))}
-        </dl>
-      </motion.div>
+      <motion.dl
+        variants={animVariant}
+        className="mt-16 grid w-full gap-10 text-left sm:grid-cols-3 sm:gap-16"
+      >
+        {estadisticas.map((stat) => (
+          <div key={stat.etiqueta} className="border-t border-white/10 pt-5">
+            <dt className="sr-only">{stat.etiqueta}</dt>
+            <dd className="font-mono text-5xl font-semibold text-gold-400 [text-shadow:0_0_40px_rgba(217,169,78,0.35),0_6px_16px_rgba(0,0,0,0.55)] sm:text-6xl">
+              <AnimatedCounter value={stat.valor} />
+            </dd>
+            <p className="mt-2 text-sm text-mist-500">{stat.etiqueta}</p>
+          </div>
+        ))}
+      </motion.dl>
 
       {/* Indicador de scroll hacia el catálogo */}
       <motion.a
@@ -142,7 +131,7 @@ export function HeroContent({
         className="mt-14 flex flex-col items-center gap-2 text-mist-500 transition-colors duration-200 hover:text-gold-300"
       >
         <span className="font-mono text-xs uppercase tracking-wider">
-          Descubrí nuestros cursos
+          Descubre nuestros cursos
         </span>
         <motion.span
           animate={reducedMotion ? undefined : { y: [0, 8, 0] }}

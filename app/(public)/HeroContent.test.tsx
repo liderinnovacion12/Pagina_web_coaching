@@ -32,7 +32,7 @@ describe("HeroContent", () => {
     // "Líderes" también existe en un <dt> sr-only; se apunta al <p> visible.
     expect(screen.getByText("Líderes", { selector: "p" })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /descubrí nuestros cursos/i })
+      screen.getByRole("link", { name: /descubre nuestros cursos/i })
     ).toHaveAttribute("href", "#cursos");
   });
 
@@ -42,7 +42,7 @@ describe("HeroContent", () => {
       <HeroContent estadisticas={[{ valor: "2,000+", etiqueta: "Líderes" }]} />
     );
     expect(
-      screen.getByRole("link", { name: /descubrí nuestros cursos/i })
+      screen.getByRole("link", { name: /descubre nuestros cursos/i })
     ).toBeInTheDocument();
     useReducedMotionSafeMock.mockReturnValue(false);
   });
