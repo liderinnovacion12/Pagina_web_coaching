@@ -53,7 +53,7 @@ describe("variantes de motion", () => {
   });
 
   it("SCROLL_REVEAL_VIEWPORT dispara una sola vez con margen negativo", () => {
-    expect(SCROLL_REVEAL_VIEWPORT).toEqual({ once: true, margin: "-10% 0px" });
+    expect(SCROLL_REVEAL_VIEWPORT).toEqual({ once: true, margin: "-5% 0px" });
   });
 
   it("revealUp parte invisible/desplazado con blur y usa el easing del proyecto", () => {

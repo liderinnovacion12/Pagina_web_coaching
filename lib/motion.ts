@@ -51,7 +51,7 @@ export function staggerContainer(
 
 export const SCROLL_REVEAL_VIEWPORT = {
   once: true,
-  margin: "-10% 0px",
+  margin: "-5% 0px",
 } as const;
 
 export function useReducedMotionSafe(): boolean {
