@@ -77,9 +77,9 @@ function HorizontalPanels() {
   // video) usan este valor suavizado; el gate de accesibilidad (inert)
   // sigue atado al progreso crudo para no demorar ese estado.
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 260,
-    damping: 32,
-    mass: 0.6,
+    stiffness: 400,
+    damping: 28,
+    mass: 0.5,
   });
 
   const trackX = useTransform(smoothProgress, [0, 1], ["0%", "-50%"]);
