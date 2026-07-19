@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
@@ -11,7 +11,33 @@ const SCROLL_AMOUNT_PX = 400;
 
 export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef(new Map<string, HTMLDivElement>());
+  const [enFocoId, setEnFocoId] = useState<string | null>(proyectos[0]?.id ?? null);
   const reducedMotion = useReducedMotionSafe();
+
+  const actualizarEnFoco = useCallback(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const centroContenedor = container.scrollLeft + container.clientWidth / 2;
+    let masCercanoId: string | null = null;
+    let menorDistancia = Infinity;
+
+    for (const [id, card] of cardRefs.current) {
+      const centroTarjeta = card.offsetLeft + card.offsetWidth / 2;
+      const distancia = Math.abs(centroTarjeta - centroContenedor);
+      if (distancia < menorDistancia) {
+        menorDistancia = distancia;
+        masCercanoId = id;
+      }
+    }
+
+    setEnFocoId(masCercanoId);
+  }, []);
+
+  useEffect(() => {
+    actualizarEnFoco();
+  }, [actualizarEnFoco, proyectos]);
 
   function desplazar(direccion: 1 | -1) {
     scrollRef.current?.scrollBy({
@@ -47,10 +73,22 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
       <motion.div variants={blurFadeUp} className="relative">
         <div
           ref={scrollRef}
+          onScroll={actualizarEnFoco}
           className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
         >
           {proyectos.map((proyecto) => (
-            <ProyectoCard key={proyecto.id} proyecto={proyecto} containerRef={scrollRef} />
+            <ProyectoCard
+              key={proyecto.id}
+              proyecto={proyecto}
+              enFoco={proyecto.id === enFocoId}
+              ref={(el) => {
+                if (el) {
+                  cardRefs.current.set(proyecto.id, el);
+                } else {
+                  cardRefs.current.delete(proyecto.id);
+                }
+              }}
+            />
           ))}
         </div>
 

@@ -1,29 +1,20 @@
 "use client";
 
-import { useRef, type RefObject } from "react";
+import { forwardRef } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
 import { useReducedMotionSafe } from "@/lib/motion";
 
-export function ProyectoCard({
-  proyecto,
-  containerRef,
-}: {
-  proyecto: ProyectoAliado;
-  containerRef: RefObject<HTMLDivElement | null>;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
+export const ProyectoCard = forwardRef<
+  HTMLDivElement,
+  { proyecto: ProyectoAliado; enFoco: boolean }
+>(function ProyectoCard({ proyecto, enFoco }, ref) {
   const reducedMotion = useReducedMotionSafe();
-  const enFoco = useInView(cardRef, {
-    root: containerRef,
-    margin: "0px -35% 0px -35%",
-    amount: 0.6,
-  });
 
   return (
     <motion.div
-      ref={cardRef}
+      ref={ref}
       animate={
         reducedMotion
           ? { scale: 1, opacity: 1 }
@@ -49,7 +40,7 @@ export function ProyectoCard({
 
       <div className="flex flex-1 flex-col gap-2 p-6">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-lg font-bold text-white">
+          <h3 className="line-clamp-1 font-display text-lg font-bold text-white">
             {proyecto.nombre}
           </h3>
           {proyecto.precioDesde && (
@@ -61,7 +52,7 @@ export function ProyectoCard({
         <p className="line-clamp-2 text-sm leading-relaxed text-mist-300">
           {proyecto.descripcion}
         </p>
-        <p className="text-xs text-mist-400">
+        <p className="truncate text-xs text-mist-400">
           {proyecto.contactoNombre} · {proyecto.contactoTelefono}
         </p>
         <a
@@ -75,4 +66,4 @@ export function ProyectoCard({
       </div>
     </motion.div>
   );
-}
+});

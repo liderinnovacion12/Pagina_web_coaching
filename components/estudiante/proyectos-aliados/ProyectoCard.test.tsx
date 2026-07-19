@@ -1,19 +1,7 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { createRef } from "react";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ProyectoCard } from "./ProyectoCard";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
-
-const useInViewMock = vi.fn().mockReturnValue(false);
-
-vi.mock("framer-motion", async () => {
-  const actual =
-    await vi.importActual<typeof import("framer-motion")>("framer-motion");
-  return {
-    ...actual,
-    useInView: (...args: unknown[]) => useInViewMock(...args),
-  };
-});
 
 function crearProyecto(
   overrides: Partial<ProyectoAliado> & { id: string; nombre: string }
@@ -33,16 +21,10 @@ function crearProyecto(
 }
 
 describe("ProyectoCard", () => {
-  afterEach(() => {
-    useInViewMock.mockClear();
-    useInViewMock.mockReturnValue(false);
-  });
-
   it("muestra título, precio, descripción, contacto y el link de WhatsApp", () => {
     const proyecto = crearProyecto({ id: "p1", nombre: "Domus" });
-    const containerRef = createRef<HTMLDivElement>();
 
-    render(<ProyectoCard proyecto={proyecto} containerRef={containerRef} />);
+    render(<ProyectoCard proyecto={proyecto} enFoco={false} />);
 
     expect(screen.getByText("Domus")).toBeInTheDocument();
     expect(screen.getByText("Desde $500K")).toBeInTheDocument();
@@ -59,26 +41,9 @@ describe("ProyectoCard", () => {
       nombre: "Elle Residences",
       precioDesde: null,
     });
-    const containerRef = createRef<HTMLDivElement>();
 
-    render(<ProyectoCard proyecto={proyecto} containerRef={containerRef} />);
+    render(<ProyectoCard proyecto={proyecto} enFoco={false} />);
 
     expect(screen.queryByText(/^Desde \$/)).not.toBeInTheDocument();
-  });
-
-  it("usa el contenedor de scroll como root y angosta la zona de medición al centro", () => {
-    const proyecto = crearProyecto({ id: "p3", nombre: "Cualquiera" });
-    const containerRef = createRef<HTMLDivElement>();
-
-    render(<ProyectoCard proyecto={proyecto} containerRef={containerRef} />);
-
-    expect(useInViewMock).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        root: containerRef,
-        margin: "0px -35% 0px -35%",
-        amount: 0.6,
-      })
-    );
   });
 });
