@@ -30,6 +30,10 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
     const espaciado =
       centros.length > 1 ? centros[1] - centros[0] : container.clientWidth;
     const distanciaCaida = espaciado * FALLOFF_FACTOR;
+    // Geometría aún no medible (ej. justo al montar, antes del primer layout
+    // real): no sobreescribir el estado con "todas centradas", esperar al
+    // próximo scroll/resize con geometría válida.
+    if (distanciaCaida <= 0) return;
 
     const centroContenedor = container.scrollLeft + container.clientWidth / 2;
     const nuevaIntensidad = new Map<string, number>();
@@ -38,8 +42,7 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
       const centroTarjeta = centros[i];
       if (centroTarjeta === undefined) return;
       const distancia = Math.abs(centroTarjeta - centroContenedor);
-      const normalizada =
-        distanciaCaida > 0 ? Math.min(distancia / distanciaCaida, 1) : 0;
+      const normalizada = Math.min(distancia / distanciaCaida, 1);
       nuevaIntensidad.set(proyecto.id, 1 - normalizada);
     });
 
