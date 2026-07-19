@@ -1,0 +1,127 @@
+"use client";
+
+import { useRef, useState } from "react";
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { revealUp, useIsDesktop, useReducedMotionSafe } from "@/lib/motion";
+
+const VIDEO_SRC = "https://www.loom.com/embed/cb856608ad54454a95f79ccdbaa07de1";
+const VIDEO_TITLE = "Video de bienvenida — Team 100% Real Estate";
+
+function VerticalFallback() {
+  return (
+    <>
+      <ScrollReveal variants={revealUp} once={false} className="relative">
+        <h1 className="font-display text-[46px] font-bold leading-tight tracking-tight text-white sm:text-[54px]">
+          Bienvenido a{" "}
+          <span className="text-gradient-gold">Team 100% Real Estate</span>
+        </h1>
+        <p className="mt-2 text-lg text-mist-400">
+          by Wilmar Sosa y Samuel Oropeza
+        </p>
+        <div className="absolute -left-4 top-1/2 h-16 w-1 -translate-y-1/2 rounded-r-md bg-gold-500/80" />
+      </ScrollReveal>
+
+      <ScrollReveal variants={revealUp} once={false}>
+        <div className="relative aspect-video overflow-hidden rounded-xl">
+          <iframe
+            src={VIDEO_SRC}
+            title={VIDEO_TITLE}
+            allow="fullscreen"
+            allowFullScreen
+            className="h-full w-full"
+          />
+        </div>
+      </ScrollReveal>
+    </>
+  );
+}
+
+function HorizontalPanels() {
+  const runwayRef = useRef<HTMLDivElement>(null);
+  const [videoInert, setVideoInert] = useState(true);
+
+  const { scrollYProgress } = useScroll({
+    target: runwayRef,
+    offset: ["start start", "end end"],
+  });
+
+  const trackX = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
+  const titleX = useTransform(scrollYProgress, [0, 0.5], [0, -40]);
+  const glowOpacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+  const glowScale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1.15]);
+  const videoScale = useTransform(scrollYProgress, [0.5, 0.75], [0.94, 1]);
+
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    setVideoInert(value < 0.5);
+  });
+
+  return (
+    <div
+      ref={runwayRef}
+      data-testid="horizontal-intro-runway"
+      className="relative h-[200vh]"
+    >
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <motion.div style={{ x: trackX }} className="flex h-full w-[200vw]">
+          {/* Panel 1: Cabecera */}
+          <div className="relative flex h-full w-screen shrink-0 flex-col justify-center px-6 sm:px-10">
+            <motion.div
+              aria-hidden="true"
+              style={{ opacity: glowOpacity, scale: glowScale }}
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[60vh] bg-[radial-gradient(circle_at_50%_100%,rgba(217,167,74,0.12),transparent_60%)]"
+            />
+            <motion.div style={{ x: titleX }} className="relative">
+              <h1 className="font-display text-[64px] font-bold leading-[0.95] tracking-tight text-white sm:text-[90px] lg:text-[140px]">
+                Bienvenido a{" "}
+                <span className="text-gradient-gold">
+                  Team 100% Real Estate
+                </span>
+              </h1>
+              <p className="mt-4 text-xl text-mist-400">
+                by Wilmar Sosa y Samuel Oropeza
+              </p>
+              <div className="absolute -left-6 top-1/2 h-20 w-1 -translate-y-1/2 rounded-r-md bg-gold-500/80" />
+            </motion.div>
+          </div>
+
+          {/* Panel 2: Video */}
+          <div
+            data-testid="horizontal-intro-video-panel"
+            className="flex h-full w-screen shrink-0 flex-col justify-center px-6 sm:px-10"
+            inert={videoInert}
+          >
+            <motion.div
+              style={{ scale: videoScale }}
+              className="relative aspect-video w-full overflow-hidden rounded-xl"
+            >
+              <iframe
+                src={VIDEO_SRC}
+                title={VIDEO_TITLE}
+                allow="fullscreen"
+                allowFullScreen
+                className="h-full w-full"
+              />
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+export function HorizontalIntroPanels() {
+  const isDesktop = useIsDesktop();
+  const reducedMotion = useReducedMotionSafe();
+
+  if (!isDesktop || reducedMotion) {
+    return <VerticalFallback />;
+  }
+
+  return <HorizontalPanels />;
+}
