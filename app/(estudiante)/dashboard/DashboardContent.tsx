@@ -15,6 +15,7 @@ import {
 import type { MiembroEquipo } from "@/lib/db/equipo";
 import type { FotoGaleria } from "@/lib/db/galeria";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { revealUp } from "@/lib/motion";
 import { TeamLeaderCard } from "@/components/estudiante/dashboard/TeamLeaderCard";
 
 const PASOS_USO = [
@@ -78,16 +79,6 @@ const cardVariants: Variants = {
 
 // ── Coreografía de encabezados y tarjetas ─────────────────────────────────
 const EASE = [0.16, 1, 0.3, 1] as const;
-
-const revealUp: Variants = {
-  hidden: { opacity: 0, y: 25, filter: "blur(4px)" },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.6, ease: EASE },
-  },
-};
 
 const revealLeft: Variants = {
   hidden: { opacity: 0, x: -40, filter: "blur(4px)" },

@@ -22,6 +22,16 @@ export const blurFadeUp: Variants = {
   },
 };
 
+export const revealUp: Variants = {
+  hidden: { opacity: 0, y: 25, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: EASE_OUT },
+  },
+};
+
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.5, ease: EASE_OUT } },

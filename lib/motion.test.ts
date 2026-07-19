@@ -20,6 +20,7 @@ import {
   SCROLL_REVEAL_VIEWPORT,
   useReducedMotionSafe,
   useIsDesktop,
+  revealUp,
 } from "./motion";
 
 describe("variantes de motion", () => {
@@ -53,6 +54,16 @@ describe("variantes de motion", () => {
 
   it("SCROLL_REVEAL_VIEWPORT dispara una sola vez con margen negativo", () => {
     expect(SCROLL_REVEAL_VIEWPORT).toEqual({ once: true, margin: "-10% 0px" });
+  });
+
+  it("revealUp parte invisible/desplazado con blur y usa el easing del proyecto", () => {
+    expect(revealUp.hidden).toEqual({ opacity: 0, y: 25, filter: "blur(4px)" });
+    expect(revealUp.visible).toMatchObject({
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.6, ease: EASE_OUT },
+    });
   });
 });
 
