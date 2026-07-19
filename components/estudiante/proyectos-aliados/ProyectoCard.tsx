@@ -1,49 +1,76 @@
 "use client";
 
+import { useRef, type RefObject } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
+import { useReducedMotionSafe } from "@/lib/motion";
 
-export function ProyectoCard({ proyecto }: { proyecto: ProyectoAliado }) {
+export function ProyectoCard({
+  proyecto,
+  containerRef,
+}: {
+  proyecto: ProyectoAliado;
+  containerRef: RefObject<HTMLDivElement | null>;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotionSafe();
+  const enFoco = useInView(cardRef, {
+    root: containerRef,
+    margin: "0px -35% 0px -35%",
+    amount: 0.6,
+  });
+
   return (
     <motion.div
-      whileHover={{ y: -6 }}
+      ref={cardRef}
+      animate={
+        reducedMotion
+          ? { scale: 1, opacity: 1 }
+          : { scale: enFoco ? 1.04 : 0.94, opacity: enFoco ? 1 : 0.75 }
+      }
       transition={{ duration: 0.3 }}
-      className="group relative h-[440px] w-[320px] shrink-0 snap-center overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
+      whileHover={{ y: -6 }}
+      className="group relative flex h-[440px] w-[320px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
     >
-      {proyecto.imagenUrl ? (
-        <Image
-          src={proyecto.imagenUrl}
-          alt={proyecto.nombre}
-          fill
-          sizes="(min-width: 640px) 380px, 320px"
-          className="object-cover opacity-70 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-90"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-ink-900" aria-hidden="true" />
-      )}
+      {/* Zona de imagen: brillo completo, sin degradado ni texto encima */}
+      <div className="relative h-56 shrink-0 overflow-hidden">
+        {proyecto.imagenUrl ? (
+          <Image
+            src={proyecto.imagenUrl}
+            alt={proyecto.nombre}
+            fill
+            sizes="(min-width: 640px) 380px, 320px"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-ink-900" aria-hidden="true" />
+        )}
+      </div>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-transparent transition-opacity duration-300 group-hover:via-ink-950/60" />
-
-      {proyecto.precioDesde && (
-        <span className="absolute right-6 top-6 rounded-full border border-gold-500/20 bg-gold-500/10 px-3 py-1 text-xs font-semibold text-gold-300">
-          {proyecto.precioDesde}
-        </span>
-      )}
-
-      <div className="absolute inset-x-0 bottom-0 p-8">
-        <h3 className="font-display text-xl font-bold text-white">{proyecto.nombre}</h3>
-        <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-mist-300">
+      {/* Panel de texto: fondo sólido, nunca se superpone a la imagen */}
+      <div className="flex flex-1 flex-col gap-2 p-6">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-display text-lg font-bold text-white">
+            {proyecto.nombre}
+          </h3>
+          {proyecto.precioDesde && (
+            <span className="shrink-0 font-mono text-sm font-semibold text-gold-300">
+              {proyecto.precioDesde}
+            </span>
+          )}
+        </div>
+        <p className="line-clamp-2 text-sm leading-relaxed text-mist-300">
           {proyecto.descripcion}
         </p>
-        <p className="mt-3 text-xs text-mist-400">
+        <p className="text-xs text-mist-400">
           {proyecto.contactoNombre} · {proyecto.contactoTelefono}
         </p>
         <a
           href={proyecto.whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gold-300 transition hover:text-gold-200"
+          className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-gold-300 transition hover:text-gold-200"
         >
           Unirse al grupo de WhatsApp ↗
         </a>

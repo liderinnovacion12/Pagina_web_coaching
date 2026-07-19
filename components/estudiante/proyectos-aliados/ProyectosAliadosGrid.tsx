@@ -50,7 +50,7 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
           className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
         >
           {proyectos.map((proyecto) => (
-            <ProyectoCard key={proyecto.id} proyecto={proyecto} />
+            <ProyectoCard key={proyecto.id} proyecto={proyecto} containerRef={scrollRef} />
           ))}
         </div>
 
