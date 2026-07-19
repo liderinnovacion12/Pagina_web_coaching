@@ -16,7 +16,7 @@ export function ProyectoCard({ proyecto }: { proyecto: ProyectoAliado }) {
           src={proyecto.imagenUrl}
           alt={proyecto.nombre}
           fill
-          sizes="(min-width: 640px) 50vw, 100vw"
+          sizes="(min-width: 640px) 380px, 320px"
           className="object-cover opacity-70 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-90"
         />
       ) : (
