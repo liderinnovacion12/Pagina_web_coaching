@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { renderHook } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 
 const useReducedMotionMock = vi.fn();
 
@@ -19,6 +19,7 @@ import {
   staggerContainer,
   SCROLL_REVEAL_VIEWPORT,
   useReducedMotionSafe,
+  useIsDesktop,
 } from "./motion";
 
 describe("variantes de motion", () => {
@@ -65,6 +66,56 @@ describe("useReducedMotionSafe", () => {
   it("devuelve true cuando el usuario prefiere reduced motion", () => {
     useReducedMotionMock.mockReturnValue(true);
     const { result } = renderHook(() => useReducedMotionSafe());
+    expect(result.current).toBe(true);
+  });
+});
+
+describe("useIsDesktop", () => {
+  function mockMatchMedia(matches: boolean) {
+    const listeners: Array<(event: MediaQueryListEvent) => void> = [];
+    const mql = {
+      matches,
+      addEventListener: (
+        _event: string,
+        cb: (event: MediaQueryListEvent) => void
+      ) => {
+        listeners.push(cb);
+      },
+      removeEventListener: vi.fn(),
+    };
+    const matchMediaMock = vi.fn().mockReturnValue(mql);
+    window.matchMedia = matchMediaMock as unknown as typeof window.matchMedia;
+    return { listeners, matchMediaMock };
+  }
+
+  it("devuelve false cuando el viewport es menor al breakpoint desktop", () => {
+    mockMatchMedia(false);
+    const { result } = renderHook(() => useIsDesktop());
+    expect(result.current).toBe(false);
+  });
+
+  it("devuelve true cuando el viewport es igual o mayor al breakpoint desktop", () => {
+    mockMatchMedia(true);
+    const { result } = renderHook(() => useIsDesktop());
+    expect(result.current).toBe(true);
+  });
+
+  it("consulta el breakpoint de 1024px", () => {
+    const { matchMediaMock } = mockMatchMedia(false);
+    renderHook(() => useIsDesktop());
+    expect(matchMediaMock).toHaveBeenCalledWith("(min-width: 1024px)");
+  });
+
+  it("actualiza el valor cuando cambia el tamaño del viewport", () => {
+    const { listeners } = mockMatchMedia(false);
+    const { result } = renderHook(() => useIsDesktop());
+    expect(result.current).toBe(false);
+
+    act(() => {
+      listeners.forEach((cb) =>
+        cb({ matches: true } as MediaQueryListEvent)
+      );
+    });
     expect(result.current).toBe(true);
   });
 });

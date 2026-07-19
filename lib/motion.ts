@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useReducedMotion, type Variants } from "framer-motion";
 
 export const EASE_OUT = [0.16, 1, 0.3, 1] as const;
@@ -45,4 +46,24 @@ export const SCROLL_REVEAL_VIEWPORT = {
 
 export function useReducedMotionSafe(): boolean {
   return useReducedMotion() ?? false;
+}
+
+const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
+
+export function useIsDesktop(): boolean {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(DESKTOP_MEDIA_QUERY);
+    setIsDesktop(mediaQueryList.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsDesktop(event.matches);
+    };
+
+    mediaQueryList.addEventListener("change", handleChange);
+    return () => mediaQueryList.removeEventListener("change", handleChange);
+  }, []);
+
+  return isDesktop;
 }
