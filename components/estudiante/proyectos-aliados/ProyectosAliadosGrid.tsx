@@ -106,7 +106,7 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
 
     container.scrollLeft = primeraReal.offsetLeft;
     posicionInicialAplicada.current = true;
-  });
+  }, []);
 
   function indiceCentrado(): number {
     let mejorIndice = 0;
