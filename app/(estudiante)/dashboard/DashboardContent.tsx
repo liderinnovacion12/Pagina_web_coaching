@@ -5,12 +5,10 @@ import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
-  Check,
   Eye,
   Lightbulb,
   MessageCircle,
   Target,
-  Users,
 } from "lucide-react";
 import type { MiembroEquipo } from "@/lib/db/equipo";
 import type { FotoGaleria } from "@/lib/db/galeria";
@@ -117,7 +115,7 @@ const revealScale: Variants = {
 // que la tarjeta "cae" desde fuera de la pantalla en vez de un simple
 // desplazamiento.
 const revealFromLeftFar: Variants = {
-  hidden: { opacity: 0, x: -130, rotate: -4, filter: "blur(4px)" },
+  hidden: { opacity: 0, x: -130, rotate: -4, filter: "blur(10px)" },
   visible: {
     opacity: 1,
     x: 0,
@@ -128,7 +126,7 @@ const revealFromLeftFar: Variants = {
 };
 
 const revealFromRightFar: Variants = {
-  hidden: { opacity: 0, x: 130, rotate: 4, filter: "blur(4px)" },
+  hidden: { opacity: 0, x: 130, rotate: 4, filter: "blur(10px)" },
   visible: {
     opacity: 1,
     x: 0,
@@ -142,8 +140,11 @@ const revealFromRightFar: Variants = {
 // revealFromLeftFar/revealFromRightFar (que sí rotan), esta variante evita
 // que el desplazamiento se lea como un "tambaleo/caída" en vez de un
 // deslizamiento lateral fluido. Usada en Dos Columnas y Nuestros Valores.
+// El blur más pronunciado (10px, igual que blurFadeUp del resto del sitio)
+// hace que la tarjeta se sienta "materializándose" en vez de un objeto ya
+// formado que todavía está deslizando a los tirones.
 const revealSlideLeft: Variants = {
-  hidden: { opacity: 0, x: -130, filter: "blur(4px)" },
+  hidden: { opacity: 0, x: -130, filter: "blur(10px)" },
   visible: {
     opacity: 1,
     x: 0,
@@ -153,7 +154,7 @@ const revealSlideLeft: Variants = {
 };
 
 const revealSlideRight: Variants = {
-  hidden: { opacity: 0, x: 130, filter: "blur(4px)" },
+  hidden: { opacity: 0, x: 130, filter: "blur(10px)" },
   visible: {
     opacity: 1,
     x: 0,
@@ -215,7 +216,7 @@ export function DashboardContent({
           variants={revealSlideLeft}
           className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-10 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
         >
-          <h3 className="font-display text-xl font-bold text-white">
+          <h3 className="font-display text-xl font-bold text-gradient-gold">
             Cómo Usar la Plataforma
           </h3>
           <ol className="mt-7 flex flex-col gap-6">
@@ -242,7 +243,7 @@ export function DashboardContent({
           variants={revealSlideRight}
           className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-10 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
         >
-          <h3 className="font-display text-xl font-bold text-white">
+          <h3 className="font-display text-xl font-bold text-gradient-gold">
             Enlaces de Interés
           </h3>
           <ul className="mt-6 flex flex-col gap-2">
@@ -290,13 +291,9 @@ export function DashboardContent({
         <ScrollReveal
           variants={revealScale}
           once={false}
-          className="relative flex items-center px-1"
+          className="flex items-center px-1"
         >
-          <Users
-            aria-hidden="true"
-            className="absolute -left-3 -top-2 h-16 w-16 text-gold-500/10 sm:h-20 sm:w-20"
-          />
-          <h3 className="relative font-display text-xl font-bold text-white">Team Leaders</h3>
+          <h3 className="font-display text-xl font-bold text-white">Team Leaders</h3>
         </ScrollReveal>
 
         <ScrollReveal
@@ -374,10 +371,7 @@ export function DashboardContent({
               whileHover={{ scale: 1.01 }}
               className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-white/[0.12]"
             >
-              <div className="flex items-center gap-3">
-                <Check className="h-8 w-8 shrink-0 text-gold-400" aria-hidden="true" />
-                <h4 className="font-display text-lg font-bold text-white">{valor.nombre}</h4>
-              </div>
+              <h4 className="font-display text-2xl font-bold text-gradient-gold">{valor.nombre}</h4>
               <p className="mt-3 text-sm leading-relaxed text-mist-300">{valor.descripcion}</p>
             </motion.div>
           ))}

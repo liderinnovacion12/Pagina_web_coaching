@@ -5,6 +5,7 @@ import {
   motion,
   useMotionValueEvent,
   useScroll,
+  useSpring,
   useTransform,
 } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
@@ -68,11 +69,24 @@ function HorizontalPanels() {
     offset: ["start start", "end end"],
   });
 
-  const trackX = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
-  const titleX = useTransform(scrollYProgress, [0, 0.5], [0, -40]);
-  const glowOpacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
-  const glowScale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1.15]);
-  const videoScale = useTransform(scrollYProgress, [0.5, 0.75], [0.94, 1]);
+  // El progreso crudo del scroll queda pegado 1:1 al mouse/trackpad, lo
+  // que se siente mecánico y a los tirones (cada "tick" de rueda mueve el
+  // panel de golpe). Un valor suavizado con resorte hace que el paneo
+  // horizontal "persiga" al scroll con inercia, sintiéndose fluido en vez
+  // de instantáneo. Los efectos visuales (trackX, titleX, glow, zoom del
+  // video) usan este valor suavizado; el gate de accesibilidad (inert)
+  // sigue atado al progreso crudo para no demorar ese estado.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 260,
+    damping: 32,
+    mass: 0.6,
+  });
+
+  const trackX = useTransform(smoothProgress, [0, 1], ["0%", "-50%"]);
+  const titleX = useTransform(smoothProgress, [0, 0.5], [0, -40]);
+  const glowOpacity = useTransform(smoothProgress, [0, 0.5], [0, 1]);
+  const glowScale = useTransform(smoothProgress, [0, 0.5], [0.8, 1.15]);
+  const videoScale = useTransform(smoothProgress, [0.5, 0.75], [0.94, 1]);
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     setVideoInert(value < 0.5);
