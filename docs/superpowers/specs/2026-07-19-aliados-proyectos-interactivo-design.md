@@ -325,13 +325,16 @@ Notas de diseño:
   el panel de detalle de `AliadosGrid.tsx` (renderizando el aliado
   correspondiente ya seleccionado por defecto, o seleccionándolo primero
   con `userEvent.click` si no es el primero de la lista).
-- **`AliadosGrid.test.tsx` (existe hoy, 2 tests) no necesita cambios**:
-  ambos aliados de prueba siguen apareciendo como texto simultáneamente
-  (ahora como etiquetas de los botones de la lista maestro, en vez de
-  títulos de tarjeta) — se verificó que los tests actuales siguen
-  pasando sin modificación. Se agregan tests nuevos para: click en un
-  ítem de la lista cambia el contenido del panel de detalle, y
-  `aria-current` marca el ítem activo correctamente.
+- **`AliadosGrid.test.tsx` (existe hoy, 2 tests) — uno necesita un
+  ajuste menor**: el test del título/subtítulo no cambia, pero el test
+  "renderiza una tarjeta por cada aliado" necesita actualizarse, porque
+  el primer aliado de prueba queda seleccionado por defecto y su nombre
+  aparece dos veces (botón de la lista + título del panel de detalle) —
+  `screen.getByText(...)` fallaría por encontrar múltiples coincidencias
+  donde antes esperaba una sola. Se corrige usando
+  `getAllByText(...).toHaveLength(2)` para ese caso. Se agregan tests
+  nuevos para: click en un ítem de la lista cambia el contenido del
+  panel de detalle, y `aria-current` marca el ítem activo correctamente.
 - **`ProyectosAliadosGrid.test.tsx` (existe hoy, 4 tests) no necesita
   cambios**: a diferencia de Aliados, el showcase de Proyectos sigue
   renderizando TODAS las tarjetas simultáneamente (solo cambia el layout
