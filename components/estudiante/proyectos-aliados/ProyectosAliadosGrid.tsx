@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
@@ -9,58 +9,110 @@ import { ProyectoCard } from "./ProyectoCard";
 
 const FALLOFF_FACTOR = 1.5;
 
+type Segmento = "antes" | "real" | "despues";
+const SEGMENTOS: Segmento[] = ["antes", "real", "despues"];
+
 export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef(new Map<string, HTMLDivElement>());
+  const posicionInicialAplicada = useRef(false);
   const [intensidad, setIntensidad] = useState<Map<string, number>>(
-    () => new Map(proyectos.length > 0 ? [[proyectos[0].id, 1]] : [])
+    () => new Map(proyectos.length > 0 ? [[`real:${proyectos[0].id}`, 1]] : [])
   );
   const reducedMotion = useReducedMotionSafe();
+
+  const tarjetas = useMemo(
+    () =>
+      SEGMENTOS.flatMap((segmento) =>
+        proyectos.map((proyecto) => ({
+          clave: `${segmento}:${proyecto.id}`,
+          segmento,
+          proyecto,
+        }))
+      ),
+    [proyectos]
+  );
 
   const actualizarIntensidad = useCallback(() => {
     const container = scrollRef.current;
     if (!container) return;
 
-    const entradas = proyectos
-      .map((p) => cardRefs.current.get(p.id))
-      .filter((el): el is HTMLDivElement => !!el);
-    if (entradas.length === 0) return;
+    const medidas = tarjetas
+      .map((t) => {
+        const el = cardRefs.current.get(t.clave);
+        return el ? { ...t, centro: el.offsetLeft + el.offsetWidth / 2 } : null;
+      })
+      .filter((m): m is NonNullable<typeof m> => m !== null);
+    if (medidas.length < 2) return;
 
-    const centros = entradas.map((el) => el.offsetLeft + el.offsetWidth / 2);
-    const espaciado =
-      centros.length > 1 ? centros[1] - centros[0] : container.clientWidth;
+    const espaciado = medidas[1].centro - medidas[0].centro;
     const distanciaCaida = espaciado * FALLOFF_FACTOR;
-    // Geometría aún no medible (ej. justo al montar, antes del primer layout
-    // real): no sobreescribir el estado con "todas centradas", esperar al
-    // próximo scroll/resize con geometría válida.
     if (distanciaCaida <= 0) return;
 
+    function calcularIntensidades(centroContenedor: number) {
+      let masCercana = medidas[0];
+      let menorDistancia = Infinity;
+      const mapa = new Map<string, number>();
+      for (const m of medidas) {
+        const distancia = Math.abs(m.centro - centroContenedor);
+        const normalizada = Math.min(distancia / distanciaCaida, 1);
+        mapa.set(m.clave, 1 - normalizada);
+        if (distancia < menorDistancia) {
+          menorDistancia = distancia;
+          masCercana = m;
+        }
+      }
+      return { mapa, masCercana };
+    }
+
     const centroContenedor = container.scrollLeft + container.clientWidth / 2;
-    const nuevaIntensidad = new Map<string, number>();
+    const { mapa, masCercana } = calcularIntensidades(centroContenedor);
 
-    proyectos.forEach((proyecto, i) => {
-      const centroTarjeta = centros[i];
-      if (centroTarjeta === undefined) return;
-      const distancia = Math.abs(centroTarjeta - centroContenedor);
-      const normalizada = Math.min(distancia / distanciaCaida, 1);
-      nuevaIntensidad.set(proyecto.id, 1 - normalizada);
-    });
+    if (masCercana.segmento === "real") {
+      setIntensidad(mapa);
+      return;
+    }
 
-    setIntensidad(nuevaIntensidad);
-  }, [proyectos]);
+    const centroReal = cardRefs.current.get(`real:${masCercana.proyecto.id}`)?.offsetLeft;
+    const centroClon = cardRefs.current.get(
+      `${masCercana.segmento}:${masCercana.proyecto.id}`
+    )?.offsetLeft;
+    if (centroReal === undefined || centroClon === undefined) {
+      setIntensidad(mapa);
+      return;
+    }
+
+    const ajuste = centroReal - centroClon;
+    container.scrollLeft = container.scrollLeft + ajuste;
+
+    const { mapa: mapaCorregido } = calcularIntensidades(
+      container.scrollLeft + container.clientWidth / 2
+    );
+    setIntensidad(mapaCorregido);
+  }, [tarjetas]);
 
   useEffect(() => {
     actualizarIntensidad();
 
     window.addEventListener("resize", actualizarIntensidad);
     return () => window.removeEventListener("resize", actualizarIntensidad);
-  }, [actualizarIntensidad, proyectos]);
+  }, [actualizarIntensidad]);
+
+  useLayoutEffect(() => {
+    if (posicionInicialAplicada.current || proyectos.length === 0) return;
+    const container = scrollRef.current;
+    const primeraReal = cardRefs.current.get(`real:${proyectos[0].id}`);
+    if (!container || !primeraReal) return;
+
+    container.scrollLeft = primeraReal.offsetLeft;
+    posicionInicialAplicada.current = true;
+  }, []);
 
   function indiceCentrado(): number {
     let mejorIndice = 0;
     let mejorIntensidad = -Infinity;
     proyectos.forEach((proyecto, i) => {
-      const valor = intensidad.get(proyecto.id) ?? 0;
+      const valor = intensidad.get(`real:${proyecto.id}`) ?? 0;
       if (valor > mejorIntensidad) {
         mejorIntensidad = valor;
         mejorIndice = i;
@@ -75,7 +127,7 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
 
     const actual = indiceCentrado();
     const siguiente = (actual + direccion + proyectos.length) % proyectos.length;
-    const card = cardRefs.current.get(proyectos[siguiente].id);
+    const card = cardRefs.current.get(`real:${proyectos[siguiente].id}`);
     if (!card) return;
 
     const centroTarjeta = card.offsetLeft + card.offsetWidth / 2;
@@ -117,16 +169,17 @@ export function ProyectosAliadosGrid({ proyectos }: { proyectos: ProyectoAliado[
           onScroll={actualizarIntensidad}
           className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
         >
-          {proyectos.map((proyecto) => (
+          {tarjetas.map(({ clave, segmento, proyecto }) => (
             <ProyectoCard
-              key={proyecto.id}
+              key={clave}
               proyecto={proyecto}
-              intensidad={intensidad.get(proyecto.id) ?? 0}
+              intensidad={intensidad.get(clave) ?? 0}
+              inert={segmento !== "real"}
               ref={(el) => {
                 if (el) {
-                  cardRefs.current.set(proyecto.id, el);
+                  cardRefs.current.set(clave, el);
                 } else {
-                  cardRefs.current.delete(proyecto.id);
+                  cardRefs.current.delete(clave);
                 }
               }}
             />

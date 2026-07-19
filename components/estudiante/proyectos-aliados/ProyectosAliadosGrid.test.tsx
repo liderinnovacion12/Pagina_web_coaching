@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { ProyectosAliadosGrid } from "./ProyectosAliadosGrid";
 import type { ProyectoAliado } from "@/lib/db/proyectos-aliados.types";
 
@@ -25,18 +25,69 @@ const PROYECTOS: ProyectoAliado[] = [
   crearProyecto({ id: "p2", nombre: "Elle Residences", precioDesde: null }),
 ];
 
-describe("ProyectosAliadosGrid", () => {
-  it("renderiza una tarjeta por cada proyecto", () => {
-    render(<ProyectosAliadosGrid proyectos={PROYECTOS} />);
+function tarjetasReales(container: HTMLElement): HTMLElement[] {
+  const scrollContainer = container.querySelector(".overflow-x-auto");
+  if (!scrollContainer) throw new Error("scroll container no encontrado");
+  return Array.from(scrollContainer.children).filter(
+    (card): card is HTMLElement => !card.hasAttribute("inert")
+  );
+}
 
-    expect(screen.getByText("Domus")).toBeInTheDocument();
-    expect(screen.getByText("Elle Residences")).toBeInTheDocument();
+function mockearGeometria(
+  scrollContainer: HTMLElement,
+  anchoTarjeta: number,
+  gap: number
+): HTMLElement[] {
+  const todasLasTarjetas = Array.from(scrollContainer.children) as HTMLElement[];
+  Object.defineProperty(scrollContainer, "clientWidth", {
+    configurable: true,
+    value: anchoTarjeta,
+  });
+  todasLasTarjetas.forEach((card, i) => {
+    Object.defineProperty(card, "offsetLeft", {
+      configurable: true,
+      value: i * (anchoTarjeta + gap),
+    });
+    Object.defineProperty(card, "offsetWidth", {
+      configurable: true,
+      value: anchoTarjeta,
+    });
+  });
+  return todasLasTarjetas;
+}
+
+function mockearScrollLeft(scrollContainer: HTMLElement, valorInicial: number): () => number {
+  let actual = valorInicial;
+  Object.defineProperty(scrollContainer, "scrollLeft", {
+    configurable: true,
+    get: () => actual,
+    set: (v: number) => {
+      actual = v;
+    },
+  });
+  return () => actual;
+}
+
+describe("ProyectosAliadosGrid", () => {
+  it("renderiza una tarjeta real por cada proyecto (mas las copias clonadas para el loop)", () => {
+    const { container } = render(<ProyectosAliadosGrid proyectos={PROYECTOS} />);
+
+    const scrollContainer = container.querySelector(".overflow-x-auto");
+    if (!scrollContainer) throw new Error("scroll container no encontrado");
+    expect(scrollContainer.children).toHaveLength(6); // 3 segmentos x 2 proyectos
+
+    const reales = tarjetasReales(container);
+    expect(reales).toHaveLength(2);
+    expect(reales[0]).toHaveTextContent("Domus");
+    expect(reales[1]).toHaveTextContent("Elle Residences");
   });
 
-  it("muestra el badge de precio solo si precioDesde no es null", () => {
-    render(<ProyectosAliadosGrid proyectos={PROYECTOS} />);
+  it("muestra el precio solo si precioDesde no es null (en la copia real)", () => {
+    const { container } = render(<ProyectosAliadosGrid proyectos={PROYECTOS} />);
 
-    expect(screen.getAllByText(/^Desde \$/)).toHaveLength(1);
+    const reales = tarjetasReales(container);
+    expect(within(reales[0]).getByText(/^Desde \$/)).toBeInTheDocument();
+    expect(within(reales[1]).queryByText(/^Desde \$/)).not.toBeInTheDocument();
   });
 
   it("el link de WhatsApp usa la URL correcta y abre en una pestaña nueva", () => {
@@ -61,7 +112,19 @@ describe("ProyectosAliadosGrid", () => {
     expect(screen.getByRole("button", { name: "Proyecto siguiente" })).toBeInTheDocument();
   });
 
-  it("el botón 'Proyecto anterior' en la primera tarjeta centra la última (loop)", () => {
+  it("las copias clonadas quedan inert (fuera del teclado/lector de pantalla)", () => {
+    const { container } = render(<ProyectosAliadosGrid proyectos={PROYECTOS} />);
+
+    const scrollContainer = container.querySelector(".overflow-x-auto");
+    if (!scrollContainer) throw new Error("scroll container no encontrado");
+    const todas = Array.from(scrollContainer.children) as HTMLElement[];
+    const inert = todas.filter((el) => el.hasAttribute("inert"));
+    const noInert = todas.filter((el) => !el.hasAttribute("inert"));
+    expect(inert).toHaveLength(4); // 2 segmentos clon x 2 proyectos
+    expect(noInert).toHaveLength(2); // segmento real x 2 proyectos
+  });
+
+  it("el botón 'Proyecto anterior' en la primera tarjeta real centra la última tarjeta real (loop)", () => {
     const proyectos = [
       crearProyecto({ id: "p1", nombre: "Uno" }),
       crearProyecto({ id: "p2", nombre: "Dos" }),
@@ -71,46 +134,27 @@ describe("ProyectosAliadosGrid", () => {
 
     const scrollContainer = container.querySelector<HTMLDivElement>(".overflow-x-auto");
     if (!scrollContainer) throw new Error("scroll container no encontrado");
-    const cards = Array.from(scrollContainer.children) as HTMLDivElement[];
-    expect(cards).toHaveLength(3);
-
     const CARD_WIDTH = 320;
     const GAP = 24;
-    Object.defineProperty(scrollContainer, "clientWidth", {
-      configurable: true,
-      value: CARD_WIDTH,
-    });
-    Object.defineProperty(scrollContainer, "scrollLeft", {
-      configurable: true,
-      value: 0,
-      writable: true,
-    });
-    cards.forEach((card, i) => {
-      Object.defineProperty(card, "offsetLeft", {
-        configurable: true,
-        value: i * (CARD_WIDTH + GAP),
-      });
-      Object.defineProperty(card, "offsetWidth", {
-        configurable: true,
-        value: CARD_WIDTH,
-      });
-    });
+    mockearGeometria(scrollContainer, CARD_WIDTH, GAP);
+    const reales = tarjetasReales(container);
+    expect(reales).toHaveLength(3);
+
+    const centroPrimeraReal = reales[0].offsetLeft + reales[0].offsetWidth / 2;
+    mockearScrollLeft(scrollContainer, centroPrimeraReal - CARD_WIDTH / 2);
     scrollContainer.scrollTo = vi.fn();
 
-    // Fuerza el recálculo de intensidades con la geometría mockeada de arriba.
-    // La tarjeta centrada resultante (scrollLeft=0) es la primera (índice 0).
     fireEvent(window, new Event("resize"));
-
     fireEvent.click(screen.getByRole("button", { name: "Proyecto anterior" }));
 
-    const centroUltima = cards[2].offsetLeft + cards[2].offsetWidth / 2;
+    const centroUltimaReal = reales[2].offsetLeft + reales[2].offsetWidth / 2;
     expect(scrollContainer.scrollTo).toHaveBeenCalledWith({
-      left: centroUltima - CARD_WIDTH / 2,
+      left: centroUltimaReal - CARD_WIDTH / 2,
       behavior: "smooth",
     });
   });
 
-  it("el botón 'Proyecto siguiente' en la última tarjeta centra la primera (loop)", () => {
+  it("el botón 'Proyecto siguiente' en la última tarjeta real centra la primera tarjeta real (loop)", () => {
     const proyectos = [
       crearProyecto({ id: "p1", nombre: "Uno" }),
       crearProyecto({ id: "p2", nombre: "Dos" }),
@@ -120,41 +164,84 @@ describe("ProyectosAliadosGrid", () => {
 
     const scrollContainer = container.querySelector<HTMLDivElement>(".overflow-x-auto");
     if (!scrollContainer) throw new Error("scroll container no encontrado");
-    const cards = Array.from(scrollContainer.children) as HTMLDivElement[];
-
     const CARD_WIDTH = 320;
     const GAP = 24;
-    Object.defineProperty(scrollContainer, "clientWidth", {
-      configurable: true,
-      value: CARD_WIDTH,
-    });
-    cards.forEach((card, i) => {
-      Object.defineProperty(card, "offsetLeft", {
-        configurable: true,
-        value: i * (CARD_WIDTH + GAP),
-      });
-      Object.defineProperty(card, "offsetWidth", {
-        configurable: true,
-        value: CARD_WIDTH,
-      });
-    });
-    const centroUltima = cards[2].offsetLeft + cards[2].offsetWidth / 2;
-    Object.defineProperty(scrollContainer, "scrollLeft", {
-      configurable: true,
-      value: centroUltima - CARD_WIDTH / 2,
-      writable: true,
-    });
+    mockearGeometria(scrollContainer, CARD_WIDTH, GAP);
+    const reales = tarjetasReales(container);
+
+    const centroUltimaReal = reales[2].offsetLeft + reales[2].offsetWidth / 2;
+    mockearScrollLeft(scrollContainer, centroUltimaReal - CARD_WIDTH / 2);
     scrollContainer.scrollTo = vi.fn();
 
-    // Fuerza el recálculo: con scrollLeft alineado al centro de la última
-    // tarjeta, la tarjeta centrada resultante es la última (índice 2).
     fireEvent(window, new Event("resize"));
-
     fireEvent.click(screen.getByRole("button", { name: "Proyecto siguiente" }));
 
+    const centroPrimeraReal = reales[0].offsetLeft + reales[0].offsetWidth / 2;
     expect(scrollContainer.scrollTo).toHaveBeenCalledWith({
-      left: 0,
+      left: centroPrimeraReal - CARD_WIDTH / 2,
       behavior: "smooth",
     });
+  });
+
+  it("si la tarjeta centrada cae en un clon 'después', el scroll se reposiciona silenciosamente a la copia real equivalente", () => {
+    const proyectos = [
+      crearProyecto({ id: "p1", nombre: "Uno" }),
+      crearProyecto({ id: "p2", nombre: "Dos" }),
+      crearProyecto({ id: "p3", nombre: "Tres" }),
+    ];
+    const { container } = render(<ProyectosAliadosGrid proyectos={proyectos} />);
+
+    const scrollContainer = container.querySelector<HTMLDivElement>(".overflow-x-auto");
+    if (!scrollContainer) throw new Error("scroll container no encontrado");
+    const CARD_WIDTH = 320;
+    const GAP = 24;
+    const todas = mockearGeometria(scrollContainer, CARD_WIDTH, GAP);
+    const reales = tarjetasReales(container);
+    // El primer clon "después" es la tarjeta inmediatamente siguiente a las 3 reales.
+    const indiceUltimaReal = todas.indexOf(reales[2]);
+    const primerClonDespues = todas[indiceUltimaReal + 1];
+
+    const centroClonDespues = primerClonDespues.offsetLeft + primerClonDespues.offsetWidth / 2;
+    const leerScrollLeft = mockearScrollLeft(
+      scrollContainer,
+      centroClonDespues - CARD_WIDTH / 2
+    );
+    scrollContainer.scrollTo = vi.fn();
+
+    fireEvent(window, new Event("resize"));
+
+    const centroPrimeraReal = reales[0].offsetLeft + reales[0].offsetWidth / 2;
+    expect(leerScrollLeft()).toBeCloseTo(centroPrimeraReal - CARD_WIDTH / 2);
+  });
+
+  it("si la tarjeta centrada cae en un clon 'antes', el scroll se reposiciona silenciosamente a la copia real equivalente", () => {
+    const proyectos = [
+      crearProyecto({ id: "p1", nombre: "Uno" }),
+      crearProyecto({ id: "p2", nombre: "Dos" }),
+      crearProyecto({ id: "p3", nombre: "Tres" }),
+    ];
+    const { container } = render(<ProyectosAliadosGrid proyectos={proyectos} />);
+
+    const scrollContainer = container.querySelector<HTMLDivElement>(".overflow-x-auto");
+    if (!scrollContainer) throw new Error("scroll container no encontrado");
+    const CARD_WIDTH = 320;
+    const GAP = 24;
+    const todas = mockearGeometria(scrollContainer, CARD_WIDTH, GAP);
+    const reales = tarjetasReales(container);
+    // El último clon "antes" (el de p3) es la tarjeta inmediatamente previa a las 3 reales.
+    const indicePrimeraReal = todas.indexOf(reales[0]);
+    const ultimoClonAntes = todas[indicePrimeraReal - 1];
+
+    const centroClonAntes = ultimoClonAntes.offsetLeft + ultimoClonAntes.offsetWidth / 2;
+    const leerScrollLeft = mockearScrollLeft(
+      scrollContainer,
+      centroClonAntes - CARD_WIDTH / 2
+    );
+    scrollContainer.scrollTo = vi.fn();
+
+    fireEvent(window, new Event("resize"));
+
+    const centroUltimaReal = reales[2].offsetLeft + reales[2].offsetWidth / 2;
+    expect(leerScrollLeft()).toBeCloseTo(centroUltimaReal - CARD_WIDTH / 2);
   });
 });

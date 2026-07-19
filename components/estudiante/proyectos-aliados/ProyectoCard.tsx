@@ -27,26 +27,27 @@ export function calcularEstiloFoco(intensidad: number, reducedMotion: boolean) {
 
 export const ProyectoCard = forwardRef<
   HTMLDivElement,
-  { proyecto: ProyectoAliado; intensidad: number }
->(function ProyectoCard({ proyecto, intensidad }, ref) {
+  { proyecto: ProyectoAliado; intensidad: number; inert?: boolean }
+>(function ProyectoCard({ proyecto, intensidad, inert = false }, ref) {
   const reducedMotion = useReducedMotionSafe();
 
   return (
     <motion.div
       ref={ref}
+      inert={inert}
       animate={calcularEstiloFoco(intensidad, reducedMotion)}
       transition={{ duration: 0.1 }}
       whileHover={{ y: -6 }}
-      className="group relative flex h-[440px] w-[320px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
+      className="group relative flex h-[504px] w-[320px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-ink-950 sm:w-[380px]"
     >
-      <div className="relative h-56 shrink-0 overflow-hidden">
+      <div className="relative h-72 shrink-0 overflow-hidden">
         {proyecto.imagenUrl ? (
           <Image
             src={proyecto.imagenUrl}
             alt={proyecto.nombre}
             fill
             sizes="(min-width: 640px) 380px, 320px"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
           <div className="absolute inset-0 bg-ink-900" aria-hidden="true" />
