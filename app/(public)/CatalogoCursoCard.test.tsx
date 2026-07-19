@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { CatalogoCursoCard } from "./CatalogoCursoCard";
+import { revealSlideLeft } from "@/lib/motion";
 
 describe("CatalogoCursoCard", () => {
   it("muestra el título y el precio formateado del curso", () => {
@@ -8,6 +9,7 @@ describe("CatalogoCursoCard", () => {
       <ul>
         <CatalogoCursoCard
           curso={{ id: "c1", titulo: "Ventas B2B", precio: 49.99 }}
+          variants={revealSlideLeft}
         />
       </ul>
     );

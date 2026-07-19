@@ -1,10 +1,15 @@
 "use client";
 
-import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, type Variants } from "framer-motion";
 import type { CursoPublicado } from "@/lib/db/cursos";
-import { fadeUp } from "@/lib/motion";
 
-export function CatalogoCursoCard({ curso }: { curso: CursoPublicado }) {
+export function CatalogoCursoCard({
+  curso,
+  variants,
+}: {
+  curso: CursoPublicado;
+  variants: Variants;
+}) {
   // Valores de movimiento para la posición del cursor local
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -17,10 +22,10 @@ export function CatalogoCursoCard({ curso }: { curso: CursoPublicado }) {
 
   return (
     <motion.li
-      variants={fadeUp}
+      variants={variants}
       whileHover={{ y: -4 }}
       onMouseMove={handleMouseMove}
-      className="group relative rounded-xl border border-white/8 bg-ink-900/60 p-5 transition-[border-color,box-shadow] duration-300 hover:border-gold-500/20 overflow-hidden backdrop-blur-md"
+      className="group relative rounded-xl border border-white/8 bg-ink-900/60 p-8 transition-[border-color,box-shadow] duration-300 hover:border-gold-500/20 overflow-hidden backdrop-blur-md"
     >
       {/* Spotlight de fondo que sigue al cursor en hover */}
       <motion.div
@@ -43,7 +48,7 @@ export function CatalogoCursoCard({ curso }: { curso: CursoPublicado }) {
 
       {/* Contenido de la Tarjeta */}
       <div className="relative z-10">
-        <h3 className="font-display font-semibold text-white group-hover:text-gold-200 transition-colors duration-300">
+        <h3 className="font-display text-xl font-semibold text-white group-hover:text-gold-200 transition-colors duration-300">
           {curso.titulo}
         </h3>
         <p className="mt-2 font-mono text-gold-400 group-hover:text-gold-300 transition-colors duration-300">
