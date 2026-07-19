@@ -123,7 +123,7 @@ const revealFromLeftFar: Variants = {
     x: 0,
     rotate: 0,
     filter: "blur(0px)",
-    transition: { duration: 0.9, ease: EASE },
+    transition: { duration: 0.5, ease: EASE },
   },
 };
 
@@ -134,7 +134,7 @@ const revealFromRightFar: Variants = {
     x: 0,
     rotate: 0,
     filter: "blur(0px)",
-    transition: { duration: 0.9, ease: EASE },
+    transition: { duration: 0.5, ease: EASE },
   },
 };
 
