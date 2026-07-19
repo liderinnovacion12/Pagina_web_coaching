@@ -67,4 +67,18 @@ describe("ProyectoCard", () => {
 
     expect(screen.queryByText(/^Desde \$/)).not.toBeInTheDocument();
   });
+
+  it("no queda inert por defecto", () => {
+    const proyecto = crearProyecto({ id: "p3", nombre: "Tercero" });
+    const { container } = render(<ProyectoCard proyecto={proyecto} intensidad={0} />);
+    expect(container.firstElementChild).not.toHaveAttribute("inert");
+  });
+
+  it("queda inert cuando se pasa inert=true (usado para las copias clonadas del loop)", () => {
+    const proyecto = crearProyecto({ id: "p4", nombre: "Cuarto" });
+    const { container } = render(
+      <ProyectoCard proyecto={proyecto} intensidad={0} inert />
+    );
+    expect(container.firstElementChild).toHaveAttribute("inert");
+  });
 });
