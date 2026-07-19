@@ -17,6 +17,7 @@ import type { FotoGaleria } from "@/lib/db/galeria";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { revealUp } from "@/lib/motion";
 import { TeamLeaderCard } from "@/components/estudiante/dashboard/TeamLeaderCard";
+import { HorizontalIntroPanels } from "@/components/estudiante/dashboard/HorizontalIntroPanels";
 
 const PASOS_USO = [
   "Usa el menú lateral para navegar entre módulos.",
@@ -148,27 +149,8 @@ export function DashboardContent({
 }: DashboardContentProps) {
   return (
     <div className="flex flex-col gap-12">
-      {/* 1. Cabecera Principal */}
-      <ScrollReveal variants={revealUp} once={false} className="relative">
-        <h1 className="font-display text-[46px] font-bold leading-tight tracking-tight text-white sm:text-[54px]">
-          Bienvenido a <span className="text-gradient-gold">Team 100% Real Estate</span>
-        </h1>
-        <p className="mt-2 text-lg text-mist-400">by Wilmar Sosa y Samuel Oropeza</p>
-        <div className="absolute -left-4 top-1/2 h-16 w-1 -translate-y-1/2 rounded-r-md bg-gold-500/80" />
-      </ScrollReveal>
-
-      {/* 2. Video de Bienvenida (sin marco, sin etiqueta) */}
-      <ScrollReveal variants={revealUp} once={false}>
-        <div className="relative aspect-video overflow-hidden rounded-xl">
-          <iframe
-            src="https://www.loom.com/embed/cb856608ad54454a95f79ccdbaa07de1"
-            title="Video de bienvenida — Team 100% Real Estate"
-            allow="fullscreen"
-            allowFullScreen
-            className="h-full w-full"
-          />
-        </div>
-      </ScrollReveal>
+      {/* 1-2. Cabecera + Video: paneles horizontales en desktop, layout vertical en mobile/reduced-motion */}
+      <HorizontalIntroPanels />
 
       {/* 3. Banner de Comunidad WhatsApp */}
       <ScrollReveal
