@@ -71,7 +71,7 @@ function HorizontalPanels() {
       data-testid="horizontal-intro-runway"
       className="relative h-[200vh] w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]"
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="sticky top-0 z-50 h-screen overflow-hidden bg-ink-950">
         <motion.div style={{ x: trackX }} className="flex h-full w-[200vw]">
           {/* Panel 1: Cabecera */}
           <div className="relative flex h-full w-screen shrink-0 flex-col justify-center px-6 sm:px-10">
