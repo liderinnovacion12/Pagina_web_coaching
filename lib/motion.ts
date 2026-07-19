@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { useReducedMotion, type Variants } from "framer-motion";
+import {
+  useReducedMotion,
+  type TargetAndTransition,
+  type Variants,
+} from "framer-motion";
 
 export const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
@@ -21,6 +25,17 @@ export const blurFadeUp: Variants = {
     transition: { duration: 0.85, ease: EASE_OUT },
   },
 };
+
+export function blurFadeUpConDelay(delay: number): Variants {
+  const visible = blurFadeUp.visible as TargetAndTransition;
+  return {
+    hidden: blurFadeUp.hidden,
+    visible: {
+      ...visible,
+      transition: { ...visible.transition, delay },
+    },
+  };
+}
 
 export const revealUp: Variants = {
   hidden: { opacity: 0, y: 25, filter: "blur(4px)" },
