@@ -45,6 +45,18 @@ function VerticalFallback() {
 function HorizontalPanels() {
   const runwayRef = useRef<HTMLDivElement>(null);
   const [videoInert, setVideoInert] = useState(true);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  // El panel pineado no debe cubrir el header sticky del sitio (sus
+  // controles de navegación quedarían invisibles pero seguirían siendo
+  // enfocables por teclado). En vez de taparlo, el panel se ancla debajo
+  // de su altura real medida en runtime.
+  useEffect(() => {
+    const header = document.querySelector("header");
+    if (header) {
+      setHeaderHeight(header.getBoundingClientRect().height);
+    }
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: runwayRef,
@@ -71,7 +83,13 @@ function HorizontalPanels() {
       data-testid="horizontal-intro-runway"
       className="relative h-[200vh] w-screen ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]"
     >
-      <div className="sticky top-0 z-50 h-screen overflow-hidden bg-ink-950">
+      <div
+        className="sticky overflow-hidden bg-ink-950"
+        style={{
+          top: headerHeight,
+          height: `calc(100vh - ${headerHeight}px)`,
+        }}
+      >
         <motion.div style={{ x: trackX }} className="flex h-full w-[200vw]">
           {/* Panel 1: Cabecera */}
           <div className="relative flex h-full w-screen shrink-0 flex-col justify-center px-6 sm:px-10">
