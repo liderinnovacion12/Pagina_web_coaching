@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, MessageCircle } from "lucide-react";
 import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
-import { staggerContainer, blurFadeUp, blurFadeUpConDelay } from "@/lib/motion";
+import { staggerContainer, blurFadeUp, blurFadeUpConDelay, useReducedMotionSafe } from "@/lib/motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { GrupoPrincipalCard } from "./GrupoPrincipalCard";
 import { IndicadoresPanel } from "./IndicadoresPanel";
@@ -14,6 +14,12 @@ import { GrupoCard } from "./GrupoCard";
 import { Paginacion } from "./Paginacion";
 
 const POR_PAGINA = 12;
+
+// Cascada de revelado: cada tarjeta espera un poco más que la anterior
+// según su posición, pero el delay se tope a las 8 primeras para que
+// las últimas tarjetas de una página llena no esperen más de 0.4s.
+const STAGGER_DELAY_PASO = 0.05;
+const STAGGER_DELAY_TOPE_INDICE = 8;
 
 const BENEFICIOS = [
   "Conecta directo con otros agentes del equipo.",
@@ -27,6 +33,8 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
   const [orden, setOrden] = useState<OrdenGrupos>("nombre");
   const [vista, setVista] = useState<VistaGrupos>("grid");
   const [pagina, setPagina] = useState(1);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotionSafe();
 
   const grupoPrincipal = useMemo(
     () => grupos.find((grupo) => grupo.categoria === "grupo_principal"),
@@ -83,6 +91,19 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
     setPagina(1);
   }
 
+  // Las tarjetas ahora se revelan con ScrollReveal (useInView): si el
+  // usuario cambia de página y las tarjetas nuevas quedan fuera de la
+  // vista actual, se renderizan invisibles/inert hasta que vuelva a
+  // scrollear hasta ahí. Se lleva la grilla a la vista al cambiar de
+  // página para que el contenido nuevo quede visible de inmediato.
+  function irAPagina(nuevaPagina: number) {
+    setPagina(nuevaPagina);
+    gridRef.current?.scrollIntoView?.({
+      behavior: reducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  }
+
   return (
     <div className="flex flex-col gap-10">
       <motion.div
@@ -99,7 +120,7 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
             Prioridad #1 para nuevos agentes
           </p>
           <div className="mt-4 flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
+            <span className="relative flex h-2 w-2" aria-hidden="true">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-whatsapp opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-whatsapp" />
             </span>
@@ -123,6 +144,9 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
             ))}
           </ul>
         </motion.div>
+        {/* aria-hidden: este conteo se repite de forma accesible en
+            IndicadoresPanel más abajo — este bloque es un refuerzo
+            visual del banner, no la única fuente del dato. */}
         <motion.div
           variants={blurFadeUp}
           aria-hidden="true"
@@ -161,13 +185,16 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
         <p className="text-mist-400">No encontramos grupos con ese nombre.</p>
       ) : (
         <div
+          ref={gridRef}
           key={`${vista}-${paginaSegura}`}
           className={vista === "grid" ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3" : "flex flex-col gap-3"}
         >
           {gruposPagina.map((grupo, indice) => (
             <ScrollReveal
               key={grupo.id}
-              variants={blurFadeUpConDelay(Math.min(indice, 8) * 0.05)}
+              variants={blurFadeUpConDelay(
+                Math.min(indice, STAGGER_DELAY_TOPE_INDICE) * STAGGER_DELAY_PASO
+              )}
             >
               <GrupoCard grupo={grupo} vista={vista} />
             </ScrollReveal>
@@ -180,7 +207,7 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
         totalPaginas={totalPaginas}
         totalItems={gruposFiltrados.length}
         porPagina={POR_PAGINA}
-        onPaginaChange={setPagina}
+        onPaginaChange={irAPagina}
       />
     </div>
   );
