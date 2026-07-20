@@ -12,7 +12,7 @@ export const fadeUp: Variants = {
   },
 };
 
-export const blurFadeUp: Variants = {
+export const blurFadeUp = {
   hidden: { opacity: 0, y: 22, filter: "blur(10px)" },
   visible: {
     opacity: 1,
@@ -20,7 +20,17 @@ export const blurFadeUp: Variants = {
     filter: "blur(0px)",
     transition: { duration: 0.85, ease: EASE_OUT },
   },
-};
+} satisfies Variants;
+
+export function blurFadeUpConDelay(delay: number): Variants {
+  return {
+    hidden: blurFadeUp.hidden,
+    visible: {
+      ...blurFadeUp.visible,
+      transition: { ...blurFadeUp.visible.transition, delay },
+    },
+  };
+}
 
 export const revealUp: Variants = {
   hidden: { opacity: 0, y: 25, filter: "blur(4px)" },

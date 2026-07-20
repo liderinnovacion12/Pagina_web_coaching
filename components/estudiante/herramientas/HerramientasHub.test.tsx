@@ -71,4 +71,15 @@ describe("HerramientasHub", () => {
 
     expect(screen.getByText("Proyecto 12")).toBeInTheDocument();
   });
+
+  it("muestra el indicador 'En vivo' en el banner", () => {
+    render(<HerramientasHub grupos={GRUPOS} />);
+    expect(screen.getByText("En vivo")).toBeInTheDocument();
+  });
+
+  it("muestra el conteo real de grupos activos en el banner", () => {
+    render(<HerramientasHub grupos={GRUPOS} />);
+    const etiqueta = screen.getByText("Grupos activos");
+    expect(etiqueta.parentElement).toHaveTextContent("3");
+  });
 });

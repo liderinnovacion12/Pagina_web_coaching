@@ -23,6 +23,8 @@ import {
   revealUp,
   revealSlideLeft,
   revealSlideRight,
+  blurFadeUp,
+  blurFadeUpConDelay,
 } from "./motion";
 
 describe("variantes de motion", () => {
@@ -93,6 +95,17 @@ describe("variantes de motion", () => {
       x: 0,
       filter: "blur(0px)",
       transition: { duration: 0.5, ease: EASE_OUT },
+    });
+  });
+
+  it("blurFadeUpConDelay aplica el delay solicitado sin alterar el resto de blurFadeUp", () => {
+    const variant = blurFadeUpConDelay(0.25);
+    expect(variant.hidden).toEqual(blurFadeUp.hidden);
+    expect(variant.visible).toMatchObject({
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.85, ease: EASE_OUT, delay: 0.25 },
     });
   });
 });
