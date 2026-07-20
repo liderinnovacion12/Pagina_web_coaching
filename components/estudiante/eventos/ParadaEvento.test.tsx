@@ -86,4 +86,23 @@ describe("ParadaEvento", () => {
 
     expect(screen.queryByText("En ejecución")).not.toBeInTheDocument();
   });
+
+  it("atenua la parada cuando el evento ya paso, sin bajar el contraste del texto", () => {
+    const evento = crearEvento({ id: "e1", titulo: "Evento Pasado" });
+    const parada = crearParada({ evento, estado: "realizado" });
+
+    const { container } = render(<ParadaEvento parada={parada} />);
+
+    expect(container.firstElementChild).toHaveClass("opacity-90");
+    expect(container.firstElementChild).not.toHaveClass("opacity-40");
+  });
+
+  it("no atenua la parada cuando el evento es proximo o esta en curso", () => {
+    const evento = crearEvento({ id: "e1", titulo: "Evento Proximo" });
+    const parada = crearParada({ evento, estado: "proximo" });
+
+    const { container } = render(<ParadaEvento parada={parada} />);
+
+    expect(container.firstElementChild).not.toHaveClass("opacity-90");
+  });
 });

@@ -8,7 +8,15 @@ export function ParadaEvento({ parada }: { parada: ParadaLineaDeTiempo }) {
   const esPasado = estado === "realizado";
 
   return (
-    <div className={`relative pb-10 pl-6 ${esPasado ? "opacity-40" : ""}`}>
+    // opacity-90 (no menos) para que lo "pasado" se sienta atenuado sin
+    // que el texto mas chico (fecha/ubicacion/badges, ya mist-400/500)
+    // caiga debajo del contraste minimo de WCAG AA (4.5:1) contra el
+    // fondo ink-950 -- opacity-40 lo rompia (~3.7:1 o menos).
+    <div className={`relative pb-10 pl-6 ${esPasado ? "opacity-90" : ""}`}>
+      {/* Posicion pensada para alinearse con la linea vertical del
+          padre (EventosTimeline): contenedor con pl-8 y linea en
+          left-3. Si esos valores cambian, este offset debe ajustarse
+          junto con ellos. */}
       <span
         className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-ink-950 bg-white/30"
         aria-hidden="true"
@@ -25,6 +33,7 @@ export function ParadaEvento({ parada }: { parada: ParadaLineaDeTiempo }) {
             title={`Video de ${evento.titulo}`}
             className="h-full w-full"
             loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
         </div>
