@@ -11,7 +11,7 @@ export function GrupoPrincipalCard({ grupo }: { grupo: GrupoComunidad | undefine
 
   return (
     <div className="flex flex-col gap-6 rounded-[24px] border border-whatsapp/20 bg-gradient-to-r from-whatsapp/15 via-whatsapp/5 to-transparent p-8 sm:flex-row sm:items-center sm:justify-between">
-      <div>
+      <div className="min-w-0">
         <div className="flex flex-wrap gap-2">
           {BADGES.map((badge) => (
             <span
