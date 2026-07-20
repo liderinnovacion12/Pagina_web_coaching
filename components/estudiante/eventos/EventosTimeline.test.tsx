@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { EventosTimeline } from "./EventosTimeline";
 import { hoyIso, type Evento } from "@/lib/db/eventos.types";
@@ -76,6 +76,34 @@ describe("EventosTimeline", () => {
 
     expect(screen.getByText("Evento Internacional")).toBeInTheDocument();
     expect(screen.queryByText("Evento Nacional")).not.toBeInTheDocument();
+  });
+
+  it("solo hace scroll automatico al marcador 'Hoy' al montar, no en cada cambio de filtro", () => {
+    const scrollIntoViewSpy = vi.fn();
+    HTMLElement.prototype.scrollIntoView = scrollIntoViewSpy;
+
+    const eventos: Evento[] = [
+      crearEvento({
+        id: "e1",
+        titulo: "Evento Internacional",
+        categoria: "internacional",
+        fechas: [{ id: "f1", fechaInicio: "2099-01-01", fechaFin: "2099-01-01", ubicacion: "X" }],
+      }),
+      crearEvento({
+        id: "e2",
+        titulo: "Evento Nacional",
+        categoria: "nacional_eeuu",
+        fechas: [{ id: "f2", fechaInicio: "2099-02-01", fechaFin: "2099-02-01", ubicacion: "Y" }],
+      }),
+    ];
+
+    render(<EventosTimeline eventos={eventos} />);
+    const llamadasAlMontar = scrollIntoViewSpy.mock.calls.length;
+    expect(llamadasAlMontar).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByRole("button", { name: "Eventos Internacionales" }));
+
+    expect(scrollIntoViewSpy.mock.calls.length).toBe(llamadasAlMontar);
   });
 
   it("muestra el marcador 'Hoy' entre lo pasado y lo proximo", () => {

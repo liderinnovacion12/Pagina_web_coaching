@@ -57,12 +57,17 @@ export function EventosTimeline({ eventos }: { eventos: Evento[] }) {
     itemsLinea.push({ tipo: "marcador", clave: "marcador-hoy" });
   }
 
+  // Solo al montar (y si reducedMotion aun no se habia resuelto la
+  // primera vez) -- NO en cada cambio de filtro. El diseno confirmado
+  // es "scroll automatico al cargar la pagina", no reubicar al usuario
+  // cada vez que hace clic en un chip de categoria mientras ya esta
+  // navegando la linea de tiempo.
   useEffect(() => {
     marcadorHoyRef.current?.scrollIntoView?.({
       behavior: reducedMotion ? "auto" : "smooth",
       block: "center",
     });
-  }, [reducedMotion, filtro]);
+  }, [reducedMotion]);
 
   const { scrollYProgress } = useScroll({
     target: contenedorRef,
