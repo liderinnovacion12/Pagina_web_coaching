@@ -7,7 +7,6 @@ import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
 import { staggerContainer, blurFadeUp, blurFadeUpConDelay, useReducedMotionSafe } from "@/lib/motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { GrupoPrincipalCard } from "./GrupoPrincipalCard";
-import { IndicadoresPanel } from "./IndicadoresPanel";
 import { HerramientasToolbar, type OrdenGrupos, type VistaGrupos } from "./HerramientasToolbar";
 import { CategoriaChips, type FiltroCategoria } from "./CategoriaChips";
 import { GrupoCard } from "./GrupoCard";
@@ -144,13 +143,9 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
             ))}
           </ul>
         </motion.div>
-        {/* aria-hidden: este conteo se repite de forma accesible en
-            IndicadoresPanel más abajo — este bloque es un refuerzo
-            visual del banner, no la única fuente del dato. */}
         <motion.div
           variants={blurFadeUp}
-          aria-hidden="true"
-          className="hidden flex-col items-center justify-center gap-1 sm:flex"
+          className="flex flex-col items-center justify-center gap-1"
         >
           <span className="font-display text-6xl font-bold text-white">
             {gruposDeProyecto.length}
@@ -161,10 +156,7 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
         </motion.div>
       </motion.div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <GrupoPrincipalCard grupo={grupoPrincipal} />
-        <IndicadoresPanel totalGrupos={gruposDeProyecto.length} />
-      </div>
+      <GrupoPrincipalCard grupo={grupoPrincipal} />
 
       <HerramientasToolbar
         busqueda={busqueda}
