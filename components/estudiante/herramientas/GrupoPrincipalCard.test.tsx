@@ -57,4 +57,27 @@ describe("GrupoPrincipalCard", () => {
     expect(screen.getByText("Enlace pendiente")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /unirse al grupo/i })).not.toBeInTheDocument();
   });
+
+  it("usa el detalle cargado desde admin si existe, en vez de la descripcion por defecto", () => {
+    const grupo = crearGrupo({
+      id: "principal",
+      nombre: "Grupo Principal del Equipo",
+      detalle: "Solo para agentes activos del equipo",
+    });
+    render(<GrupoPrincipalCard grupo={grupo} />);
+
+    expect(screen.getByText("Solo para agentes activos del equipo")).toBeInTheDocument();
+    expect(
+      screen.queryByText("Canal maestro de comunicación general del equipo.")
+    ).not.toBeInTheDocument();
+  });
+
+  it("usa la descripcion por defecto cuando no hay detalle cargado", () => {
+    const grupo = crearGrupo({ id: "principal", nombre: "Grupo Principal del Equipo" });
+    render(<GrupoPrincipalCard grupo={grupo} />);
+
+    expect(
+      screen.getByText("Canal maestro de comunicación general del equipo.")
+    ).toBeInTheDocument();
+  });
 });

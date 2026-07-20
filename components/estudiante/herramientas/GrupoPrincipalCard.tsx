@@ -26,7 +26,7 @@ export function GrupoPrincipalCard({ grupo }: { grupo: GrupoComunidad | undefine
           {grupo.nombre}
         </h3>
         <p className="mt-1.5 text-sm text-mist-300">
-          Canal maestro de comunicación general del equipo.
+          {grupo.detalle || "Canal maestro de comunicación general del equipo."}
         </p>
       </div>
       {tieneEnlace ? (
@@ -40,6 +40,7 @@ export function GrupoPrincipalCard({ grupo }: { grupo: GrupoComunidad | undefine
         </a>
       ) : (
         <span
+          aria-disabled="true"
           title="Este grupo todavía no tiene enlace cargado"
           className="shrink-0 text-sm font-medium text-mist-500 opacity-50 cursor-not-allowed"
         >
