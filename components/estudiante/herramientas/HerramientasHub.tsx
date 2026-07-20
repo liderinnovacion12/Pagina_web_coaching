@@ -145,7 +145,7 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
         </motion.div>
         <motion.div
           variants={blurFadeUp}
-          className="hidden flex-col items-center justify-center gap-1 sm:flex"
+          className="flex flex-col items-center justify-center gap-1"
         >
           <span className="font-display text-6xl font-bold text-white">
             {gruposDeProyecto.length}

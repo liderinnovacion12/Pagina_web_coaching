@@ -25,7 +25,7 @@ export function GrupoPrincipalCard({ grupo }: { grupo: GrupoComunidad | undefine
         <h3 className="mt-3 font-display text-2xl font-bold text-white sm:text-3xl">
           {grupo.nombre}
         </h3>
-        <p className="mt-1.5 text-sm text-mist-300">
+        <p className="mt-1.5 max-w-2xl text-sm text-mist-300">
           {grupo.detalle || "Canal maestro de comunicación general del equipo."}
         </p>
       </div>
