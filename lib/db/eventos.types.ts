@@ -118,12 +118,18 @@ export type ParadaLineaDeTiempo = {
   mostrarVideo: boolean;
 };
 
+function compararFechaIso(a: string, b: string): number {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
 export function construirLineaDeTiempo(eventos: Evento[], hoy: string): ParadaLineaDeTiempo[] {
   const paradas: ParadaLineaDeTiempo[] = [];
 
   for (const evento of eventos) {
     const fechasOrdenadas = [...evento.fechas].sort((a, b) =>
-      a.fechaInicio.localeCompare(b.fechaInicio)
+      compararFechaIso(a.fechaInicio, b.fechaInicio)
     );
 
     fechasOrdenadas.forEach((fecha, indice) => {
@@ -137,5 +143,10 @@ export function construirLineaDeTiempo(eventos: Evento[], hoy: string): ParadaLi
     });
   }
 
-  return paradas.sort((a, b) => a.fecha.fechaInicio.localeCompare(b.fecha.fechaInicio));
+  // Orden global por fecha; Array.prototype.sort es estable (garantizado
+  // desde ES2019), asi que dos paradas con la misma fechaInicio de
+  // eventos distintos conservan el orden en que llegaron (el orden de
+  // "eventos" recibido, que ya viene ordenado por categoria/orden desde
+  // getEventos).
+  return paradas.sort((a, b) => compararFechaIso(a.fecha.fechaInicio, b.fecha.fechaInicio));
 }

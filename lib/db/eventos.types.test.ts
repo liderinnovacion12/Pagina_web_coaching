@@ -195,4 +195,23 @@ describe("construirLineaDeTiempo", () => {
 
     expect(paradas[0].estado).toBe("realizado");
   });
+
+  it("retorna una lista vacia cuando no hay eventos", () => {
+    expect(construirLineaDeTiempo([], "2026-01-01")).toEqual([]);
+  });
+
+  it("un evento sin fechas no genera ninguna parada", () => {
+    const evento: Evento = {
+      id: "e1",
+      categoria: "internacional",
+      titulo: "Evento Sin Fechas",
+      subtitulo: "Sub",
+      youtubeUrl: null,
+      orden: 0,
+      activo: true,
+      fechas: [],
+    };
+
+    expect(construirLineaDeTiempo([evento], "2026-01-01")).toEqual([]);
+  });
 });
