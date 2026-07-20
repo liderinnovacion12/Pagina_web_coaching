@@ -83,6 +83,12 @@ describe("HerramientasHub", () => {
     expect(etiqueta.parentElement).toHaveTextContent("3");
   });
 
+  it("el conteo de grupos activos del banner es accesible para lectores de pantalla (ya no hay IndicadoresPanel que lo repita accesiblemente)", () => {
+    render(<HerramientasHub grupos={GRUPOS} />);
+    const etiqueta = screen.getByText("Grupos activos");
+    expect(etiqueta.parentElement).not.toHaveAttribute("aria-hidden");
+  });
+
   it("ya no muestra el panel de estadisticas junto a la tarjeta principal", () => {
     render(<HerramientasHub grupos={GRUPOS} />);
     expect(screen.queryByText("Grupos")).not.toBeInTheDocument();

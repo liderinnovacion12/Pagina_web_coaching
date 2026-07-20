@@ -143,12 +143,8 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
             ))}
           </ul>
         </motion.div>
-        {/* aria-hidden: este conteo se repite de forma accesible en
-            IndicadoresPanel más abajo — este bloque es un refuerzo
-            visual del banner, no la única fuente del dato. */}
         <motion.div
           variants={blurFadeUp}
-          aria-hidden="true"
           className="hidden flex-col items-center justify-center gap-1 sm:flex"
         >
           <span className="font-display text-6xl font-bold text-white">
