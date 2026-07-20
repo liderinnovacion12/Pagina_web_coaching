@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { EventosTimeline } from "./EventosTimeline";
-import type { Evento } from "@/lib/db/eventos.types";
+import { hoyIso, type Evento } from "@/lib/db/eventos.types";
 
 function crearEvento(
   overrides: Partial<Evento> & { id: string; titulo: string; categoria: Evento["categoria"] }
@@ -14,6 +14,12 @@ function crearEvento(
     fechas: [],
     ...overrides,
   };
+}
+
+function sumarDias(fechaIso: string, dias: number): string {
+  const fecha = new Date(`${fechaIso}T00:00:00Z`);
+  fecha.setUTCDate(fecha.getUTCDate() + dias);
+  return fecha.toISOString().slice(0, 10);
 }
 
 describe("EventosTimeline", () => {
@@ -103,6 +109,47 @@ describe("EventosTimeline", () => {
   it("muestra un mensaje cuando no hay eventos", () => {
     render(<EventosTimeline eventos={[]} />);
     expect(screen.getByText("No hay eventos en esta categoría.")).toBeInTheDocument();
+  });
+
+  it("no revienta al filtrar desde una lista con eventos hacia una categoria sin eventos", () => {
+    const eventos: Evento[] = [
+      crearEvento({
+        id: "e1",
+        titulo: "Evento Internacional",
+        categoria: "internacional",
+        fechas: [{ id: "f1", fechaInicio: "2099-01-01", fechaFin: "2099-01-01", ubicacion: "X" }],
+      }),
+    ];
+
+    render(<EventosTimeline eventos={eventos} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Eventos Nacionales en EE.UU." }));
+
+    expect(screen.getByText("No hay eventos en esta categoría.")).toBeInTheDocument();
+    expect(screen.queryByText("Evento Internacional")).not.toBeInTheDocument();
+  });
+
+  it("un evento de varios dias que ya empezo pero sigue en curso hoy queda despues del marcador 'Hoy', no antes", () => {
+    const hoy = hoyIso();
+    const eventos: Evento[] = [
+      crearEvento({
+        id: "e1",
+        titulo: "Evento En Curso",
+        categoria: "internacional",
+        fechas: [
+          { id: "f1", fechaInicio: sumarDias(hoy, -3), fechaFin: sumarDias(hoy, 3), ubicacion: "X" },
+        ],
+      }),
+    ];
+
+    const { container } = render(<EventosTimeline eventos={eventos} />);
+
+    const texto = container.textContent ?? "";
+    const posHoy = texto.indexOf("Hoy");
+    const posEvento = texto.indexOf("Evento En Curso");
+
+    expect(posHoy).toBeGreaterThanOrEqual(0);
+    expect(posEvento).toBeGreaterThan(posHoy);
   });
 
   it("el botón de más información enlaza a WhatsApp en una pestaña nueva", () => {

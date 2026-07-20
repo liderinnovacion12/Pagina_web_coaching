@@ -35,11 +35,16 @@ export function EventosTimeline({ eventos }: { eventos: Evento[] }) {
     [paradas, filtro]
   );
 
-  const indicePrimeraFutura = paradasFiltradas.findIndex(
-    (parada) => parada.fecha.fechaInicio >= hoy
+  // Se posiciona por "estado" (no por fechaInicio >= hoy) para que el
+  // marcador quede consistente con el atenuado de ParadaEvento: un
+  // evento de varios días que ya empezó pero sigue en curso hoy
+  // (en_ejecucion) debe quedar del lado de "lo activo", no del lado de
+  // "lo pasado", aunque su fechaInicio ya haya quedado atrás.
+  const indicePrimeraNoRealizada = paradasFiltradas.findIndex(
+    (parada) => parada.estado !== "realizado"
   );
   const posicionMarcador =
-    indicePrimeraFutura === -1 ? paradasFiltradas.length : indicePrimeraFutura;
+    indicePrimeraNoRealizada === -1 ? paradasFiltradas.length : indicePrimeraNoRealizada;
 
   const itemsLinea: ItemLineaDeTiempo[] = [];
   paradasFiltradas.forEach((parada, indice) => {
