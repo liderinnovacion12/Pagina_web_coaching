@@ -109,3 +109,33 @@ export function formatearRangoFecha(fechaInicio: string, fechaFin: string): stri
 
   return `${diaInicio} de ${MESES[mesInicio - 1]} de ${anioInicio} al ${diaFin} de ${MESES[mesFin - 1]} de ${anioFin}`;
 }
+
+export type ParadaLineaDeTiempo = {
+  claveParada: string;
+  evento: Evento;
+  fecha: FechaEvento;
+  estado: EstadoFecha;
+  mostrarVideo: boolean;
+};
+
+export function construirLineaDeTiempo(eventos: Evento[], hoy: string): ParadaLineaDeTiempo[] {
+  const paradas: ParadaLineaDeTiempo[] = [];
+
+  for (const evento of eventos) {
+    const fechasOrdenadas = [...evento.fechas].sort((a, b) =>
+      a.fechaInicio.localeCompare(b.fechaInicio)
+    );
+
+    fechasOrdenadas.forEach((fecha, indice) => {
+      paradas.push({
+        claveParada: `${evento.id}:${fecha.id}`,
+        evento,
+        fecha,
+        estado: calcularEstadoFecha(fecha.fechaInicio, fecha.fechaFin, hoy),
+        mostrarVideo: Boolean(evento.youtubeUrl) && indice === 0,
+      });
+    });
+  }
+
+  return paradas.sort((a, b) => a.fecha.fechaInicio.localeCompare(b.fecha.fechaInicio));
+}
