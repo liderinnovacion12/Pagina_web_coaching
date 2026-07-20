@@ -19,38 +19,35 @@ function crearGrupo(
 }
 
 describe("GrupoCard", () => {
-  it("vista grid: acento verde WhatsApp en icono y link", () => {
+  it("vista grid: acento verde WhatsApp en la franja lateral y el link", () => {
     const grupo = crearGrupo({ id: "g1", nombre: "Domus", tipoCanal: "whatsapp" });
-    render(<GrupoCard grupo={grupo} vista="grid" />);
+    const { container } = render(<GrupoCard grupo={grupo} vista="grid" />);
 
-    const icono = screen.getByText("Domus").parentElement?.querySelector("span");
-    expect(icono).toHaveClass("border-whatsapp/20", "bg-whatsapp/10", "text-whatsapp");
+    expect(container.firstElementChild).toHaveClass("border-l-whatsapp");
     expect(screen.getByRole("link", { name: /unirse/i })).toHaveClass("text-whatsapp");
   });
 
-  it("vista grid: acento dorado Dropbox en icono y link", () => {
+  it("vista grid: acento dorado Dropbox en la franja lateral y el link", () => {
     const grupo = crearGrupo({
       id: "g2",
       nombre: "Carpeta Compartida",
       tipoCanal: "dropbox",
       enlaceUrl: "https://dropbox.com/prueba",
     });
-    render(<GrupoCard grupo={grupo} vista="grid" />);
+    const { container } = render(<GrupoCard grupo={grupo} vista="grid" />);
 
-    const icono = screen.getByText("Carpeta Compartida").parentElement?.querySelector("span");
-    expect(icono).toHaveClass("border-gold-500/20", "bg-gold-500/10", "text-gold-300");
+    expect(container.firstElementChild).toHaveClass("border-l-gold-500");
     expect(screen.getByRole("link", { name: /abrir carpeta/i })).toHaveClass("text-gold-300");
   });
 
-  it("vista lista: tambien aplica el acento verde WhatsApp", () => {
+  it("vista lista: tambien aplica el acento verde WhatsApp en la franja lateral", () => {
     const grupo = crearGrupo({ id: "g3", nombre: "Domus", tipoCanal: "whatsapp" });
     const { container } = render(<GrupoCard grupo={grupo} vista="lista" />);
 
-    const icono = container.querySelector("span");
-    expect(icono).toHaveClass("border-whatsapp/20", "bg-whatsapp/10", "text-whatsapp");
+    expect(container.firstElementChild).toHaveClass("border-l-whatsapp");
   });
 
-  it("vista lista: tambien aplica el acento dorado Dropbox", () => {
+  it("vista lista: tambien aplica el acento dorado Dropbox en la franja lateral", () => {
     const grupo = crearGrupo({
       id: "g4",
       nombre: "Carpeta",
@@ -59,7 +56,13 @@ describe("GrupoCard", () => {
     });
     const { container } = render(<GrupoCard grupo={grupo} vista="lista" />);
 
-    const icono = container.querySelector("span");
-    expect(icono).toHaveClass("border-gold-500/20", "bg-gold-500/10", "text-gold-300");
+    expect(container.firstElementChild).toHaveClass("border-l-gold-500");
+  });
+
+  it("no renderiza ningun icono", () => {
+    const grupo = crearGrupo({ id: "g5", nombre: "Sin Icono" });
+    const { container } = render(<GrupoCard grupo={grupo} vista="grid" />);
+
+    expect(container.querySelector("svg")).not.toBeInTheDocument();
   });
 });
