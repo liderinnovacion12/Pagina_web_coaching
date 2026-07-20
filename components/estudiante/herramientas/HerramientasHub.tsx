@@ -7,7 +7,6 @@ import type { GrupoComunidad } from "@/lib/db/grupos-comunidad.types";
 import { staggerContainer, blurFadeUp, blurFadeUpConDelay, useReducedMotionSafe } from "@/lib/motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { GrupoPrincipalCard } from "./GrupoPrincipalCard";
-import { IndicadoresPanel } from "./IndicadoresPanel";
 import { HerramientasToolbar, type OrdenGrupos, type VistaGrupos } from "./HerramientasToolbar";
 import { CategoriaChips, type FiltroCategoria } from "./CategoriaChips";
 import { GrupoCard } from "./GrupoCard";
@@ -161,10 +160,7 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
         </motion.div>
       </motion.div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <GrupoPrincipalCard grupo={grupoPrincipal} />
-        <IndicadoresPanel totalGrupos={gruposDeProyecto.length} />
-      </div>
+      <GrupoPrincipalCard grupo={grupoPrincipal} />
 
       <HerramientasToolbar
         busqueda={busqueda}

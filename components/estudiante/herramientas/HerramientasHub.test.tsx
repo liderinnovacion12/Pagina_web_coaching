@@ -82,4 +82,9 @@ describe("HerramientasHub", () => {
     const etiqueta = screen.getByText("Grupos activos");
     expect(etiqueta.parentElement).toHaveTextContent("3");
   });
+
+  it("ya no muestra el panel de estadisticas junto a la tarjeta principal", () => {
+    render(<HerramientasHub grupos={GRUPOS} />);
+    expect(screen.queryByText("Grupos")).not.toBeInTheDocument();
+  });
 });
