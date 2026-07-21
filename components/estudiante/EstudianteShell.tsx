@@ -5,10 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Menu, X, ChevronDown, Lock } from "lucide-react";
-import { NAV_GROUPS, type NavItem } from "./nav-config";
+import { type NavItem } from "./nav-config";
 import { cerrarSesion } from "@/lib/auth/actions";
 import { BotonCronograma } from "@/components/cronograma/BotonCronograma";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 function idDePanel(label: string, prefijo: string): string {
   const slug = label
@@ -27,6 +28,8 @@ export function EstudianteShell({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  const { tr } = useLanguage();
+  const NAV_GROUPS = tr.estudiante.nav.grupos;
   const [grupoAbierto, setGrupoAbierto] = useState<string | null>(null);
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
@@ -132,7 +135,7 @@ export function EstudianteShell({
                 type="submit"
                 className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-mist-300 transition duration-200 hover:border-gold-500/60 hover:bg-gold-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
               >
-                Cerrar sesión
+                {tr.estudiante.cerrarSesion}
               </button>
             </form>
           </div>

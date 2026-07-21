@@ -16,39 +16,7 @@ import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { revealSlideLeft, revealSlideRight, revealUp } from "@/lib/motion";
 import { TeamLeaderCard } from "@/components/estudiante/dashboard/TeamLeaderCard";
 import { HorizontalIntroPanels } from "@/components/estudiante/dashboard/HorizontalIntroPanels";
-
-const PASOS_USO = [
-  "Usa el menú lateral para navegar entre módulos.",
-  "Revisa el calendario de clases y eventos.",
-  "Descarga los recursos disponibles.",
-  "Contacta a soporte si tienes dudas.",
-];
-
-const ACCESOS_RAPIDOS = [
-  { label: "Grupos de WhatsApp", href: "/herramientas" },
-  { label: "Calendario de Clases", href: "/calendario" },
-  { label: "Recursos de Ventas", href: "/marketing" },
-  { label: "Soporte", href: "/soporte" },
-];
-
-const VALORES = [
-  {
-    nombre: "Integridad",
-    descripcion: "Actuamos con honestidad y transparencia en cada transacción.",
-  },
-  {
-    nombre: "Compromiso",
-    descripcion: "Cumplimos nuestras promesas con clientes y compañeros.",
-  },
-  {
-    nombre: "Colaboración",
-    descripcion: "El éxito de uno es el éxito de todos.",
-  },
-  {
-    nombre: "Excelencia",
-    descripcion: "Buscamos la mejora continua en todo lo que hacemos.",
-  },
-];
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 // Contenedor de grilla con stagger para los hijos, disparado cuando la
 // grilla entra en el viewport (no al montar la página).
@@ -145,6 +113,9 @@ export function DashboardContent({
   miembrosEquipo,
   galeriaEquipo,
 }: DashboardContentProps) {
+  const { tr } = useLanguage();
+  const d = tr.estudiante.dashboard;
+
   return (
     <div className="flex flex-col gap-12">
       {/* 1-2. Cabecera + Video: paneles horizontales en desktop, layout vertical en mobile/reduced-motion */}
@@ -160,21 +131,20 @@ export function DashboardContent({
         <div className="absolute right-0 top-0 -z-10 h-72 w-72 rounded-full bg-whatsapp/5 blur-[80px]" />
 
         <p className="font-mono text-xs uppercase tracking-wider text-whatsapp">
-          Comunidad activa
+          {d.comunidad}
         </p>
         <h2 className="mt-3 font-display text-2xl font-bold text-white sm:text-3xl">
-          Únete a la comunidad de Team 100% Real Estate
+          {d.comunidadTitulo}
         </h2>
         <p className="mt-3 max-w-2xl text-base leading-relaxed text-mist-300">
-          Súmate a los grupos y comunidades de WhatsApp para conectar con otros
-          agentes, resolver dudas y enterarte de las próximas clases en vivo de inmediato.
+          {d.comunidadDesc}
         </p>
         <Link
           href="/herramientas"
           className="mt-6 inline-flex h-[54px] items-center justify-center gap-2.5 rounded-xl bg-whatsapp px-8 font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:bg-whatsapp-dark hover:shadow-[0_0_24px_rgba(37,211,102,0.25)] active:scale-[0.98]"
         >
           <MessageCircle className="h-5 w-5" aria-hidden="true" />
-          Únete a los Grupos y Comunidades de WhatsApp
+          {d.comunidadBtn}
         </Link>
       </ScrollReveal>
 
@@ -190,10 +160,10 @@ export function DashboardContent({
           className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-10 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
         >
           <h3 className="font-display text-xl font-bold text-gradient-gold">
-            Cómo Usar la Plataforma
+            {d.comoUsarTitulo}
           </h3>
           <ol className="mt-7 flex flex-col gap-6">
-            {PASOS_USO.map((paso, indice) => (
+            {d.pasos.map((paso, indice) => (
               <motion.li
                 key={paso}
                 whileHover={{ x: 4 }}
@@ -217,10 +187,10 @@ export function DashboardContent({
           className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-10 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.03]"
         >
           <h3 className="font-display text-xl font-bold text-gradient-gold">
-            Enlaces de Interés
+            {d.enlacesTitulo}
           </h3>
           <ul className="mt-6 flex flex-col gap-2">
-            {ACCESOS_RAPIDOS.map((acceso) => (
+            {d.enlaces.map((acceso) => (
               <li key={acceso.href}>
                 <Link
                   href={acceso.href}
@@ -251,10 +221,10 @@ export function DashboardContent({
       <div className="overflow-x-hidden">
         <ScrollReveal variants={revealLeft} once={false}>
           <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Cultura y Equipo
+            {d.culturaTitulo}
           </h2>
           <p className="mt-2.5 text-lg text-mist-400">
-            Conoce a los líderes y los principios que nos guían.
+            {d.culturaDesc}
           </p>
         </ScrollReveal>
       </div>
@@ -266,7 +236,7 @@ export function DashboardContent({
           once={false}
           className="flex items-center px-1"
         >
-          <h3 className="font-display text-xl font-bold text-white">Team Leaders</h3>
+          <h3 className="font-display text-xl font-bold text-white">{d.teamLeaders}</h3>
         </ScrollReveal>
 
         <ScrollReveal
@@ -297,12 +267,10 @@ export function DashboardContent({
         >
           <div className="flex items-center gap-4">
             <Target className="h-11 w-11 shrink-0 text-gold-400" aria-hidden="true" />
-            <h3 className="font-display text-xl font-bold text-white">Nuestra Misión</h3>
+            <h3 className="font-display text-xl font-bold text-white">{d.misionTitulo}</h3>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-mist-300">
-            Empoderar a cada agente para que alcance su máximo potencial, brindándole las
-            herramientas, el acompañamiento y el entorno correcto para crecer de manera
-            profesional y personal.
+            {d.misionDesc}
           </p>
         </motion.div>
 
@@ -313,11 +281,10 @@ export function DashboardContent({
         >
           <div className="flex items-center gap-4">
             <Eye className="h-11 w-11 shrink-0 text-gold-400" aria-hidden="true" />
-            <h3 className="font-display text-xl font-bold text-white">Nuestra Visión</h3>
+            <h3 className="font-display text-xl font-bold text-white">{d.visionTitulo}</h3>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-mist-300">
-            Construir un equipo sólido, colaborativo y en constante crecimiento, donde cada
-            agente opere su negocio con claridad, estructura y mentalidad de liderazgo.
+            {d.visionDesc}
           </p>
         </motion.div>
       </ScrollReveal>
@@ -329,7 +296,7 @@ export function DashboardContent({
           traslada no sirve. */}
       <div className="flex flex-col gap-6 overflow-x-hidden">
         <ScrollReveal variants={revealRight} once={false} className="flex items-center px-1">
-          <h3 className="font-display text-xl font-bold text-white">Nuestros Valores</h3>
+          <h3 className="font-display text-xl font-bold text-white">{d.valoresTitulo}</h3>
         </ScrollReveal>
 
         <ScrollReveal
@@ -337,7 +304,7 @@ export function DashboardContent({
           once={false}
           className="grid gap-6 sm:grid-cols-2"
         >
-          {VALORES.map((valor, indice) => (
+          {d.valores.map((valor, indice) => (
             <motion.div
               key={valor.nombre}
               variants={indice % 2 === 0 ? revealSlideLeft : revealSlideRight}
@@ -365,16 +332,14 @@ export function DashboardContent({
           className="absolute right-6 top-6 h-20 w-20 text-gold-500/10"
         />
         <h2 className="relative mt-3.5 font-display text-2xl font-bold text-white">
-          Filosofía de Equipo
+          {d.filosofiaTitulo}
         </h2>
         <p className="relative mt-3.5 text-base leading-relaxed text-mist-300">
-          Creemos firmemente en el trabajo en equipo, la transformación continua y la dedicación
-          diaria. Somos una comunidad colaborativa donde nos apoyamos unos a otros, compartimos
-          conocimiento y buscamos crecer juntos.
+          {d.filosofiaDesc}
         </p>
         <div className="relative mt-5 border-l-2 border-gold-500/60 pl-4">
           <p className="text-base font-semibold text-white">
-            Aquí no estamos solo para recibir información. Estamos para dar, aportar y sumar valor al equipo.
+            {d.filosofiaCita}
           </p>
         </div>
       </ScrollReveal>
@@ -390,7 +355,7 @@ export function DashboardContent({
           once={false}
           className="flex flex-col items-center px-1 text-center"
         >
-          <h3 className="font-display text-xl font-bold text-white">Galería del Equipo</h3>
+          <h3 className="font-display text-xl font-bold text-white">{d.galeriaTitulo}</h3>
         </ScrollReveal>
 
         <ScrollReveal

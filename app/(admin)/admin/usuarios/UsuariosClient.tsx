@@ -4,15 +4,17 @@ import { useState, useTransition } from "react";
 import { Users, Search, Shield, GraduationCap, UserCog } from "lucide-react";
 import type { UsuarioAdmin } from "@/lib/db/admin";
 import { cambiarRolAction } from "./actions";
-
-const ROL_CONFIG = {
-  admin:      { label: "Admin",      color: "text-gold-400",   bg: "bg-gold-500/10",   border: "border-gold-500/25",   icon: Shield },
-  coach:      { label: "Coach",      color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/25", icon: UserCog },
-  estudiante: { label: "Estudiante", color: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/25",   icon: GraduationCap },
-};
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 function RolSelector({ usuario, sesionId }: { usuario: UsuarioAdmin; sesionId?: string }) {
   const [pending, startTransition] = useTransition();
+  const { tr } = useLanguage();
+  const roles = tr.admin.usuarios.roles;
+  const ROL_CONFIG = {
+    admin:      { label: roles.admin,      color: "text-gold-400",   bg: "bg-gold-500/10",   border: "border-gold-500/25",   icon: Shield },
+    coach:      { label: roles.coach,      color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/25", icon: UserCog },
+    estudiante: { label: roles.estudiante, color: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/25",   icon: GraduationCap },
+  };
   const esMismo = usuario.id === sesionId;
   const cfg = ROL_CONFIG[usuario.rol as keyof typeof ROL_CONFIG] ?? ROL_CONFIG.estudiante;
   const Icon = cfg.icon;
@@ -32,9 +34,9 @@ function RolSelector({ usuario, sesionId }: { usuario: UsuarioAdmin; sesionId?: 
           }}
           className="rounded-lg border border-white/10 bg-ink-800 px-2 py-1 font-mono text-xs text-mist-300 focus:outline-none focus:border-gold-500/40 disabled:opacity-40"
         >
-          <option value="estudiante">Estudiante</option>
-          <option value="coach">Coach</option>
-          <option value="admin">Admin</option>
+          <option value="estudiante">{roles.estudiante}</option>
+          <option value="coach">{roles.coach}</option>
+          <option value="admin">{roles.admin}</option>
         </select>
       )}
     </div>
@@ -48,24 +50,32 @@ export function UsuariosClient({
   usuarios: UsuarioAdmin[];
   sesionId: string;
 }) {
+  const { tr } = useLanguage();
+  const u = tr.admin.usuarios;
+  const roles = u.roles;
+  const ROL_CONFIG = {
+    admin:      { label: roles.admin,      color: "text-gold-400",   bg: "bg-gold-500/10",   border: "border-gold-500/25",   icon: Shield },
+    coach:      { label: roles.coach,      color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/25", icon: UserCog },
+    estudiante: { label: roles.estudiante, color: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/25",   icon: GraduationCap },
+  };
   const [busqueda, setBusqueda] = useState("");
 
-  const filtrados = usuarios.filter((u) =>
-    u.email.toLowerCase().includes(busqueda.toLowerCase())
+  const filtrados = usuarios.filter((usr) =>
+    usr.email.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   const totales = {
-    admin: usuarios.filter((u) => u.rol === "admin").length,
-    coach: usuarios.filter((u) => u.rol === "coach").length,
-    estudiante: usuarios.filter((u) => u.rol === "estudiante").length,
+    admin: usuarios.filter((usr) => usr.rol === "admin").length,
+    coach: usuarios.filter((usr) => usr.rol === "coach").length,
+    estudiante: usuarios.filter((usr) => usr.rol === "estudiante").length,
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-bold text-white">Usuarios</h1>
+        <h1 className="font-display text-3xl font-bold text-white">{u.titulo}</h1>
         <p className="mt-1 font-mono text-xs text-mist-400">
-          {usuarios.length} registrados · {totales.admin} admins · {totales.coach} coaches · {totales.estudiante} estudiantes
+          {usuarios.length} {u.registrados} · {totales.admin} {u.admins} · {totales.coach} {u.coaches} · {totales.estudiante} {u.estudiantes}
         </p>
       </div>
 
@@ -89,7 +99,7 @@ export function UsuariosClient({
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-mist-500" />
         <input
           type="search"
-          placeholder="Buscar por email…"
+          placeholder={u.buscar}
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           className="w-full max-w-md rounded-xl border border-white/10 bg-ink-900 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-mist-500 focus:border-gold-500/40 focus:outline-none focus:ring-1 focus:ring-gold-500/20"
@@ -99,28 +109,28 @@ export function UsuariosClient({
       {/* Tabla */}
       <div className="rounded-2xl border border-white/8 bg-ink-900/60 overflow-hidden">
         <div className="grid grid-cols-[1fr_auto_auto] gap-4 border-b border-white/8 px-5 py-3">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-mist-500">Email</span>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-mist-500">Rol</span>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-mist-500">Registro</span>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-mist-500">{u.columnas.email}</span>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-mist-500">{u.columnas.rol}</span>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-mist-500">{u.columnas.registro}</span>
         </div>
 
         <div className="divide-y divide-white/5">
-          {filtrados.map((u) => (
-            <div key={u.id} className="grid grid-cols-[1fr_auto_auto] items-center gap-4 px-5 py-3.5 hover:bg-white/[0.02] transition-colors">
+          {filtrados.map((usr) => (
+            <div key={usr.id} className="grid grid-cols-[1fr_auto_auto] items-center gap-4 px-5 py-3.5 hover:bg-white/[0.02] transition-colors">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink-700 border border-white/10 font-display text-xs font-bold text-white">
-                  {u.email[0].toUpperCase()}
+                  {usr.email[0].toUpperCase()}
                 </div>
-                <span className="font-mono text-sm text-white truncate">{u.email}</span>
-                {u.id === sesionId && (
-                  <span className="shrink-0 font-mono text-[10px] text-gold-500 border border-gold-500/20 bg-gold-500/10 rounded-full px-2 py-0.5">tú</span>
+                <span className="font-mono text-sm text-white truncate">{usr.email}</span>
+                {usr.id === sesionId && (
+                  <span className="shrink-0 font-mono text-[10px] text-gold-500 border border-gold-500/20 bg-gold-500/10 rounded-full px-2 py-0.5">{u.tu}</span>
                 )}
               </div>
 
-              <RolSelector usuario={u} sesionId={sesionId} />
+              <RolSelector usuario={usr} sesionId={sesionId} />
 
               <span className="font-mono text-xs text-mist-500 whitespace-nowrap">
-                {new Date(u.registrado_en).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric" })}
+                {new Date(usr.registrado_en).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric" })}
               </span>
             </div>
           ))}
@@ -128,7 +138,7 @@ export function UsuariosClient({
           {filtrados.length === 0 && (
             <div className="px-5 py-10 text-center">
               <Users className="mx-auto h-8 w-8 text-mist-600 mb-2" />
-              <p className="text-sm text-mist-400">No se encontraron usuarios.</p>
+              <p className="text-sm text-mist-400">{u.sinResultados}</p>
             </div>
           )}
         </div>
