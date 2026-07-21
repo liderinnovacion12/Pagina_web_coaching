@@ -1,8 +1,8 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCursosPublicados } from "@/lib/db/cursos";
 import { PagoContent } from "./PagoContent";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Pago | Team 100% Real Estate",
@@ -13,22 +13,18 @@ export default async function PagoPage({
 }: {
   searchParams: Promise<{ plan?: string }>;
 }) {
-  const { plan } = await searchParams;
-
-  if (plan !== "curso" && plan !== "membresia") {
-    redirect("/dashboard");
-  }
-
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const cursos = plan === "curso" ? await getCursosPublicados() : [];
+  const { plan } = await searchParams;
+  const planValido = plan === "curso" || plan === "membresia" ? plan : undefined;
+
+  const cursos = await getCursosPublicados();
 
   return (
     <main className="min-h-screen bg-ink-950 px-4 py-12">
       <div className="mx-auto max-w-lg">
-        {/* Logo */}
         <div className="mb-8 text-center">
           <Link
             href="/"
@@ -38,9 +34,8 @@ export default async function PagoPage({
           </Link>
         </div>
 
-        {/* Card */}
         <div className="rounded-2xl border border-white/[0.08] bg-ink-900/40 p-8 backdrop-blur-xl shadow-[0_0_60px_rgba(0,0,0,0.4)]">
-          <PagoContent plan={plan} cursos={cursos} />
+          <PagoContent plan={planValido} cursos={cursos} />
         </div>
 
         <p className="mt-4 text-center font-mono text-[10px] text-mist-600">

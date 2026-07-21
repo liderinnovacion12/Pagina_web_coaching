@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState, useRef, useEffect } from "react";
+import { useState, useActionState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CreditCard, Building2, User, FileText, Mail, ChevronDown,
@@ -244,14 +244,65 @@ function Exito({ plan, cursoId }: { plan: string; cursoId?: string }) {
   );
 }
 
+/* ── Plan selector when no plan is pre-selected ── */
+function SelectorPlan({ onSelect }: { onSelect: (plan: "curso" | "membresia") => void }) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="font-display text-2xl font-bold text-white">Elige tu plan</h1>
+        <p className="mt-1 text-sm text-mist-400">
+          Selecciona cómo quieres acceder al contenido de Team 100%.
+        </p>
+      </div>
+      <div className="grid gap-4">
+        <button
+          onClick={() => onSelect("curso")}
+          className="flex items-center justify-between rounded-xl border border-white/10 bg-ink-900/60 px-6 py-5 text-left transition hover:border-gold-500/30 hover:bg-ink-900 group"
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold-500/10">
+              <BookOpen className="h-5 w-5 text-gold-400" />
+            </div>
+            <div>
+              <p className="font-display font-bold text-white">Por Curso</p>
+              <p className="text-sm text-mist-400">Paga solo el curso que quieres</p>
+            </div>
+          </div>
+          <ArrowRight className="h-5 w-5 text-mist-500 transition group-hover:text-gold-400" />
+        </button>
+
+        <button
+          onClick={() => onSelect("membresia")}
+          className="flex items-center justify-between rounded-xl border border-gold-500/30 bg-gradient-to-b from-gold-500/[0.07] to-transparent px-6 py-5 text-left transition hover:border-gold-500/50 group"
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold-500/15">
+              <InfinityIcon className="h-5 w-5 text-gold-400" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-display font-bold text-gold-300">Plan Ilimitado</p>
+                <span className="rounded-full bg-gold-500 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-ink-950">Popular</span>
+              </div>
+              <p className="text-sm text-mist-400">Todos los cursos por $100/mes</p>
+            </div>
+          </div>
+          <ArrowRight className="h-5 w-5 text-mist-500 transition group-hover:text-gold-400" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ── Main ── */
 export function PagoContent({
-  plan,
+  plan: planInicial,
   cursos,
 }: {
-  plan: string;
+  plan?: string;
   cursos: CursoPublicado[];
 }) {
+  const [plan, setPlan] = useState<string | undefined>(planInicial);
   const [cursoSeleccionado, setCursoSeleccionado] = useState<CursoPublicado | null>(null);
   const [pagoOk, setPagoOk] = useState(false);
   const [cursoIdPagado, setCursoIdPagado] = useState<string | undefined>();
@@ -270,7 +321,11 @@ export function PagoContent({
   }
 
   if (pagoOk) {
-    return <Exito plan={plan} cursoId={cursoIdPagado} />;
+    return <Exito plan={plan ?? "curso"} cursoId={cursoIdPagado} />;
+  }
+
+  if (!plan) {
+    return <SelectorPlan onSelect={setPlan} />;
   }
 
   return (

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
 import { RegistroForm } from "./RegistroForm";
 import { ParticleField } from "@/components/motion/ParticleField";
 
@@ -27,11 +26,12 @@ export default function RegistroPage() {
         <h1 className="text-center font-display text-2xl font-bold leading-tight text-white">
           Crea tu cuenta
         </h1>
+        <p className="mt-1 text-center text-sm text-mist-400">
+          El liderazgo se construye, no se improvisa.
+        </p>
 
         <div className="mt-4 rounded-[20px] border border-white/[0.08] bg-ink-900/40 p-6 shadow-[0_0_50px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_40px_rgba(0,0,0,0.25),0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
-          <Suspense fallback={null}>
-            <RegistroForm />
-          </Suspense>
+          <RegistroForm />
         </div>
 
         <p className="mt-3 text-center text-sm text-mist-400">
