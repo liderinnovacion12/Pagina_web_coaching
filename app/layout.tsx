@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, IBM_Plex_Mono } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+import { SoporteWidget } from "@/components/soporte/SoporteWidget";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -27,7 +28,10 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${display.variable} ${mono.variable}`}>
       <body className="font-sans">
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          {children}
+          <SoporteWidget />
+        </LanguageProvider>
       </body>
     </html>
   );

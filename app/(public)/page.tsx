@@ -10,6 +10,7 @@ import { CatalogoHeading } from "./CatalogoHeading";
 import { SeccionFeatures } from "./SeccionFeatures";
 import { SeccionTestimonios } from "./SeccionTestimonios";
 import { SeccionCTA } from "./SeccionCTA";
+import { SeccionPrecios } from "./SeccionPrecios";
 
 export const metadata: Metadata = {
   title: "Team 100% Real Estate | Transforma tu Liderazgo",
@@ -49,6 +50,9 @@ export default async function LandingPage() {
 
       {/* Testimonios */}
       <SeccionTestimonios />
+
+      {/* Precios */}
+      <SeccionPrecios />
 
       {/* CTA final */}
       <SeccionCTA />
