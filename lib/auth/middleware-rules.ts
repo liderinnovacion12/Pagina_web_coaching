@@ -1,6 +1,6 @@
 export type Rol = "admin" | "estudiante" | "coach";
 
-const PREFIJOS_ESTUDIANTE = ["/dashboard", "/sistema-100", "/clases", "/cursos"];
+const PREFIJOS_ESTUDIANTE = ["/dashboard", "/sistema-100", "/clases", "/cursos", "/pago"];
 const PREFIJO_ADMIN = "/admin";
 const PREFIJO_COACH = "/coach";
 

@@ -9,7 +9,14 @@ export const metadata: Metadata = {
     "Crea tu cuenta de Team 100% Real Estate y comienza tu proceso de coaching ejecutivo.",
 };
 
-export default function RegistroPage() {
+export default async function RegistroPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string }>;
+}) {
+  const { plan } = await searchParams;
+  const planValido = plan === "curso" || plan === "membresia" ? plan : undefined;
+
   return (
     <main className="relative flex h-screen flex-col items-center justify-center overflow-y-auto overflow-x-hidden bg-ink-950 px-6 py-4">
       {/* Fondo de Partículas WebGL Nebulosa */}
@@ -24,15 +31,23 @@ export default function RegistroPage() {
       </Link>
 
       <div className="relative z-10 mt-4 w-full max-w-sm">
+        {planValido && (
+          <div className="mb-4 flex items-center justify-center gap-2 rounded-xl border border-gold-500/20 bg-gold-500/8 px-4 py-2.5">
+            <span className="font-mono text-xs text-gold-400 uppercase tracking-wider">
+              {planValido === "curso" ? "📚 Plan por curso seleccionado" : "⭐ Plan Ilimitado seleccionado"}
+            </span>
+          </div>
+        )}
+
         <h1 className="text-center font-display text-2xl font-bold leading-tight text-white">
           Crea tu cuenta
         </h1>
         <p className="mt-1 text-center text-sm text-mist-400">
-          El liderazgo se construye, no se improvisa.
+          {planValido ? "Un paso más para comenzar tu aprendizaje." : "El liderazgo se construye, no se improvisa."}
         </p>
 
         <div className="mt-4 rounded-[20px] border border-white/[0.08] bg-ink-900/40 p-6 shadow-[0_0_50px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_40px_rgba(0,0,0,0.25),0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
-          <RegistroForm />
+          <RegistroForm plan={planValido} />
         </div>
 
         <p className="mt-3 text-center text-sm text-mist-400">

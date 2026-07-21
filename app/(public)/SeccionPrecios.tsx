@@ -19,7 +19,7 @@ const PLANES = {
       desc: "Accede a un curso específico pagando solo su valor. Sin suscripciones, sin compromisos.",
       destacado: false,
       cta: "Ver catálogo de cursos",
-      ctaHref: "#cursos",
+      ctaHref: "/registro?plan=curso",
       features: [
         { texto: "Acceso de por vida al curso comprado", activo: true },
         { texto: "Videos y material del curso", activo: true },
@@ -40,7 +40,7 @@ const PLANES = {
       desc: "Accede a todos los cursos, certificados y contenido nuevo sin restricciones. La mejor inversión para tu carrera.",
       destacado: true,
       cta: "Comenzar ahora",
-      ctaHref: "/registro",
+      ctaHref: "/registro?plan=membresia",
       features: [
         { texto: "Acceso a todos los cursos", activo: true },
         { texto: "Videos y material de todos los cursos", activo: true },
@@ -63,7 +63,7 @@ const PLANES = {
       desc: "Access a specific course by paying only its price. No subscriptions, no commitments.",
       destacado: false,
       cta: "Browse courses",
-      ctaHref: "#cursos",
+      ctaHref: "/registro?plan=curso",
       features: [
         { texto: "Lifetime access to purchased course", activo: true },
         { texto: "Course videos and materials", activo: true },
@@ -84,7 +84,7 @@ const PLANES = {
       desc: "Access all courses, certificates, and new content without restrictions. The best investment for your career.",
       destacado: true,
       cta: "Get started",
-      ctaHref: "/registro",
+      ctaHref: "/registro?plan=membresia",
       features: [
         { texto: "Access to all courses", activo: true },
         { texto: "Videos and materials for all courses", activo: true },
