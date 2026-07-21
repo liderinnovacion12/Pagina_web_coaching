@@ -1,5 +1,6 @@
 import { requireRol } from "@/lib/auth/session";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const sesion = await requireRol("admin");
@@ -11,7 +12,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* Topbar */}
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-white/8 bg-ink-950/90 backdrop-blur-xl px-6">
           <div />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <div className="text-right">
               <p className="font-display text-sm font-semibold text-white">{sesion.email}</p>
               <p className="font-mono text-[10px] uppercase tracking-wider text-gold-400">Administrador</p>

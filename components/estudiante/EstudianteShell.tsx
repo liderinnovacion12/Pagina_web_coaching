@@ -8,6 +8,7 @@ import { Menu, X, ChevronDown, Lock } from "lucide-react";
 import { NAV_GROUPS, type NavItem } from "./nav-config";
 import { cerrarSesion } from "@/lib/auth/actions";
 import { BotonCronograma } from "@/components/cronograma/BotonCronograma";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 function idDePanel(label: string, prefijo: string): string {
   const slug = label
@@ -123,6 +124,7 @@ export function EstudianteShell({
           </nav>
 
           <div className="hidden items-center gap-4 lg:flex">
+            <LanguageSwitcher />
             <BotonCronograma href="/cronograma" compact />
             <span className="max-w-[160px] truncate text-sm text-mist-400">{email}</span>
             <form action={cerrarSesion}>
