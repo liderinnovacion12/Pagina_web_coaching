@@ -19,7 +19,7 @@ const PLANES = {
       desc: "Accede a un curso específico pagando solo su valor. Sin suscripciones, sin compromisos.",
       destacado: false,
       cta: "Ver catálogo de cursos",
-      ctaHref: "/registro",
+      ctaHref: "/registro?plan=curso",
       features: [
         { texto: "Acceso de por vida al curso comprado", activo: true },
         { texto: "Videos y material del curso", activo: true },
@@ -40,7 +40,7 @@ const PLANES = {
       desc: "Accede a todos los cursos, certificados y contenido nuevo sin restricciones. La mejor inversión para tu carrera.",
       destacado: true,
       cta: "Comenzar ahora",
-      ctaHref: "/registro",
+      ctaHref: "/registro?plan=membresia",
       features: [
         { texto: "Acceso a todos los cursos", activo: true },
         { texto: "Videos y material de todos los cursos", activo: true },

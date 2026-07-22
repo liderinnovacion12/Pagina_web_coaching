@@ -53,5 +53,6 @@ export async function registrar(
 
   await guardarIntereses(adminData.user.id, sectores);
 
-  redirect("/pago?plan=membresia");
+  const plan = String(formData.get("plan") ?? "");
+  redirect(plan === "membresia" ? "/pago?plan=membresia" : "/clases");
 }
