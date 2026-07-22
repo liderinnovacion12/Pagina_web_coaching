@@ -18,10 +18,11 @@ export default async function ResultadoPagoPage({
     id?: string;
     tipo?: string;
     cursoId?: string;
-    status?: string; // Wompi may pass this directly
+    leccionId?: string;
+    status?: string;
   }>;
 }) {
-  const { id, tipo, cursoId, status: wompiStatus } = await searchParams;
+  const { id, tipo, cursoId, leccionId, status: wompiStatus } = await searchParams;
 
   if (!id && wompiStatus !== "APPROVED") {
     redirect("/pago");
@@ -30,7 +31,7 @@ export default async function ResultadoPagoPage({
   let status = wompiStatus?.toUpperCase() ?? "PENDING";
 
   if (id && status !== "DECLINED" && status !== "VOIDED" && status !== "ERROR") {
-    const result = await confirmarPago(id, tipo ?? "curso", cursoId);
+    const result = await confirmarPago(id, tipo ?? "curso", cursoId, leccionId);
     status = result.status;
   }
 
@@ -90,6 +91,14 @@ export default async function ResultadoPagoPage({
                 className="flex h-11 items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-sm text-ink-950 hover:bg-gold-400 transition-colors"
               >
                 <InfinityIcon className="h-4 w-4" /> Ver todos los cursos
+              </Link>
+            )}
+            {approved && tipo === "leccion" && cursoId && leccionId && (
+              <Link
+                href={`/cursos/${cursoId}/lecciones/${leccionId}`}
+                className="flex h-11 items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-sm text-ink-950 hover:bg-gold-400 transition-colors"
+              >
+                <ArrowRight className="h-4 w-4" /> Ver lección
               </Link>
             )}
             {approved && tipo === "curso" && cursoId && (

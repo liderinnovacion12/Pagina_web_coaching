@@ -22,7 +22,10 @@ export default async function LeccionPage({
     notFound();
   }
 
-  if (!leccion.accesoCurso) {
+  if (!leccion.accesoLeccion) {
+    if (leccion.precio > 0) {
+      redirect(`/pago?tipo=leccion&leccionId=${leccionId}&cursoId=${cursoId}`);
+    }
     redirect(`/cursos/${cursoId}?bloqueado=1`);
   }
 

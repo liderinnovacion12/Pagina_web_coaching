@@ -14,6 +14,8 @@ export type LeccionDetalle = {
   leccionAnteriorId: string | null;
   leccionSiguienteId: string | null;
   accesoCurso: boolean;
+  precio: number;
+  accesoLeccion: boolean;
 };
 
 export async function getLeccionDetalle(
@@ -35,7 +37,7 @@ export async function getLeccionDetalle(
 
   const { data: lecciones, error: leccionesError } = await supabase
     .from("lecciones")
-    .select("id, titulo, tipo_contenido, mux_asset_id, storage_key, orden")
+    .select("id, titulo, tipo_contenido, mux_asset_id, storage_key, orden, precio")
     .eq("curso_id", cursoId)
     .order("orden");
 
@@ -65,6 +67,21 @@ export async function getLeccionDetalle(
 
   const accesoCurso = await tieneAccesoCurso(curso.id, usuarioId, curso.precio);
 
+  const precioPorLeccion = Number(leccion.precio ?? 0);
+  let accesoLeccion = accesoCurso;
+
+  if (!accesoLeccion && precioPorLeccion > 0) {
+    const { data: accesoRow } = await supabase
+      .from("leccion_accesos")
+      .select("id")
+      .eq("usuario_id", usuarioId)
+      .eq("leccion_id", leccionId)
+      .maybeSingle();
+    accesoLeccion = !!accesoRow;
+  } else if (!accesoLeccion && precioPorLeccion === 0) {
+    accesoLeccion = false;
+  }
+
   return {
     id: leccion.id,
     titulo: leccion.titulo,
@@ -79,6 +96,8 @@ export async function getLeccionDetalle(
     leccionSiguienteId:
       indice < listaLecciones.length - 1 ? listaLecciones[indice + 1].id : null,
     accesoCurso,
+    precio: precioPorLeccion,
+    accesoLeccion,
   };
 }
 

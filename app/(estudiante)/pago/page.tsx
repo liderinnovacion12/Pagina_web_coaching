@@ -12,7 +12,7 @@ export const metadata = {
 export default async function PagoPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string }>;
+  searchParams: Promise<{ plan?: string; tipo?: string; cursoId?: string; leccionId?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -20,9 +20,20 @@ export default async function PagoPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { plan } = await searchParams;
+  const { plan, tipo, cursoId, leccionId } = await searchParams;
   const planValido =
     plan === "curso" || plan === "membresia" ? plan : undefined;
+
+  // Si viene de una lección con precio, precargamos los datos de la lección
+  let leccionInfo: { titulo: string; precio: number } | undefined;
+  if (tipo === "leccion" && leccionId) {
+    const { data } = await supabase
+      .from("lecciones")
+      .select("titulo, precio")
+      .eq("id", leccionId)
+      .single();
+    if (data) leccionInfo = { titulo: data.titulo, precio: Number(data.precio) };
+  }
 
   const [cursos, bancos] = await Promise.all([
     getCursosPublicados(),
@@ -42,7 +53,15 @@ export default async function PagoPage({
 
         {/* Card */}
         <div className="rounded-2xl border border-white/[0.08] bg-ink-900/40 p-6 sm:p-8 shadow-[0_0_80px_rgba(0,0,0,0.5)]">
-          <PagoContent plan={planValido} cursos={cursos} bancos={bancos} />
+          <PagoContent
+            plan={planValido}
+            cursos={cursos}
+            bancos={bancos}
+            tipoParam={tipo}
+            cursoIdParam={cursoId}
+            leccionIdParam={leccionId}
+            leccionInfo={leccionInfo}
+          />
         </div>
 
         <p className="mt-5 text-center font-mono text-[10px] text-mist-500">

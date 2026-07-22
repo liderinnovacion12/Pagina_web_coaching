@@ -186,11 +186,13 @@ function NequiEsperando({ transactionId }: { transactionId: string }) {
 function ResumenOrden({
   plan,
   curso,
+  leccionInfo,
 }: {
   plan: string;
   curso: CursoPublicado | null;
+  leccionInfo?: { titulo: string; precio: number };
 }) {
-  const precio = plan === "membresia" ? 100 : (curso?.precio ?? 0);
+  const precio = plan === "membresia" ? 100 : leccionInfo ? leccionInfo.precio : (curso?.precio ?? 0);
   const copAprox = (precio * 4200).toLocaleString("es-CO");
 
   return (
@@ -205,10 +207,10 @@ function ResumenOrden({
         </div>
         <div>
           <p className="font-display text-sm font-semibold text-white leading-tight">
-            {plan === "membresia" ? "Plan Ilimitado" : (curso?.titulo ?? "Curso")}
+            {plan === "membresia" ? "Plan Ilimitado" : leccionInfo ? leccionInfo.titulo : (curso?.titulo ?? "Curso")}
           </p>
           <p className="text-xs text-mist-400 mt-0.5">
-            {plan === "membresia" ? "Acceso total · 1 mes" : "Acceso de por vida"}
+            {plan === "membresia" ? "Acceso total · 1 mes" : leccionInfo ? "Acceso de por vida al video" : "Acceso de por vida"}
           </p>
         </div>
       </div>
@@ -352,9 +354,11 @@ function SelectorCurso({
 function FormTarjeta({
   tipo,
   cursoId,
+  leccionId,
 }: {
   tipo: string;
   cursoId: string;
+  leccionId?: string;
 }) {
   const [result, formAction, pending] = useActionState(generarUrlTarjeta, null);
 
@@ -368,6 +372,7 @@ function FormTarjeta({
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="tipo" value={tipo} />
       <input type="hidden" name="curso_id" value={cursoId} />
+      {leccionId && <input type="hidden" name="leccion_id" value={leccionId} />}
 
       <div className="rounded-2xl border border-white/8 bg-ink-800/30 p-5 space-y-3">
         <div className="flex items-center gap-2">
@@ -400,10 +405,12 @@ function FormTarjeta({
 function FormPSE({
   tipo,
   cursoId,
+  leccionId,
   bancos,
 }: {
   tipo: string;
   cursoId: string;
+  leccionId?: string;
   bancos: PseBanco[];
 }) {
   const [result, formAction, pending] = useActionState(iniciarPagoPSE, null);
@@ -418,6 +425,7 @@ function FormPSE({
     <form action={formAction} className="space-y-4">
       <input type="hidden" name="tipo" value={tipo} />
       <input type="hidden" name="curso_id" value={cursoId} />
+      {leccionId && <input type="hidden" name="leccion_id" value={leccionId} />}
 
       {/* Banco */}
       <div>
@@ -488,10 +496,12 @@ function FormPSE({
 function FormNequi({
   tipo,
   cursoId,
+  leccionId,
   onTransaccion,
 }: {
   tipo: string;
   cursoId: string;
+  leccionId?: string;
   onTransaccion: (id: string) => void;
 }) {
   const [result, formAction, pending] = useActionState(iniciarPagoNequi, null);
@@ -506,6 +516,7 @@ function FormNequi({
     <form action={formAction} className="space-y-4">
       <input type="hidden" name="tipo" value={tipo} />
       <input type="hidden" name="curso_id" value={cursoId} />
+      {leccionId && <input type="hidden" name="leccion_id" value={leccionId} />}
 
       <div className="flex items-start gap-3 rounded-2xl border border-[#7B2D8B]/25 bg-[#7B2D8B]/8 p-4">
         <Smartphone className="h-5 w-5 text-[#CE6BDB] shrink-0 mt-0.5" />
@@ -550,23 +561,32 @@ export function PagoContent({
   plan: planInicial,
   cursos,
   bancos,
+  tipoParam,
+  cursoIdParam,
+  leccionIdParam,
+  leccionInfo,
 }: {
   plan?: string;
   cursos: CursoPublicado[];
   bancos: PseBanco[];
+  tipoParam?: string;
+  cursoIdParam?: string;
+  leccionIdParam?: string;
+  leccionInfo?: { titulo: string; precio: number };
 }) {
-  const [plan, setPlan] = useState<string | undefined>(planInicial);
+  const esLeccion = tipoParam === "leccion" && !!leccionIdParam;
+
+  const [plan, setPlan] = useState<string | undefined>(esLeccion ? "leccion" : planInicial);
   const [curso, setCurso] = useState<CursoPublicado | null>(null);
   const [metodo, setMetodo] = useState<MetodoPago>("tarjeta");
-  const [pagoOk, setPagoOk] = useState(false);
   const [nequiTxId, setNequiTxId] = useState<string | null>(null);
 
-  const cursoId = curso?.id ?? "";
-  const listo = plan === "membresia" || (plan === "curso" && !!curso);
+  const cursoId = esLeccion ? (cursoIdParam ?? "") : (curso?.id ?? "");
+  const leccionId = esLeccion ? leccionIdParam : undefined;
+  const listo = plan === "membresia" || (plan === "curso" && !!curso) || esLeccion;
 
   // ── screens ─────────────────────────────────────────────────────────────────
 
-  if (pagoOk) return <Exito plan={plan ?? "curso"} cursoId={cursoId} />;
   if (nequiTxId) return <NequiEsperando transactionId={nequiTxId} />;
 
   if (!plan) {
@@ -593,19 +613,31 @@ export function PagoContent({
 
         {/* Back + title */}
         <div>
-          <button
-            onClick={() => { plan === "curso" ? setCurso(null) : setPlan(undefined); }}
-            className="flex items-center gap-1 font-mono text-xs text-mist-400 hover:text-white transition-colors mb-3"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Volver
-          </button>
+          {!esLeccion && (
+            <button
+              onClick={() => { plan === "curso" ? setCurso(null) : setPlan(undefined); }}
+              className="flex items-center gap-1 font-mono text-xs text-mist-400 hover:text-white transition-colors mb-3"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Volver
+            </button>
+          )}
+          {esLeccion && (
+            <Link
+              href={`/cursos/${cursoIdParam}`}
+              className="flex items-center gap-1 font-mono text-xs text-mist-400 hover:text-white transition-colors mb-3"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Volver al curso
+            </Link>
+          )}
           <h1 className="font-display text-xl font-bold text-white">
-            {plan === "membresia" ? "Activa tu membresía" : `Comprar curso`}
+            {esLeccion ? "Acceder a este video" : plan === "membresia" ? "Activa tu membresía" : "Comprar curso"}
           </h1>
           <p className="mt-1 text-sm text-mist-400">
-            {plan === "membresia"
-              ? "Todos los cursos, certificados y contenido nuevo."
-              : curso?.titulo}
+            {esLeccion
+              ? leccionInfo?.titulo
+              : plan === "membresia"
+                ? "Todos los cursos, certificados y contenido nuevo."
+                : curso?.titulo}
           </p>
         </div>
 
@@ -643,15 +675,16 @@ export function PagoContent({
             transition={{ duration: 0.22, ease: EASE }}
           >
             {metodo === "tarjeta" && (
-              <FormTarjeta tipo={plan} cursoId={cursoId} />
+              <FormTarjeta tipo={plan} cursoId={cursoId} leccionId={leccionId} />
             )}
             {metodo === "pse" && (
-              <FormPSE tipo={plan} cursoId={cursoId} bancos={bancos} />
+              <FormPSE tipo={plan} cursoId={cursoId} leccionId={leccionId} bancos={bancos} />
             )}
             {metodo === "nequi" && (
               <FormNequi
                 tipo={plan}
                 cursoId={cursoId}
+                leccionId={leccionId}
                 onTransaccion={setNequiTxId}
               />
             )}
@@ -676,7 +709,7 @@ export function PagoContent({
       {/* Right: summary (desktop) */}
       {listo && (
         <div className="w-full lg:w-72 shrink-0">
-          <ResumenOrden plan={plan} curso={curso} />
+          <ResumenOrden plan={plan} curso={curso} leccionInfo={leccionInfo} />
         </div>
       )}
     </div>
