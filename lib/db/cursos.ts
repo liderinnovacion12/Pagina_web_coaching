@@ -113,6 +113,8 @@ export type LeccionConProgreso = {
   orden: number;
   segundoActual: number;
   completado: boolean;
+  precio: number;
+  accesoIndividual: boolean;
 };
 
 export type CursoDetalle = {
@@ -141,7 +143,7 @@ export async function getCursoDetalle(
 
   const { data: lecciones, error: leccionesError } = await supabase
     .from("lecciones")
-    .select("id, titulo, tipo_contenido, mux_asset_id, storage_key, orden")
+    .select("id, titulo, tipo_contenido, mux_asset_id, storage_key, orden, precio")
     .eq("curso_id", cursoId)
     .order("orden");
 
@@ -165,6 +167,17 @@ export async function getCursoDetalle(
 
   const accesoCurso = await tieneAccesoCurso(curso.id, usuarioId, curso.precio);
 
+  // Accesos individuales por lección ya comprados
+  let accesosPorLeccion = new Set<string>();
+  if (!accesoCurso && leccionIds.length > 0) {
+    const { data: accesos } = await supabase
+      .from("leccion_accesos")
+      .select("leccion_id")
+      .eq("usuario_id", usuarioId)
+      .in("leccion_id", leccionIds);
+    accesosPorLeccion = new Set((accesos ?? []).map((a) => a.leccion_id));
+  }
+
   const progresoPorLeccion = new Map(
     (progresos ?? []).map((progreso) => [progreso.leccion_id, progreso])
   );
@@ -185,6 +198,8 @@ export async function getCursoDetalle(
         orden: leccion.orden,
         segundoActual: progreso?.segundo_actual ?? 0,
         completado: progreso?.completado ?? false,
+        precio: Number(leccion.precio ?? 0),
+        accesoIndividual: accesoCurso || accesosPorLeccion.has(leccion.id),
       };
     }),
   };
