@@ -2,6 +2,7 @@
 
 import { motion, useMotionTemplate, useMotionValue, type Variants } from "framer-motion";
 import { Star, Clock, Users } from "lucide-react";
+import Link from "next/link";
 import type { CursoPublicado } from "@/lib/db/cursos";
 
 const COURSE_COLORS = [
@@ -46,6 +47,7 @@ export function CatalogoCursoCard({
       onMouseMove={handleMouseMove}
       className="group relative rounded-2xl border border-white/8 bg-ink-900/60 overflow-hidden backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-gold-500/25 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
     >
+      <Link href={`/registro?plan=curso&cursoId=${curso.id}`} className="absolute inset-0 z-20" aria-label={`Ver curso ${curso.titulo}`} />
       {/* Spotlight de fondo */}
       <motion.div
         aria-hidden="true"

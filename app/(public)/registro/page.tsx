@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { RegistroForm } from "./RegistroForm";
 import { ParticleField } from "@/components/motion/ParticleField";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Crear cuenta | Team 100% Real Estate",
@@ -12,9 +14,19 @@ export const metadata: Metadata = {
 export default async function RegistroPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string }>;
+  searchParams: Promise<{ plan?: string; cursoId?: string }>;
 }) {
-  const { plan } = await searchParams;
+  const { plan, cursoId } = await searchParams;
+
+  // Si ya tiene sesión activa, mandarlo directo al destino
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    if (plan === "membresia") redirect("/pago?plan=membresia");
+    if (cursoId) redirect(`/pago?tipo=curso&cursoId=${cursoId}`);
+    redirect("/clases");
+  }
+
   return (
     <main className="relative flex h-screen flex-col items-center justify-center overflow-y-auto overflow-x-hidden bg-ink-950 px-6 py-4">
       <ParticleField />
@@ -36,7 +48,7 @@ export default async function RegistroPage({
         </p>
 
         <div className="mt-4 rounded-[20px] border border-white/[0.08] bg-ink-900/40 p-6 shadow-[0_0_50px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_40px_rgba(0,0,0,0.25),0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
-          <RegistroForm plan={plan} />
+          <RegistroForm plan={plan} cursoId={cursoId} />
         </div>
 
         <p className="mt-3 text-center text-sm text-mist-400">
