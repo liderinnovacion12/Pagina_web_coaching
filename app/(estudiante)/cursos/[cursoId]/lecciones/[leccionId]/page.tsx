@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getSesionUsuario } from "@/lib/auth/session";
 import { getLeccionDetalle } from "@/lib/db/lecciones";
+import { getReseñaDelUsuario } from "@/lib/db/estadisticas";
 import { LeccionPlayer } from "./LeccionPlayer";
 
 export default async function LeccionPage({
@@ -12,15 +13,13 @@ export default async function LeccionPage({
 }) {
   const { cursoId, leccionId } = await params;
   const sesion = await getSesionUsuario();
-  const leccion = await getLeccionDetalle(cursoId, leccionId, sesion!.id);
+  const [leccion, reseña] = await Promise.all([
+    getLeccionDetalle(cursoId, leccionId, sesion!.id),
+    getReseñaDelUsuario(leccionId, sesion!.id),
+  ]);
 
-  if (!leccion) {
-    notFound();
-  }
-
-  if (!leccion.accesoCurso) {
-    redirect(`/cursos/${cursoId}?bloqueado=1`);
-  }
+  if (!leccion) notFound();
+  if (!leccion.accesoCurso) redirect(`/cursos/${cursoId}?bloqueado=1`);
 
   return (
     <div className="flex flex-col gap-6">
@@ -33,8 +32,10 @@ export default async function LeccionPage({
 
       <LeccionPlayer
         leccionId={leccion.id}
+        cursoId={cursoId}
         muxAssetId={leccion.muxAssetId}
         completado={leccion.completado}
+        reseñaInicial={reseña}
       />
 
       <div className="flex items-center justify-between">
