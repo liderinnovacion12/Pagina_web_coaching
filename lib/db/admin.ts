@@ -69,13 +69,14 @@ export type LeccionAdmin = {
   tipo_contenido: string;
   mux_asset_id: string | null;
   orden: number;
+  descripcion: string;
 };
 
 export async function getLeccionesDeUnCurso(cursoId: string): Promise<LeccionAdmin[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("lecciones")
-    .select("id, titulo, tipo_contenido, mux_asset_id, orden")
+    .select("id, titulo, tipo_contenido, mux_asset_id, orden, descripcion")
     .eq("curso_id", cursoId)
     .order("orden");
   if (error) throw new Error(error.message);
