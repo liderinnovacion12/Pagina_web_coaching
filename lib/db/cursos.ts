@@ -121,6 +121,7 @@ export type CursoDetalle = {
   id: string;
   titulo: string;
   categoria: CategoriaCurso;
+  precio: number;
   accesoCurso: boolean;
   lecciones: LeccionConProgreso[];
 };
@@ -186,6 +187,7 @@ export async function getCursoDetalle(
     id: curso.id,
     titulo: curso.titulo,
     categoria: curso.categoria as CategoriaCurso,
+    precio: Number(curso.precio ?? 0),
     accesoCurso,
     lecciones: (lecciones ?? []).map((leccion) => {
       const progreso = progresoPorLeccion.get(leccion.id);

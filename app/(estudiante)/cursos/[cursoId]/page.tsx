@@ -38,7 +38,11 @@ export default async function CursoDetallePage({
       <ol className="flex flex-col gap-2">
         {curso.lecciones.map((leccion, indice) => {
           const tieneAcceso = leccion.accesoIndividual;
-          const comprable = !tieneAcceso && leccion.precio > 0;
+
+          // Lección con precio propio → pagar lección individual
+          const pagarLeccion = !tieneAcceso && leccion.precio > 0;
+          // Sin precio de lección pero curso tiene precio → pagar el curso completo
+          const pagarCurso = !tieneAcceso && leccion.precio === 0 && curso.precio > 0;
 
           if (tieneAcceso) {
             return (
@@ -59,7 +63,7 @@ export default async function CursoDetallePage({
             );
           }
 
-          if (comprable) {
+          if (pagarLeccion) {
             return (
               <li key={leccion.id}>
                 <Link
@@ -70,6 +74,22 @@ export default async function CursoDetallePage({
                   <span className="font-mono text-xs text-mist-500">{indice + 1}</span>
                   <span className="flex-1 text-mist-300 group-hover:text-white">{leccion.titulo}</span>
                   <span className="font-display text-sm font-bold text-gold-400">${leccion.precio} USD</span>
+                </Link>
+              </li>
+            );
+          }
+
+          if (pagarCurso) {
+            return (
+              <li key={leccion.id}>
+                <Link
+                  href={`/pago?tipo=curso&cursoId=${curso.id}`}
+                  className="flex items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 transition hover:border-gold-500/40 group"
+                >
+                  <ShoppingCart className="h-5 w-5 shrink-0 text-gold-500 group-hover:text-gold-400" aria-hidden="true" />
+                  <span className="font-mono text-xs text-mist-500">{indice + 1}</span>
+                  <span className="flex-1 text-mist-300 group-hover:text-white">{leccion.titulo}</span>
+                  <span className="font-display text-sm font-bold text-gold-400">${curso.precio} USD</span>
                 </Link>
               </li>
             );
