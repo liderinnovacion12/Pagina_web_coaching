@@ -187,10 +187,12 @@ function ResumenOrden({
   plan,
   curso,
   leccionInfo,
+  planMembresia,
 }: {
   plan: string;
   curso: CursoPublicado | null;
   leccionInfo?: { titulo: string; precio: number };
+  planMembresia?: { nombre: string; descripcion: string; precio: number; duracion_dias: number };
 }) {
   const precio = plan === "membresia"
     ? Number(planMembresia?.precio ?? 100)
@@ -717,7 +719,7 @@ export function PagoContent({
       {/* Right: summary (desktop) */}
       {listo && (
         <div className="w-full lg:w-72 shrink-0">
-          <ResumenOrden plan={plan} curso={curso} leccionInfo={leccionInfo} />
+          <ResumenOrden plan={plan} curso={curso} leccionInfo={leccionInfo} planMembresia={planMembresia} />
         </div>
       )}
     </div>
