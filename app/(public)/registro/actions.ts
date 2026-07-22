@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { guardarIntereses } from "@/lib/db/intereses";
 
 export type RegistroState = { error: string | null };
@@ -27,14 +28,30 @@ export async function registrar(
     return { error: "La contraseña debe tener al menos 8 caracteres." };
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  // Crear usuario con email ya confirmado (sin correo de verificación)
+  const admin = createAdminClient();
+  const { data: adminData, error: adminError } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+  });
 
-  if (error || !data.user) {
-    return { error: "No se pudo completar el registro. Intenta de nuevo." };
+  if (adminError || !adminData.user) {
+    if (adminError?.message?.includes("already registered")) {
+      return { error: "Ya existe una cuenta con ese correo." };
+    }
+    return { error: "No se pudo crear la cuenta. Intenta de nuevo." };
   }
 
-  await guardarIntereses(data.user.id, sectores);
+  await guardarIntereses(adminData.user.id, sectores);
 
-  redirect("/pago");
+  // Iniciar sesión inmediatamente
+  const supabase = await createClient();
+  const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (loginError) {
+    return { error: "Cuenta creada pero no se pudo iniciar sesión. Inicia sesión manualmente." };
+  }
+
+  redirect("/pago?plan=membresia");
 }
