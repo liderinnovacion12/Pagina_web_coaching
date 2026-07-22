@@ -15,7 +15,9 @@ vi.mock("@/lib/motion", async () => {
 
 describe("HeroContent", () => {
   it("renderiza el titular, los CTAs y las estadísticas recibidas", () => {
-    render(<HeroContent />);
+    render(
+      <HeroContent estadisticas={[{ valor: "2,000+", etiqueta: "Líderes" }]} />
+    );
 
     expect(screen.getByText("Transforma tu")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Comenzar ahora" })).toHaveAttribute(
@@ -36,7 +38,9 @@ describe("HeroContent", () => {
 
   it("mantiene visible el indicador de scroll cuando el usuario prefiere reduced motion", () => {
     useReducedMotionSafeMock.mockReturnValue(true);
-    render(<HeroContent />);
+    render(
+      <HeroContent estadisticas={[{ valor: "2,000+", etiqueta: "Líderes" }]} />
+    );
     expect(
       screen.getByRole("link", { name: /descubre nuestros cursos/i })
     ).toBeInTheDocument();
