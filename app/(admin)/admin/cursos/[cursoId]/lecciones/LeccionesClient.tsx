@@ -1,11 +1,11 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Play, Plus, Trash2, GripVertical, Video, FileText, X, Check, ArrowLeft, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { Play, Plus, Trash2, GripVertical, Video, FileText, X, Check, ArrowLeft, MessageSquare, ChevronDown, ChevronUp, DollarSign, Pencil } from "lucide-react";
 import Link from "next/link";
 import type { LeccionAdmin } from "@/lib/db/admin";
 import type { ComentarioLeccion } from "@/lib/comentarios/actions";
-import { crearLeccionAction, eliminarLeccionAction } from "./actions";
+import { crearLeccionAction, eliminarLeccionAction, actualizarPrecioLeccionAction } from "./actions";
 
 const INIT = { error: null };
 
@@ -109,6 +109,67 @@ function ComentariosPanel({ comentarios }: { comentarios: ComentarioLeccion[] })
   );
 }
 
+function EditarPrecio({ leccion, cursoId }: { leccion: LeccionAdmin; cursoId: string }) {
+  const action = actualizarPrecioLeccionAction.bind(null, cursoId, leccion.id);
+  const [state, formAction, pending] = useActionState(action, { error: null });
+  const [editando, setEditando] = useState(false);
+
+  if (!editando) {
+    return (
+      <button
+        type="button"
+        onClick={() => setEditando(true)}
+        className="flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1.5 font-mono text-[10px] text-mist-400 hover:border-gold-500/30 hover:text-gold-300 transition-all shrink-0"
+        title="Editar precio"
+      >
+        <DollarSign className="h-3 w-3" />
+        {leccion.precio > 0 ? `$${leccion.precio.toFixed(2)}` : "Gratis"}
+        <Pencil className="h-3 w-3 opacity-50" />
+      </button>
+    );
+  }
+
+  return (
+    <form
+      action={async (fd) => {
+        await formAction(fd);
+        setEditando(false);
+      }}
+      className="flex items-center gap-1 shrink-0"
+    >
+      <div className="relative">
+        <DollarSign className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-mist-500" />
+        <input
+          name="precio"
+          type="number"
+          min="0"
+          step="0.01"
+          defaultValue={leccion.precio}
+          autoFocus
+          className="w-24 rounded-lg border border-gold-500/40 bg-ink-800 pl-6 pr-2 py-1.5 font-mono text-xs text-white focus:outline-none focus:ring-1 focus:ring-gold-500/30"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={pending}
+        className="flex h-7 w-7 items-center justify-center rounded-lg bg-gold-500/20 border border-gold-500/40 text-gold-400 hover:bg-gold-500/30 transition-all shrink-0"
+      >
+        <Check className="h-3.5 w-3.5" />
+      </button>
+      <button
+        type="button"
+        onClick={() => setEditando(false)}
+        className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 text-mist-500 hover:text-white transition-all shrink-0"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+      {state.error && (
+        <span className="font-mono text-[10px] text-red-400">{state.error}</span>
+      )}
+    </form>
+  );
+}
+
 function LeccionRow({ leccion, cursoId, comentarios }: { leccion: LeccionAdmin; cursoId: string; comentarios: ComentarioLeccion[] }) {
   const [confirm, setConfirm] = useState(false);
   const [verComentarios, setVerComentarios] = useState(false);
@@ -128,6 +189,7 @@ function LeccionRow({ leccion, cursoId, comentarios }: { leccion: LeccionAdmin; 
             {leccion.mux_asset_id && <span className="ml-2 text-blue-400/70">· Mux: {leccion.mux_asset_id.slice(0, 16)}…</span>}
           </p>
         </div>
+        <EditarPrecio leccion={leccion} cursoId={cursoId} />
         <button
           type="button"
           onClick={() => setVerComentarios((v) => !v)}

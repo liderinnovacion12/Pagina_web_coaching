@@ -49,3 +49,25 @@ export async function actualizarOrdenLeccionAction(leccionId: string, orden: num
   await supabase.from("lecciones").update({ orden }).eq("id", leccionId);
   revalidatePath(`/admin/cursos/${cursoId}/lecciones`);
 }
+
+export async function actualizarPrecioLeccionAction(
+  cursoId: string,
+  leccionId: string,
+  _prev: { error: string | null },
+  formData: FormData
+): Promise<{ error: string | null }> {
+  await requireRol("admin");
+  const raw = String(formData.get("precio") ?? "").trim();
+  const precio = parseFloat(raw);
+  if (isNaN(precio) || precio < 0) return { error: "Precio inválido." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("lecciones")
+    .update({ precio })
+    .eq("id", leccionId);
+
+  if (error) return { error: error.message };
+  revalidatePath(`/admin/cursos/${cursoId}/lecciones`);
+  return { error: null };
+}
