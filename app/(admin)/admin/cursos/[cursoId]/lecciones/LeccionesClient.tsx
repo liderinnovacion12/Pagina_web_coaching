@@ -40,6 +40,12 @@ function NuevaLeccionForm({ cursoId }: { cursoId: string }) {
                 className="w-full rounded-lg border border-white/10 bg-ink-800 px-4 py-2.5 text-sm text-white placeholder:text-mist-500 focus:border-gold-500/50 focus:outline-none focus:ring-1 focus:ring-gold-500/30"
               />
             </div>
+            <div>
+              <label className="block font-mono text-xs text-mist-400 mb-1.5 uppercase tracking-wider">Descripción *</label>
+              <textarea name="descripcion" required rows={3} placeholder="Describe brevemente el contenido de esta lección…"
+                className="w-full resize-none rounded-lg border border-white/10 bg-ink-800 px-4 py-2.5 text-sm text-white placeholder:text-mist-500 focus:border-gold-500/50 focus:outline-none focus:ring-1 focus:ring-gold-500/30"
+              />
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block font-mono text-xs text-mist-400 mb-1.5 uppercase tracking-wider">Tipo</label>
