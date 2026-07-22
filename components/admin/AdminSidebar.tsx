@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, BookOpen, Users, CalendarDays,
   Wrench, Globe, Handshake, Building2, HeadphonesIcon,
-  ChevronRight, LogOut, Home,
+  ChevronRight, LogOut, Home, CreditCard,
 } from "lucide-react";
 import { logoutAction } from "@/lib/auth/logout";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -19,6 +19,7 @@ export function AdminSidebar() {
     { label: a.nav.dashboard, href: "/admin", icon: LayoutDashboard, exact: true },
     { label: a.nav.cursos, href: "/admin/cursos", icon: BookOpen },
     { label: a.nav.usuarios, href: "/admin/usuarios", icon: Users },
+    { label: "Planes", href: "/admin/planes", icon: CreditCard },
     { label: a.nav.calendario, href: "/admin/calendario", icon: CalendarDays },
     { label: a.nav.herramientas, href: "/admin/herramientas", icon: Wrench },
     { label: a.nav.eventos, href: "/admin/eventos", icon: Globe },

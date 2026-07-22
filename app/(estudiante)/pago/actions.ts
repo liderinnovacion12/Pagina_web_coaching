@@ -29,9 +29,19 @@ async function resolverMonto(
   leccionId?: string
 ): Promise<{ amountInCents: number; description: string } | { error: string }> {
   if (tipo === "membresia") {
+    const { data: plan } = await supabase
+      .from("planes_membresia")
+      .select("nombre, precio, duracion_dias")
+      .eq("activo", true)
+      .order("orden")
+      .limit(1)
+      .single();
+    const precio = Number(plan?.precio ?? 100);
+    const nombre = plan?.nombre ?? "Plan Ilimitado";
+    const dias = plan?.duracion_dias ?? 30;
     return {
-      amountInCents: toCopCents(100),
-      description: "Plan Ilimitado Team 100% — 1 mes",
+      amountInCents: toCopCents(precio),
+      description: `${nombre} Team 100% — ${dias} días`,
     };
   }
   if (tipo === "leccion") {

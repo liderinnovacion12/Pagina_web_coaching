@@ -35,9 +35,17 @@ export default async function PagoPage({
     if (data) leccionInfo = { titulo: data.titulo, precio: Number(data.precio) };
   }
 
-  const [cursos, bancos] = await Promise.all([
+  const [cursos, bancos, planMembresia] = await Promise.all([
     getCursosPublicados(),
     getBancosPSE(),
+    supabase
+      .from("planes_membresia")
+      .select("id, nombre, descripcion, precio, duracion_dias")
+      .eq("activo", true)
+      .order("orden")
+      .limit(1)
+      .single()
+      .then((r) => r.data),
   ]);
 
   return (
@@ -61,6 +69,7 @@ export default async function PagoPage({
             cursoIdParam={cursoId}
             leccionIdParam={leccionId}
             leccionInfo={leccionInfo}
+            planMembresia={planMembresia ?? undefined}
           />
         </div>
 

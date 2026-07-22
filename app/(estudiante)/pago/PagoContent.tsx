@@ -192,7 +192,9 @@ function ResumenOrden({
   curso: CursoPublicado | null;
   leccionInfo?: { titulo: string; precio: number };
 }) {
-  const precio = plan === "membresia" ? 100 : leccionInfo ? leccionInfo.precio : (curso?.precio ?? 0);
+  const precio = plan === "membresia"
+    ? Number(planMembresia?.precio ?? 100)
+    : leccionInfo ? leccionInfo.precio : (curso?.precio ?? 0);
   const copAprox = (precio * 4200).toLocaleString("es-CO");
 
   return (
@@ -207,10 +209,14 @@ function ResumenOrden({
         </div>
         <div>
           <p className="font-display text-sm font-semibold text-white leading-tight">
-            {plan === "membresia" ? "Plan Ilimitado" : leccionInfo ? leccionInfo.titulo : (curso?.titulo ?? "Curso")}
+            {plan === "membresia"
+              ? (planMembresia?.nombre ?? "Plan Ilimitado")
+              : leccionInfo ? leccionInfo.titulo : (curso?.titulo ?? "Curso")}
           </p>
           <p className="text-xs text-mist-400 mt-0.5">
-            {plan === "membresia" ? "Acceso total · 1 mes" : leccionInfo ? "Acceso de por vida al video" : "Acceso de por vida"}
+            {plan === "membresia"
+              ? `Acceso total · ${planMembresia?.duracion_dias ?? 30} días`
+              : leccionInfo ? "Acceso de por vida al video" : "Acceso de por vida"}
           </p>
         </div>
       </div>
@@ -251,7 +257,7 @@ function ResumenOrden({
 
 // ── Plan selector ─────────────────────────────────────────────────────────────
 
-function SelectorPlan({ onSelect }: { onSelect: (plan: "curso" | "membresia") => void }) {
+function SelectorPlan({ onSelect, membresiaPrecio = 100 }: { onSelect: (plan: "curso" | "membresia") => void; membresiaPrecio?: number }) {
   return (
     <div className="space-y-6">
       <div>
@@ -288,7 +294,7 @@ function SelectorPlan({ onSelect }: { onSelect: (plan: "curso" | "membresia") =>
                 <p className="font-display font-bold text-gold-300">Plan Ilimitado</p>
                 <span className="rounded-full bg-gold-500 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-ink-950">Popular</span>
               </div>
-              <p className="text-sm text-mist-400">Todos los cursos por $100/mes</p>
+              <p className="text-sm text-mist-400">Todos los cursos por ${membresiaPrecio}/mes</p>
             </div>
           </div>
           <ArrowRight className="h-5 w-5 text-mist-500 transition group-hover:text-gold-400" />
@@ -565,6 +571,7 @@ export function PagoContent({
   cursoIdParam,
   leccionIdParam,
   leccionInfo,
+  planMembresia,
 }: {
   plan?: string;
   cursos: CursoPublicado[];
@@ -573,6 +580,7 @@ export function PagoContent({
   cursoIdParam?: string;
   leccionIdParam?: string;
   leccionInfo?: { titulo: string; precio: number };
+  planMembresia?: { nombre: string; descripcion: string; precio: number; duracion_dias: number };
 }) {
   const esLeccion = tipoParam === "leccion" && !!leccionIdParam;
 
@@ -590,7 +598,7 @@ export function PagoContent({
   if (nequiTxId) return <NequiEsperando transactionId={nequiTxId} />;
 
   if (!plan) {
-    return <SelectorPlan onSelect={setPlan} />;
+    return <SelectorPlan onSelect={setPlan} membresiaPrecio={planMembresia?.precio ?? 100} />;
   }
 
   if (plan === "curso" && !curso) {
