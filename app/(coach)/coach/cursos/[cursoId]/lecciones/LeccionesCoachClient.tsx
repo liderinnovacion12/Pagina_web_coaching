@@ -1,9 +1,10 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Play, Plus, Trash2, GripVertical, Video, FileText, X, Check, ArrowLeft } from "lucide-react";
+import { Play, Plus, Trash2, GripVertical, Video, FileText, X, Check, ArrowLeft, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import type { LeccionAdmin } from "@/lib/db/admin";
+import type { ComentarioLeccion } from "@/lib/comentarios/actions";
 import { crearLeccionCoachAction, eliminarLeccionCoachAction } from "./actions";
 
 const INIT = { error: null };
@@ -89,48 +90,78 @@ function NuevaLeccionForm({ cursoId }: { cursoId: string }) {
   );
 }
 
-function LeccionRow({ leccion, cursoId }: { leccion: LeccionAdmin; cursoId: string }) {
+function ComentariosPanel({ comentarios }: { comentarios: ComentarioLeccion[] }) {
+  if (comentarios.length === 0) {
+    return <p className="px-4 pb-3 font-mono text-xs text-mist-500">Sin comentarios aún.</p>;
+  }
+  return (
+    <div className="divide-y divide-white/5 border-t border-white/[0.06]">
+      {comentarios.map((c) => (
+        <div key={c.id} className="px-4 py-3">
+          <p className="font-mono text-[10px] text-mist-500 mb-1">{c.usuarioEmail}</p>
+          <p className="text-sm text-mist-200 whitespace-pre-wrap">{c.comentario}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function LeccionRow({ leccion, cursoId, comentarios }: { leccion: LeccionAdmin; cursoId: string; comentarios: ComentarioLeccion[] }) {
   const [confirm, setConfirm] = useState(false);
+  const [verComentarios, setVerComentarios] = useState(false);
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-white/8 bg-ink-900/60 px-4 py-3 hover:border-white/12 transition-all">
-      <GripVertical className="h-4 w-4 text-mist-600 shrink-0 cursor-grab" />
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-800 border border-white/8">
-        {TIPO_ICONS[leccion.tipo_contenido] ?? <Play className="h-4 w-4 text-mist-400" />}
-      </div>
-      <span className="font-mono text-xs text-mist-500 w-6 shrink-0 text-center">{leccion.orden}</span>
-      <div className="flex-1 min-w-0">
-        <p className="font-display text-sm font-medium text-white truncate">{leccion.titulo}</p>
-        <p className="font-mono text-[10px] text-mist-500 mt-0.5">
-          {leccion.tipo_contenido}
-          {leccion.mux_asset_id && <span className="ml-2 text-blue-400/70">· Mux: {leccion.mux_asset_id.slice(0, 16)}…</span>}
-        </p>
-      </div>
-      {!confirm ? (
-        <button onClick={() => setConfirm(true)}
-          className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 text-mist-500 hover:border-red-500/30 hover:text-red-400 transition-all shrink-0"
+    <div className="rounded-xl border border-white/8 bg-ink-900/60 hover:border-white/12 transition-all">
+      <div className="flex items-center gap-4 px-4 py-3">
+        <GripVertical className="h-4 w-4 text-mist-600 shrink-0 cursor-grab" />
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-800 border border-white/8">
+          {TIPO_ICONS[leccion.tipo_contenido] ?? <Play className="h-4 w-4 text-mist-400" />}
+        </div>
+        <span className="font-mono text-xs text-mist-500 w-6 shrink-0 text-center">{leccion.orden}</span>
+        <div className="flex-1 min-w-0">
+          <p className="font-display text-sm font-medium text-white truncate">{leccion.titulo}</p>
+          <p className="font-mono text-[10px] text-mist-500 mt-0.5">
+            {leccion.tipo_contenido}
+            {leccion.mux_asset_id && <span className="ml-2 text-blue-400/70">· Mux: {leccion.mux_asset_id.slice(0, 16)}…</span>}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setVerComentarios((v) => !v)}
+          className="flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1.5 font-mono text-[10px] text-mist-400 hover:border-gold-500/30 hover:text-gold-300 transition-all shrink-0"
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <MessageSquare className="h-3.5 w-3.5" />
+          {comentarios.length}
+          {verComentarios ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
         </button>
-      ) : (
-        <form action={async () => { await eliminarLeccionCoachAction(cursoId, leccion.id); }} className="flex items-center gap-1 shrink-0">
-          <button type="submit" className="rounded-lg bg-red-500/20 border border-red-500/40 px-2 py-1 font-mono text-[10px] text-red-400 hover:bg-red-500/30">
-            Eliminar
+        {!confirm ? (
+          <button onClick={() => setConfirm(true)}
+            className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 text-mist-500 hover:border-red-500/30 hover:text-red-400 transition-all shrink-0"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
           </button>
-          <button type="button" onClick={() => setConfirm(false)} className="font-mono text-[10px] text-mist-500 hover:text-white px-1">No</button>
-        </form>
-      )}
+        ) : (
+          <form action={async () => { await eliminarLeccionCoachAction(cursoId, leccion.id); }} className="flex items-center gap-1 shrink-0">
+            <button type="submit" className="rounded-lg bg-red-500/20 border border-red-500/40 px-2 py-1 font-mono text-[10px] text-red-400 hover:bg-red-500/30">
+              Eliminar
+            </button>
+            <button type="button" onClick={() => setConfirm(false)} className="font-mono text-[10px] text-mist-500 hover:text-white px-1">No</button>
+          </form>
+        )}
+      </div>
+      {verComentarios && <ComentariosPanel comentarios={comentarios} />}
     </div>
   );
 }
 
 export function LeccionesCoachClient({
-  lecciones, cursoId, cursoTitulo, coachId,
+  lecciones, cursoId, cursoTitulo, coachId, comentariosPorLeccion,
 }: {
   lecciones: LeccionAdmin[];
   cursoId: string;
   cursoTitulo: string;
   coachId: string;
+  comentariosPorLeccion: Record<string, ComentarioLeccion[]>;
 }) {
   return (
     <div className="space-y-6">
@@ -154,7 +185,9 @@ export function LeccionesCoachClient({
         </div>
       ) : (
         <div className="space-y-2">
-          {lecciones.map((l) => <LeccionRow key={l.id} leccion={l} cursoId={cursoId} />)}
+          {lecciones.map((l) => (
+            <LeccionRow key={l.id} leccion={l} cursoId={cursoId} comentarios={comentariosPorLeccion[l.id] ?? []} />
+          ))}
         </div>
       )}
     </div>

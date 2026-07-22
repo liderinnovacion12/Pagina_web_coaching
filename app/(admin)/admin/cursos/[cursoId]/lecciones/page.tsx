@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLeccionesDeUnCurso, getCursoAdminById } from "@/lib/db/admin";
+import { getComentariosDeLeccion } from "@/lib/comentarios/actions";
+import type { ComentarioLeccion } from "@/lib/comentarios/actions";
 import { LeccionesClient } from "./LeccionesClient";
 
 export default async function AdminLeccionesPage({
@@ -15,11 +17,19 @@ export default async function AdminLeccionesPage({
 
   if (!curso) notFound();
 
+  const comentariosPorLeccion: Record<string, ComentarioLeccion[]> = {};
+  await Promise.all(
+    lecciones.map(async (l) => {
+      comentariosPorLeccion[l.id] = await getComentariosDeLeccion(l.id);
+    })
+  );
+
   return (
     <LeccionesClient
       lecciones={lecciones}
       cursoId={cursoId}
       cursoTitulo={curso.titulo}
+      comentariosPorLeccion={comentariosPorLeccion}
     />
   );
 }

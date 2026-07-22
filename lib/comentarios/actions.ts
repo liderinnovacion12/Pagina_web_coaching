@@ -39,3 +39,29 @@ export async function getComentarioDelUsuario(
     .maybeSingle();
   return data?.comentario ?? null;
 }
+
+export type ComentarioLeccion = {
+  id: string;
+  usuarioEmail: string;
+  comentario: string;
+  actualizadoEn: string;
+};
+
+export async function getComentariosDeLeccion(
+  leccionId: string
+): Promise<ComentarioLeccion[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("comentarios_lecciones")
+    .select("id, comentario, actualizado_en, usuarios(email)")
+    .eq("leccion_id", leccionId)
+    .order("actualizado_en", { ascending: false });
+
+  if (!data) return [];
+  return data.map((row: any) => ({
+    id: row.id,
+    usuarioEmail: row.usuarios?.email ?? "—",
+    comentario: row.comentario,
+    actualizadoEn: row.actualizado_en,
+  }));
+}
