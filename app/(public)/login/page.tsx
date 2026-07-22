@@ -12,10 +12,11 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ reset?: string }>;
+  searchParams: Promise<{ reset?: string; error?: string }>;
 }) {
   const params = await searchParams;
   const mostrarResetOk = params.reset === "ok";
+  const errorOauth = params.error === "oauth";
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-ink-950 overflow-hidden px-6 py-16 sm:px-10">
@@ -40,6 +41,12 @@ export default async function LoginPage({
             Inicia sesión para continuar tu proceso de aprendizaje.
           </p>
         </div>
+
+        {errorOauth && (
+          <p role="alert" className="mt-6 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300 text-center">
+            No se pudo iniciar sesión con Google. Verifica que el proveedor esté habilitado e intenta de nuevo.
+          </p>
+        )}
 
         <div className="mt-10 rounded-[20px] border border-white/[0.08] bg-ink-900/40 p-12 shadow-[0_0_50px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-300 hover:border-gold-500/35 hover:shadow-[0_0_40px_rgba(0,0,0,0.25),0_0_0_1px_rgba(217,169,78,0.14),0_0_32px_-4px_rgba(217,169,78,0.22)]">
           <LoginForm mostrarResetOk={mostrarResetOk} />
