@@ -13,18 +13,15 @@ export async function crearLeccionCoachAction(
   const supabase = await createClient();
 
   const titulo = String(formData.get("titulo") ?? "").trim();
-  const descripcion = String(formData.get("descripcion") ?? "").trim();
   const tipo_contenido = String(formData.get("tipo_contenido") ?? "video");
   const mux_asset_id = String(formData.get("mux_asset_id") ?? "").trim() || null;
   const orden = parseInt(String(formData.get("orden") ?? "0"));
 
   if (!titulo) return { error: "El título es obligatorio." };
-  if (!descripcion) return { error: "La descripción es obligatoria." };
 
   const { error } = await supabase.from("lecciones").insert({
     curso_id: cursoId,
     titulo,
-    descripcion,
     tipo_contenido,
     mux_asset_id,
     orden: isNaN(orden) ? 0 : orden,
