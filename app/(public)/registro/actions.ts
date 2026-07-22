@@ -43,15 +43,15 @@ export async function registrar(
     return { error: "No se pudo crear la cuenta. Intenta de nuevo." };
   }
 
-  await guardarIntereses(adminData.user.id, sectores);
-
-  // Iniciar sesión inmediatamente
+  // Iniciar sesión antes de guardar intereses (RLS requiere sesión activa)
   const supabase = await createClient();
   const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
 
   if (loginError) {
     return { error: "Cuenta creada pero no se pudo iniciar sesión. Inicia sesión manualmente." };
   }
+
+  await guardarIntereses(adminData.user.id, sectores);
 
   redirect("/pago?plan=membresia");
 }
