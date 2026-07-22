@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getSesionUsuario } from "@/lib/auth/session";
 import { getLeccionDetalle } from "@/lib/db/lecciones";
+import { getComentarioDelUsuario } from "@/lib/comentarios/actions";
 import { LeccionPlayer } from "./LeccionPlayer";
 
 export default async function LeccionPage({
@@ -12,7 +13,10 @@ export default async function LeccionPage({
 }) {
   const { cursoId, leccionId } = await params;
   const sesion = await getSesionUsuario();
-  const leccion = await getLeccionDetalle(cursoId, leccionId, sesion!.id);
+  const [leccion, comentarioInicial] = await Promise.all([
+    getLeccionDetalle(cursoId, leccionId, sesion!.id),
+    getComentarioDelUsuario(leccionId, sesion!.id),
+  ]);
 
   if (!leccion) {
     notFound();
@@ -33,8 +37,10 @@ export default async function LeccionPage({
 
       <LeccionPlayer
         leccionId={leccion.id}
+        cursoId={cursoId}
         muxAssetId={leccion.muxAssetId}
         completado={leccion.completado}
+        comentarioInicial={comentarioInicial}
       />
 
       <div className="flex items-center justify-between">
