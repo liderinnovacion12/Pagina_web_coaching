@@ -12,6 +12,15 @@ vi.mock("@mux/mux-player-react", () => ({
   default: () => <div data-testid="mux-player" />,
 }));
 
+vi.mock("@/lib/resenas/actions", () => ({
+  guardarReseñaAction: vi.fn().mockResolvedValue({ ok: true }),
+}));
+
+const defaultProps = {
+  cursoId: "c1",
+  reseñaInicial: null,
+};
+
 describe("LeccionPlayer", () => {
   beforeEach(() => {
     marcarProgresoActionMock.mockReset();
@@ -19,7 +28,7 @@ describe("LeccionPlayer", () => {
 
   it("muestra el reproductor de Mux cuando hay muxAssetId", () => {
     render(
-      <LeccionPlayer leccionId="l1" muxAssetId="mux-123" completado={false} />
+      <LeccionPlayer {...defaultProps} leccionId="l1" muxAssetId="mux-123" completado={false} />
     );
 
     expect(screen.getByTestId("mux-player")).toBeInTheDocument();
@@ -29,7 +38,7 @@ describe("LeccionPlayer", () => {
   it("muestra el estado de fallback y permite marcar como completada sin muxAssetId", async () => {
     marcarProgresoActionMock.mockResolvedValue({ error: null });
 
-    render(<LeccionPlayer leccionId="l1" muxAssetId={null} completado={false} />);
+    render(<LeccionPlayer {...defaultProps} leccionId="l1" muxAssetId={null} completado={false} />);
 
     expect(screen.getByText("Video no disponible todavía")).toBeInTheDocument();
 
@@ -41,7 +50,7 @@ describe("LeccionPlayer", () => {
   });
 
   it("muestra 'Completada' si ya estaba completada", () => {
-    render(<LeccionPlayer leccionId="l1" muxAssetId={null} completado={true} />);
+    render(<LeccionPlayer {...defaultProps} leccionId="l1" muxAssetId={null} completado={true} />);
 
     expect(screen.getByText("Completada")).toBeInTheDocument();
   });
