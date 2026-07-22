@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getCursosPublicados } from "@/lib/db/cursos";
+import { getBancosPSE } from "@/lib/wompi/client";
 import { PagoContent } from "./PagoContent";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -14,32 +15,38 @@ export default async function PagoPage({
   searchParams: Promise<{ plan?: string }>;
 }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
   const { plan } = await searchParams;
-  const planValido = plan === "curso" || plan === "membresia" ? plan : undefined;
+  const planValido =
+    plan === "curso" || plan === "membresia" ? plan : undefined;
 
-  const cursos = await getCursosPublicados();
+  const [cursos, bancos] = await Promise.all([
+    getCursosPublicados(),
+    getBancosPSE(),
+  ]);
 
   return (
     <main className="min-h-screen bg-ink-950 px-4 py-12">
-      <div className="mx-auto max-w-lg">
-        <div className="mb-8 text-center">
-          <Link
-            href="/"
-            className="inline-block font-display text-lg font-bold text-white"
-          >
+      <div className="mx-auto max-w-3xl">
+
+        {/* Logo */}
+        <div className="mb-10 text-center">
+          <Link href="/" className="inline-block font-display text-lg font-bold text-white">
             TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
           </Link>
         </div>
 
-        <div className="rounded-2xl border border-white/[0.08] bg-ink-900/40 p-8 backdrop-blur-xl shadow-[0_0_60px_rgba(0,0,0,0.4)]">
-          <PagoContent plan={planValido} cursos={cursos} />
+        {/* Card */}
+        <div className="rounded-2xl border border-white/[0.08] bg-ink-900/40 p-6 sm:p-8 shadow-[0_0_80px_rgba(0,0,0,0.5)]">
+          <PagoContent plan={planValido} cursos={cursos} bancos={bancos} />
         </div>
 
-        <p className="mt-4 text-center font-mono text-[10px] text-mist-600">
-          ¿Preguntas? Usa el botón de soporte en la esquina inferior derecha.
+        <p className="mt-5 text-center font-mono text-[10px] text-mist-500">
+          ¿Preguntas? Escríbenos al soporte en la esquina inferior derecha.
         </p>
       </div>
     </main>
