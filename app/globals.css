@@ -199,4 +199,10 @@
   :root.light .particle-field {
     display: none;
   }
+
+  /* Logo NCS – cambio por CSS sin flash */
+  .logo-ncs-dark { display: block; }
+  .logo-ncs-light { display: none; }
+  :root.light .logo-ncs-dark { display: none; }
+  :root.light .logo-ncs-light { display: block; }
 }
