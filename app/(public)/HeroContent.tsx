@@ -254,29 +254,8 @@ export function HeroContent() {
           </motion.dl>
         </motion.div>
 
-        {/* Logo protagonista — columna derecha */}
-        <div className="flex-1 flex items-center justify-center lg:justify-end">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.82, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 1.4, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
-          >
-            {/* Aura verde difusa */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-[-18%] rounded-full blur-3xl opacity-20"
-              style={{ background: "radial-gradient(circle, rgba(0,201,87,0.8) 0%, transparent 65%)" }}
-            />
-            {/* Anillo pulsante */}
-            <motion.div
-              animate={{ scale: [1, 1.05, 1], opacity: [0.12, 0.28, 0.12] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-              aria-hidden="true"
-              className="absolute inset-[-5%] rounded-full border border-gold-500/20"
-            />
-            <LogoNCS height={300} className="relative z-10 drop-shadow-[0_0_40px_rgba(0,201,87,0.35)]" />
-          </motion.div>
+        <div className="flex-1 flex justify-center lg:justify-end">
+          <FloatingCourseCard />
         </div>
       </div>
 
