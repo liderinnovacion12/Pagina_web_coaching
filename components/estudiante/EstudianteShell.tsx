@@ -75,7 +75,7 @@ export function EstudianteShell({
             aria-label="NCS Realty Hub – Dashboard"
             className="transition duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 rounded-sm"
           >
-            <LogoNCS height={40} />
+            <LogoNCS height={48} />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">

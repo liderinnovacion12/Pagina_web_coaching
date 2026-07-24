@@ -41,7 +41,7 @@ export function SiteHeader() {
     >
       <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6">
         <Link href="/" aria-label="NCS Realty Hub – Inicio">
-          <LogoNCS height={40} />
+          <LogoNCS height={52} />
         </Link>
 
         <div className="flex items-center gap-3">

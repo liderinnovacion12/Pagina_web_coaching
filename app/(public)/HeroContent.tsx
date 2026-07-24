@@ -183,10 +183,6 @@ export function HeroContent() {
           variants={staggerContainer(0.08, 0.1)}
           className="flex-1 text-left"
         >
-          <motion.div variants={animVariant} className="mb-8">
-            <LogoNCS height={96} />
-          </motion.div>
-
           <motion.div variants={animVariant} className="mb-6 inline-flex">
             <span className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-4 py-1.5 font-mono text-xs text-gold-400">
               <span className="h-1.5 w-1.5 rounded-full bg-gold-400 animate-pulse" />
@@ -196,7 +192,7 @@ export function HeroContent() {
 
           <motion.h1
             variants={animVariant}
-            className="font-display text-5xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-7xl"
+            className="font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl"
           >
             {h.h1Line1}
             <br />
@@ -258,8 +254,29 @@ export function HeroContent() {
           </motion.dl>
         </motion.div>
 
-        <div className="flex-1 flex justify-center lg:justify-end">
-          <FloatingCourseCard />
+        {/* Logo protagonista — columna derecha */}
+        <div className="flex-1 flex items-center justify-center lg:justify-end">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.82, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1.4, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="relative"
+          >
+            {/* Aura verde difusa */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-[-18%] rounded-full blur-3xl opacity-20"
+              style={{ background: "radial-gradient(circle, rgba(0,201,87,0.8) 0%, transparent 65%)" }}
+            />
+            {/* Anillo pulsante */}
+            <motion.div
+              animate={{ scale: [1, 1.05, 1], opacity: [0.12, 0.28, 0.12] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+              aria-hidden="true"
+              className="absolute inset-[-5%] rounded-full border border-gold-500/20"
+            />
+            <LogoNCS height={300} className="relative z-10 drop-shadow-[0_0_40px_rgba(0,201,87,0.35)]" />
+          </motion.div>
         </div>
       </div>
 
