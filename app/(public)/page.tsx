@@ -1,5 +1,7 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { getCursosPublicados } from "@/lib/db/cursos";
+import { getMiembrosEquipo } from "@/lib/db/equipo";
+import { getGaleriaEquipo } from "@/lib/db/galeria";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CatalogoList } from "./CatalogoList";
 import { HeroBackground } from "./HeroBackground";
@@ -11,6 +13,7 @@ import { SeccionFeatures } from "./SeccionFeatures";
 import { SeccionTestimonios } from "./SeccionTestimonios";
 import { SeccionCTA } from "./SeccionCTA";
 import { SeccionPrecios } from "./SeccionPrecios";
+import { SeccionCulturaEquipo } from "./SeccionCulturaEquipo";
 
 export const metadata: Metadata = {
   title: "NCS Realty Hub | Transforma tu Liderazgo",
@@ -19,7 +22,11 @@ export const metadata: Metadata = {
 };
 
 export default async function LandingPage() {
-  const cursos = await getCursosPublicados();
+  const [cursos, miembrosEquipo, galeriaEquipo] = await Promise.all([
+    getCursosPublicados(),
+    getMiembrosEquipo().catch(() => []),
+    getGaleriaEquipo().catch(() => []),
+  ]);
 
   return (
     <main className="bg-ink-950">
@@ -35,6 +42,12 @@ export default async function LandingPage() {
 
       {/* Por qué elegirnos */}
       <SeccionFeatures />
+
+      {/* Cultura, Misión, Visión, Valores, Filosofía, Team Leaders, Galería */}
+      <SeccionCulturaEquipo
+        miembrosEquipo={miembrosEquipo}
+        galeriaEquipo={galeriaEquipo}
+      />
 
       {/* Catálogo de cursos */}
       <section id="cursos" className="relative isolate mx-auto max-w-6xl px-6 py-20">

@@ -23,12 +23,12 @@ export default async function LoginPage({
     <main className="flex min-h-screen bg-ink-950">
 
       {/* Panel izquierdo: efecto 3D + logo (solo desktop) */}
-      <div className="hidden lg:block lg:w-[46%] xl:w-[48%] sticky top-0 h-screen">
+      <div className="hidden lg:block lg:w-[36%] xl:w-[38%] sticky top-0 h-screen">
         <Login3DPanel />
       </div>
 
       {/* Panel derecho: formulario */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-16 sm:px-12 overflow-y-auto">
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-8 sm:px-12 overflow-y-auto">
 
         {/* Logo visible solo en móvil */}
         <Link

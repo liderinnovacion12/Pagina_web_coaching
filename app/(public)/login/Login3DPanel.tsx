@@ -117,7 +117,7 @@ export function Login3DPanel() {
             className="absolute inset-[-22%] rounded-full blur-3xl pointer-events-none"
             style={{ background: "radial-gradient(circle, rgb(var(--gold-500) / 0.32) 0%, transparent 68%)" }}
           />
-          <LogoNCS height={200} className="relative z-10" />
+          <LogoNCS height={150} className="relative z-10" />
         </motion.div>
 
         <motion.div
