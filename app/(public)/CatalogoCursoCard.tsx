@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion, useMotionTemplate, useMotionValue, type Variants } from "framer-motion";
 import { Star, Clock, Users } from "lucide-react";
@@ -53,7 +53,7 @@ export function CatalogoCursoCard({
         aria-hidden="true"
         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
-          background: useMotionTemplate`radial-gradient(300px circle at ${mouseX}px ${mouseY}px, rgba(217, 169, 78, 0.06), transparent 80%)`,
+          background: useMotionTemplate`radial-gradient(300px circle at ${mouseX}px ${mouseY}px, rgba(0,201,87, 0.06), transparent 80%)`,
         }}
       />
       {/* Spotlight de borde */}

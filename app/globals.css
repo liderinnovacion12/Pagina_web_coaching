@@ -37,21 +37,80 @@
   }
 }
 
+/* ── Tokens de color (dark por defecto) ───────────────────────────────────── */
+:root {
+  --ink-950: 7 7 11;
+  --ink-900: 11 11 18;
+  --ink-800: 18 18 32;
+  --ink-700: 27 27 43;
+  --ink-600: 40 40 64;
+  --gold-200: 182 255 218;
+  --gold-300: 94 255 168;
+  --gold-400: 24 240 112;
+  --gold-500: 0 201 87;
+  --gold-600: 0 158 67;
+  --mist-300: 170 177 196;
+  --mist-400: 139 147 167;
+  --mist-500: 107 115 133;
+  --foreground: 255 255 255;
+  --gradient-end: 255 255 255;
+  --header-bg: 7 7 11;
+}
+
+/* ── Tokens de color (modo claro) ─────────────────────────────────────────── */
+:root.light {
+  --ink-950: 255 255 255;
+  --ink-900: 245 247 250;
+  --ink-800: 235 239 245;
+  --ink-700: 220 228 238;
+  --ink-600: 203 214 226;
+  --gold-200: 207 227 255;
+  --gold-300: 147 196 253;
+  --gold-400: 59 130 246;
+  --gold-500: 0 100 230;
+  --gold-600: 0 76 180;
+  --mist-300: 55 65 81;
+  --mist-400: 75 85 99;
+  --mist-500: 107 114 128;
+  --foreground: 7 7 11;
+  --gradient-end: 10 10 20;
+  --header-bg: 255 255 255;
+}
+
 @layer base {
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
   }
 
+  html.light {
+    color-scheme: light;
+  }
+
   body {
     @apply antialiased;
-    background-color: #07070b; /* Más profundo, a juego con ink-950 */
-    color: #ffffff;
+    background-color: rgb(var(--ink-950));
+    color: rgb(var(--foreground));
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* text-white → foreground en modo claro */
+  :root.light .text-white {
+    color: rgb(var(--foreground));
+  }
+  :root.light .hover\:text-white:hover {
+    color: rgb(var(--foreground));
+  }
+
+  /* Bordes sutiles visibles en modo claro */
+  :root.light [class*="border-white\/"] {
+    --tw-border-opacity: 1;
+    border-color: rgb(0 0 0 / 0.09);
   }
 
   ::selection {
-    background: rgba(217, 167, 74, 0.28);
-    color: #fffdf7;
+    background: rgb(var(--gold-500) / 0.28);
+    color: rgb(var(--foreground));
   }
 
   /* Custom Premium Scrollbar */
@@ -61,16 +120,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #07070b;
+    background: rgb(var(--ink-950));
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(127, 127, 127, 0.2);
     border-radius: 99px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(217, 167, 74, 0.4);
+    background: rgb(var(--gold-500) / 0.4);
   }
 }
 
@@ -101,7 +160,12 @@
   }
 
   .text-gradient-gold {
-    background: linear-gradient(100deg, #d9a74a 0%, #f1d489 42%, #ffffff 100%);
+    background: linear-gradient(
+      100deg,
+      rgb(var(--gold-500)) 0%,
+      rgb(var(--gold-300)) 45%,
+      rgb(var(--gradient-end)) 100%
+    );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -128,6 +192,11 @@
   }
 
   .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Ocultar partículas WebGL en modo claro */
+  :root.light .particle-field {
     display: none;
   }
 }

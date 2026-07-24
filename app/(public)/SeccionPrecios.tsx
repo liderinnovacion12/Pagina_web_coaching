@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Check, X, BookOpen, Infinity, Award, Video, Users, Zap } from "lucide-react";
@@ -109,7 +109,7 @@ export function SeccionPrecios() {
       {/* Glow de fondo */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(217,169,78,0.08),transparent_65%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(0,201,87,0.08),transparent_65%)]"
       />
 
       {/* Heading */}
@@ -148,7 +148,7 @@ export function SeccionPrecios() {
             transition={{ duration: 0.55, ease: EASE, delay: i * 0.1 }}
             className={`relative flex flex-col rounded-3xl border p-8 transition-all duration-300 ${
               plan.destacado
-                ? "border-gold-500/50 bg-gradient-to-b from-gold-500/[0.07] to-ink-900/80 shadow-[0_0_60px_rgba(217,169,78,0.08)]"
+                ? "border-gold-500/50 bg-gradient-to-b from-gold-500/[0.07] to-ink-900/80 shadow-[0_0_60px_rgba(0,201,87,0.08)]"
                 : "border-white/10 bg-ink-900/60 hover:border-white/20"
             }`}
           >
@@ -214,7 +214,7 @@ export function SeccionPrecios() {
               href={plan.ctaHref}
               className={`flex h-12 items-center justify-center rounded-xl font-semibold text-sm transition-all duration-200 ${
                 plan.destacado
-                  ? "bg-gold-500 text-ink-950 hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(217,169,78,0.35)] active:scale-[0.98]"
+                  ? "bg-gold-500 text-ink-950 hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(0,201,87,0.35)] active:scale-[0.98]"
                   : "border border-white/15 text-white hover:border-gold-500/40 hover:bg-gold-500/8"
               }`}
             >

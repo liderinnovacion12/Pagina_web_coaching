@@ -1,4 +1,4 @@
-import type { ContactoSoporte } from "@/lib/db/contactos-soporte.types";
+﻿import type { ContactoSoporte } from "@/lib/db/contactos-soporte.types";
 import { ContactoSoporteCard } from "./ContactoSoporteCard";
 
 const URL_MY_ASSISTANT = "https://chatgpt.com/g/g-688ad2df1708819186005deae59fc948-myassistant";
@@ -27,7 +27,7 @@ export function SoporteContent({ contactos }: { contactos: ContactoSoporte[] }) 
           href={URL_MY_ASSISTANT}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex h-[54px] items-center justify-center rounded-xl bg-gold-500 px-8 font-semibold text-ink-950 transition-all duration-200 hover:scale-[1.02] hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(217,169,78,0.25)] active:scale-[0.98]"
+          className="mt-6 inline-flex h-[54px] items-center justify-center rounded-xl bg-gold-500 px-8 font-semibold text-ink-950 transition-all duration-200 hover:scale-[1.02] hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(0,201,87,0.25)] active:scale-[0.98]"
         >
           Empieza a usar My Assistant hoy
         </a>

@@ -10,7 +10,7 @@ export default async function ClasesPage() {
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="font-display text-[42px] font-bold leading-tight text-white">Clases</h1>
-        <p className="mt-2 text-lg text-mist-400">Videoteca completa de Team 100% Real Estate.</p>
+        <p className="mt-2 text-lg text-mist-400">Videoteca completa de NCS Realty Hub.</p>
       </div>
 
       <ClasesCatalogo cursos={cursos} />

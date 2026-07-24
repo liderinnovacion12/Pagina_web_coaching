@@ -4,8 +4,8 @@ import { getGaleriaEquipo } from "@/lib/db/galeria";
 import { DashboardContent } from "./DashboardContent";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Team 100% Real Estate",
-  description: "Bienvenido al área de estudio de Team 100% Real Estate. Revisa el contenido, recursos y novedades.",
+  title: "Dashboard | NCS Realty Hub",
+  description: "Bienvenido al área de estudio de NCS Realty Hub. Revisa el contenido, recursos y novedades.",
 };
 
 export default async function DashboardPage() {

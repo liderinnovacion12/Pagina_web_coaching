@@ -9,6 +9,7 @@ import { type NavItem } from "./nav-config";
 import { cerrarSesion } from "@/lib/auth/actions";
 import { BotonCronograma } from "@/components/cronograma/BotonCronograma";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 function idDePanel(label: string, prefijo: string): string {
@@ -72,7 +73,7 @@ export function EstudianteShell({
             href="/dashboard"
             className="font-display text-lg font-bold tracking-tight text-white transition duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
           >
-            TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
+            NCS REALTY<span className="text-gold-400"> HUB</span>
             <span className="text-gold-400"> •</span>
           </Link>
 
@@ -128,6 +129,7 @@ export function EstudianteShell({
 
           <div className="hidden items-center gap-4 lg:flex">
             <LanguageSwitcher />
+            <ThemeToggle />
             <BotonCronograma href="/cronograma" compact />
             <span className="max-w-[160px] truncate text-sm text-mist-400">{email}</span>
             <form action={cerrarSesion}>
@@ -160,7 +162,7 @@ export function EstudianteShell({
         >
           <div className="flex items-center justify-between px-6 py-5">
             <span className="font-display text-lg font-bold tracking-tight text-white">
-              TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
+              NCS REALTY<span className="text-gold-400"> HUB</span>
               <span className="text-gold-400"> •</span>
             </span>
             <button

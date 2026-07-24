@@ -1,4 +1,4 @@
-import { Check, Database, DollarSign, ExternalLink, Sparkles } from "lucide-react";
+﻿import { Check, Database, DollarSign, ExternalLink, Sparkles } from "lucide-react";
 
 const BENEFICIOS = [
   "CRM con plantillas preconfiguradas",
@@ -61,7 +61,7 @@ export default function CrmPage() {
           href={URL_CUENTA}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex h-[54px] items-center justify-center gap-2.5 rounded-xl bg-gold-500 px-8 font-semibold text-ink-950 transition-all duration-200 hover:scale-[1.02] hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(217,169,78,0.25)] active:scale-[0.98]"
+          className="mt-6 inline-flex h-[54px] items-center justify-center gap-2.5 rounded-xl bg-gold-500 px-8 font-semibold text-ink-950 transition-all duration-200 hover:scale-[1.02] hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(0,201,87,0.25)] active:scale-[0.98]"
         >
           Abrir mi cuenta de CRM
         </a>

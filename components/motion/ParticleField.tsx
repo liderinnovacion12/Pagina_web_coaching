@@ -237,13 +237,13 @@ void main() {
   float core = exp(-dist * dist * 22.0);
 
   vec3 white  = vec3(0.96, 0.97, 1.0);
-  vec3 gold   = vec3(0.94, 0.74, 0.38);
-  vec3 copper = vec3(0.86, 0.54, 0.25);
+  vec3 gold   = vec3(0.0, 0.79, 0.34);
+  vec3 copper = vec3(0.0, 0.62, 0.22);
 
   vec3 color;
-  if      (vAccent > 0.6) color = mix(gold,   vec3(0.98, 0.86, 0.60), (vAccent - 0.6) / 0.4);
-  else if (vAccent > 0.2) color = mix(copper, gold,                    (vAccent - 0.2) / 0.4);
-  else                    color = mix(white,  copper,                    vAccent / 0.2);
+  if      (vAccent > 0.6) color = mix(gold,   vec3(0.37, 1.0, 0.66), (vAccent - 0.6) / 0.4);
+  else if (vAccent > 0.2) color = mix(copper, gold,                   (vAccent - 0.2) / 0.4);
+  else                    color = mix(white,  copper,                   vAccent / 0.2);
 
   color *= 0.63 + core * 1.83 + vDepth * 0.20;
 
@@ -426,7 +426,7 @@ export function ParticleField() {
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-0 h-screen w-screen pointer-events-none overflow-hidden"
+      className="particle-field fixed inset-0 z-0 h-screen w-screen pointer-events-none overflow-hidden"
     >
       <canvas
         ref={canvasRef}

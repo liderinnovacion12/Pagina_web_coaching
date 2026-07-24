@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 const CHECKLIST = [
   {
@@ -43,7 +43,7 @@ export default function CursoDeRentasPage() {
 
       <div className="rounded-2xl border border-gold-500/20 bg-gold-500/10 p-6">
         <p className="text-sm text-mist-300">
-          Beneficio exclusivo para los agentes que hacen parte de este Team 100% Real Estate:
+          Beneficio exclusivo para los agentes que hacen parte de NCS Realty Hub:
         </p>
         <p className="mt-2 text-xl font-semibold text-gold-300">
           Disfruta de un 50% de descuento en tu inscripción.
@@ -100,7 +100,7 @@ export default function CursoDeRentasPage() {
           href={URL_INSCRIPCION}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex h-[54px] items-center justify-center gap-2.5 rounded-xl bg-gold-500 px-8 font-semibold text-ink-950 transition-all duration-200 hover:scale-[1.02] hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(217,169,78,0.25)] active:scale-[0.98]"
+          className="mt-6 inline-flex h-[54px] items-center justify-center gap-2.5 rounded-xl bg-gold-500 px-8 font-semibold text-ink-950 transition-all duration-200 hover:scale-[1.02] hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(0,201,87,0.25)] active:scale-[0.98]"
         >
           Inscríbete ahora
         </a>

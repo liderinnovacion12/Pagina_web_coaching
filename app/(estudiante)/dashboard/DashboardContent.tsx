@@ -373,7 +373,7 @@ export function DashboardContent({
             >
               <Image
                 src={foto.url}
-                alt="Foto del equipo Team 100% Real Estate"
+                alt="Foto del equipo NCS Realty Hub"
                 fill
                 sizes="(min-width: 640px) 25vw, 50vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-108"

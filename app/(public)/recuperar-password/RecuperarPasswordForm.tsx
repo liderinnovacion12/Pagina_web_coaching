@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useActionState } from "react";
 import { motion } from "framer-motion";
@@ -41,7 +41,7 @@ export function RecuperarPasswordForm() {
             placeholder="correo@ejemplo.com"
             aria-invalid={Boolean(estado.error)}
             aria-describedby={estado.error ? "email-error" : undefined}
-            className="h-[52px] w-full rounded-xl border border-white/10 bg-ink-950 pl-11 pr-4 text-base text-white placeholder:text-mist-500 outline-none transition duration-150 hover:border-white/20 focus:border-gold-500/60 focus:shadow-[0_0_0_4px_rgba(217,169,78,0.12)]"
+            className="h-[52px] w-full rounded-xl border border-white/10 bg-ink-950 pl-11 pr-4 text-base text-white placeholder:text-mist-500 outline-none transition duration-150 hover:border-white/20 focus:border-gold-500/60 focus:shadow-[0_0_0_4px_rgba(0,201,87,0.12)]"
           />
         </div>
         {estado.error && (

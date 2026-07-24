@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { getCursosPublicados } from "@/lib/db/cursos";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CatalogoList } from "./CatalogoList";
@@ -13,7 +13,7 @@ import { SeccionCTA } from "./SeccionCTA";
 import { SeccionPrecios } from "./SeccionPrecios";
 
 export const metadata: Metadata = {
-  title: "Team 100% Real Estate | Transforma tu Liderazgo",
+  title: "NCS Realty Hub | Transforma tu Liderazgo",
   description:
     "Plataforma de coaching ejecutivo para líderes que buscan impacto real.",
 };
@@ -40,7 +40,7 @@ export default async function LandingPage() {
       <section id="cursos" className="relative isolate mx-auto max-w-6xl px-6 py-20">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64 bg-[radial-gradient(circle_at_30%_20%,rgba(217,169,78,0.06),transparent_60%)]"
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64 bg-[radial-gradient(circle_at_30%_20%,rgba(0,201,87,0.06),transparent_60%)]"
         />
         <CatalogoHeading />
         <div className="mt-10">

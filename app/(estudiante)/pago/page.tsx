@@ -6,7 +6,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Pago | Team 100% Real Estate",
+  title: "Pago | NCS Realty Hub",
 };
 
 export default async function PagoPage({
@@ -55,7 +55,7 @@ export default async function PagoPage({
         {/* Logo */}
         <div className="mb-10 text-center">
           <Link href="/" className="inline-block font-display text-lg font-bold text-white">
-            TEAM 100%<span className="text-gold-400"> REAL ESTATE</span>
+            NCS REALTY<span className="text-gold-400"> HUB</span>
           </Link>
         </div>
 

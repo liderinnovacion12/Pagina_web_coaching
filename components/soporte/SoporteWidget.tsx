@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -133,7 +133,7 @@ export function SoporteWidget() {
                   </div>
                   <div>
                     <p className="font-display text-sm font-semibold text-white">Centro de Soporte</p>
-                    <p className="font-mono text-[10px] text-mist-500">Team 100% Real Estate</p>
+                    <p className="font-mono text-[10px] text-mist-500">NCS Realty Hub</p>
                   </div>
                 </div>
                 <button
@@ -309,7 +309,7 @@ export function SoporteWidget() {
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
         aria-label="Soporte"
-        className="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gold-500 shadow-[0_8px_32px_rgba(217,169,78,0.45)] transition-colors hover:bg-gold-400 sm:right-6"
+        className="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gold-500 shadow-[0_8px_32px_rgba(0,201,87,0.45)] transition-colors hover:bg-gold-400 sm:right-6"
       >
         <AnimatePresence mode="wait">
           {open ? (

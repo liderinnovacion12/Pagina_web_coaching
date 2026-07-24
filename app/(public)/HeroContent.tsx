@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -63,7 +63,7 @@ function FloatingCourseCard() {
       <div
         aria-hidden="true"
         className="absolute -inset-4 rounded-3xl blur-2xl opacity-30"
-        style={{ background: "radial-gradient(circle, rgba(217,169,78,0.4) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(0,201,87,0.4) 0%, transparent 70%)" }}
       />
       <motion.div
         animate={{ y: [0, -10, 0] }}
@@ -85,7 +85,7 @@ function FloatingCourseCard() {
             <span className="font-mono text-[10px] text-green-400">{h.liveLabel}</span>
           </div>
           <div className="absolute inset-0 opacity-10"
-            style={{ background: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(217,169,78,0.1) 10px, rgba(217,169,78,0.1) 11px)" }}
+            style={{ background: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,201,87,0.1) 10px, rgba(0,201,87,0.1) 11px)" }}
           />
         </div>
 
@@ -111,8 +111,8 @@ function FloatingCourseCard() {
                 className="h-full rounded-full"
                 style={{
                   width: `${progress}%`,
-                  background: "linear-gradient(90deg, #d9a94e, #e8c168)",
-                  boxShadow: "0 0 8px rgba(217,169,78,0.6)",
+                  background: "linear-gradient(90deg, #00c957, #18f070)",
+                  boxShadow: "0 0 8px rgba(0,201,87,0.6)",
                 }}
               />
             </div>
@@ -208,7 +208,7 @@ export function HeroContent() {
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
               <Link
                 href="/registro"
-                className="group relative overflow-hidden inline-flex h-13 items-center justify-center rounded-xl bg-gold-500 px-8 py-3.5 font-semibold text-ink-950 shadow-[0_0_32px_rgba(217,169,78,0.25)] transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_48px_rgba(217,169,78,0.4)] text-base"
+                className="group relative overflow-hidden inline-flex h-13 items-center justify-center rounded-xl bg-gold-500 px-8 py-3.5 font-semibold text-ink-950 shadow-[0_0_32px_rgba(0,201,87,0.25)] transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_48px_rgba(0,201,87,0.4)] text-base"
               >
                 <span className="relative z-10">{h.cta1}</span>
                 <span className="absolute inset-0 z-0 w-[200%] translate-x-[-100%] bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-[100%]" />
@@ -244,7 +244,7 @@ export function HeroContent() {
           <motion.dl variants={animVariant} className="mt-12 grid grid-cols-3 gap-8">
             {h.stats.map((stat) => (
               <div key={stat.etiqueta} className="border-t border-white/10 pt-4">
-                <dd className="font-display text-3xl font-extrabold text-gold-400 [text-shadow:0_0_30px_rgba(217,169,78,0.4)] sm:text-4xl">
+                <dd className="font-display text-3xl font-extrabold text-gold-400 [text-shadow:0_0_30px_rgba(0,201,87,0.4)] sm:text-4xl">
                   <AnimatedCounter value={stat.valor} />
                 </dd>
                 <p className="mt-1 font-mono text-xs text-mist-500 uppercase tracking-wider">{stat.etiqueta}</p>

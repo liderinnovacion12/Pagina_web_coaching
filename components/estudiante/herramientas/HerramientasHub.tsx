@@ -132,7 +132,7 @@ export function HerramientasHub({ grupos }: { grupos: GrupoComunidad[] }) {
           </h1>
           <p className="mt-3 max-w-xl text-lg text-mist-400">
             Directorio de grupos y comunidades del equipo. Conectarte es uno de los primeros
-            pasos para operar dentro de Team 100% Real Estate.
+            pasos para operar dentro de NCS Realty Hub.
           </p>
           <ul className="mt-6 flex flex-col gap-2.5">
             {BENEFICIOS.map((beneficio) => (

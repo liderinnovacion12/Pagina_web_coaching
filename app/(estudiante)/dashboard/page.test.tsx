@@ -51,7 +51,7 @@ describe("DashboardPage", () => {
     render(await DashboardPage());
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Bienvenido a Team 100% Real Estate" })
+      screen.getByRole("heading", { level: 1, name: "Bienvenido a NCS Realty Hub" })
     ).toBeInTheDocument();
     expect(screen.getByText("by Wilmar Sosa y Samuel Oropeza")).toBeInTheDocument();
   });
@@ -60,7 +60,7 @@ describe("DashboardPage", () => {
     const DashboardPage = (await import("./page")).default;
     render(await DashboardPage());
 
-    const iframe = screen.getByTitle("Video de bienvenida — Team 100% Real Estate");
+    const iframe = screen.getByTitle("Video de bienvenida — NCS Realty Hub");
     expect(iframe).toHaveAttribute(
       "src",
       "https://www.loom.com/embed/cb856608ad54454a95f79ccdbaa07de1"
@@ -158,7 +158,7 @@ describe("DashboardPage", () => {
     const DashboardPage = (await import("./page")).default;
     render(await DashboardPage());
 
-    const fotos = screen.getAllByAltText("Foto del equipo Team 100% Real Estate");
+    const fotos = screen.getAllByAltText("Foto del equipo NCS Realty Hub");
     expect(fotos).toHaveLength(8);
   });
 });

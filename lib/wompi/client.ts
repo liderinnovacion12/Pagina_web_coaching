@@ -139,7 +139,7 @@ export async function crearTransaccionPSE(p: PseParams): Promise<WompiTransactio
       reference: p.reference,
       customer_data: {
         phone_number: "0000000000",
-        full_name: "Cliente Team100",
+        full_name: "Cliente NCS Realty Hub",
         legal_id: p.userLegalId,
         legal_id_type: p.userLegalIdType,
       },
@@ -173,7 +173,7 @@ export async function crearTransaccionNequi(p: NequiParams): Promise<WompiTransa
       reference: p.reference,
       customer_data: {
         phone_number: p.phoneNumber,
-        full_name: "Cliente Team100",
+        full_name: "Cliente NCS Realty Hub",
         legal_id: "0000000000",
         legal_id_type: "CC",
       },

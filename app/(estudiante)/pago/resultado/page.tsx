@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { confirmarPago } from "../actions";
 
-export const metadata = { title: "Resultado del pago | Team 100%" };
+export const metadata = { title: "Resultado del pago | NCS Realty Hub" };
 
 export default async function ResultadoPagoPage({
   searchParams,

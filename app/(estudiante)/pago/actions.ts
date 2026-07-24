@@ -41,7 +41,7 @@ async function resolverMonto(
     const dias = plan?.duracion_dias ?? 30;
     return {
       amountInCents: toCopCents(precio),
-      description: `${nombre} Team 100% — ${dias} días`,
+      description: `${nombre} NCS Realty Hub — ${dias} días`,
     };
   }
   if (tipo === "leccion") {

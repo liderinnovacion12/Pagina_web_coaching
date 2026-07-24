@@ -267,7 +267,7 @@ export const t = {
       cerrarSesion: "Cerrar sesión",
       dashboard: {
         comunidad: "Comunidad activa",
-        comunidadTitulo: "Únete a la comunidad de Team 100% Real Estate",
+        comunidadTitulo: "Únete a la comunidad de NCS Realty Hub",
         comunidadDesc: "Súmate a los grupos y comunidades de WhatsApp para conectar con otros agentes, resolver dudas y enterarte de las próximas clases en vivo de inmediato.",
         comunidadBtn: "Únete a los Grupos y Comunidades de WhatsApp",
         comoUsarTitulo: "Cómo Usar la Plataforma",
@@ -572,7 +572,7 @@ export const t = {
       cerrarSesion: "Log out",
       dashboard: {
         comunidad: "Active community",
-        comunidadTitulo: "Join the Team 100% Real Estate community",
+        comunidadTitulo: "Join the NCS Realty Hub community",
         comunidadDesc: "Join the WhatsApp groups and communities to connect with other agents, get your questions answered, and find out about upcoming live classes instantly.",
         comunidadBtn: "Join the WhatsApp Groups and Communities",
         comoUsarTitulo: "How to Use the Platform",

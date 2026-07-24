@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import {
@@ -17,7 +17,7 @@ import {
 } from "@/lib/motion";
 
 const VIDEO_SRC = "https://www.loom.com/embed/cb856608ad54454a95f79ccdbaa07de1";
-const VIDEO_TITLE = "Video de bienvenida — Team 100% Real Estate";
+const VIDEO_TITLE = "Video de bienvenida — NCS Realty Hub";
 
 function VerticalFallback() {
   return (
@@ -25,7 +25,7 @@ function VerticalFallback() {
       <ScrollReveal variants={revealUp} once={false} className="relative">
         <h1 className="font-display text-[46px] font-bold leading-tight tracking-tight text-white sm:text-[54px]">
           Bienvenido a{" "}
-          <span className="text-gradient-gold">Team 100% Real Estate</span>
+          <span className="text-gradient-gold">NCS Realty Hub</span>
         </h1>
         <p className="mt-2 text-lg text-mist-400">
           by Wilmar Sosa y Samuel Oropeza
@@ -119,7 +119,7 @@ function HorizontalPanels() {
             <motion.div
               aria-hidden="true"
               style={{ opacity: glowOpacity, scale: glowScale }}
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-[60vh] bg-[radial-gradient(circle_at_50%_100%,rgba(217,167,74,0.12),transparent_60%)]"
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[60vh] bg-[radial-gradient(circle_at_50%_100%,rgba(0,201,87,0.12),transparent_60%)]"
             />
             <motion.div style={{ x: titleX }} className="relative">
               {/* Entrada al montar la página (no depende del scroll) — sin
@@ -134,7 +134,7 @@ function HorizontalPanels() {
                 <h1 className="font-display text-[64px] font-bold leading-[0.95] tracking-tight text-white sm:text-[90px] lg:text-[140px]">
                   Bienvenido a{" "}
                   <span className="text-gradient-gold">
-                    Team 100% Real Estate
+                    NCS Realty Hub
                   </span>
                 </h1>
                 <p className="mt-4 text-xl text-mist-400">

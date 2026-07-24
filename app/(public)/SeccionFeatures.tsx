@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { BookOpen, Users, Award, Zap, Globe, TrendingUp } from "lucide-react";
@@ -23,7 +23,7 @@ export function SeccionFeatures() {
     <section className="relative isolate px-6 py-24">
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -z-10 h-full"
-        style={{ background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(217,169,78,0.05), transparent)" }}
+        style={{ background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,201,87,0.05), transparent)" }}
       />
 
       <div className="mx-auto max-w-6xl">

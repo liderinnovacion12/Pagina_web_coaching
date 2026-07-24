@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
@@ -15,7 +15,7 @@ export function SeccionTestimonios() {
   return (
     <section className="relative isolate px-6 py-24">
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -z-10 h-full"
-        style={{ background: "radial-gradient(ellipse 60% 40% at 80% 50%, rgba(217,169,78,0.04), transparent)" }}
+        style={{ background: "radial-gradient(ellipse 60% 40% at 80% 50%, rgba(0,201,87,0.04), transparent)" }}
       />
       <div className="mx-auto max-w-6xl">
         <motion.div

@@ -41,11 +41,11 @@ describe("HorizontalIntroPanels", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Bienvenido a Team 100% Real Estate",
+        name: "Bienvenido a NCS Realty Hub",
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByTitle("Video de bienvenida — Team 100% Real Estate")
+      screen.getByTitle("Video de bienvenida — NCS Realty Hub")
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId("horizontal-intro-runway")
@@ -72,11 +72,11 @@ describe("HorizontalIntroPanels", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Bienvenido a Team 100% Real Estate",
+        name: "Bienvenido a NCS Realty Hub",
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByTitle("Video de bienvenida — Team 100% Real Estate")
+      screen.getByTitle("Video de bienvenida — NCS Realty Hub")
     ).toBeInTheDocument();
   });
 

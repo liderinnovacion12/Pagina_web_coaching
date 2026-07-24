@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -150,7 +150,7 @@ export function EventosTimeline({ eventos }: { eventos: Evento[] }) {
         href={URL_WHATSAPP}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex h-[54px] w-fit items-center justify-center gap-2.5 self-center rounded-xl bg-gold-500 px-8 font-semibold text-ink-950 transition-all duration-200 hover:scale-[1.02] hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(217,169,78,0.25)] active:scale-[0.98]"
+        className="inline-flex h-[54px] w-fit items-center justify-center gap-2.5 self-center rounded-xl bg-gold-500 px-8 font-semibold text-ink-950 transition-all duration-200 hover:scale-[1.02] hover:bg-gold-400 hover:shadow-[0_0_24px_rgba(0,201,87,0.25)] active:scale-[0.98]"
       >
         Solicitar más Información
       </a>

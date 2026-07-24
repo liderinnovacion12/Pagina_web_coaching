@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useActionState } from "react";
@@ -34,7 +34,7 @@ function validar(formData: FormData): ErroresCampo {
 }
 
 const CAMPO_CLASES =
-  "h-[52px] w-full rounded-xl border border-white/10 bg-ink-950 pl-11 pr-4 text-base text-white placeholder:text-mist-500 outline-none transition duration-150 hover:border-white/20 focus:border-gold-500/60 focus:shadow-[0_0_0_4px_rgba(217,169,78,0.12)]";
+  "h-[52px] w-full rounded-xl border border-white/10 bg-ink-950 pl-11 pr-4 text-base text-white placeholder:text-mist-500 outline-none transition duration-150 hover:border-white/20 focus:border-gold-500/60 focus:shadow-[0_0_0_4px_rgba(0,201,87,0.12)]";
 
 const CAMPO_CLASES_ERROR = "border-rose-500/60 focus:border-rose-500/60";
 
@@ -180,7 +180,7 @@ export function LoginForm({
           whileHover={pendiente ? undefined : { y: -2 }}
           whileTap={pendiente ? undefined : { scale: 0.97 }}
           transition={{ duration: 0.15 }}
-          className="flex h-[52px] items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-ink-950 shadow-[0_8px_24px_rgba(217,169,78,0.25)] transition-colors duration-150 hover:bg-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex h-[52px] items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-ink-950 shadow-[0_8px_24px_rgba(0,201,87,0.25)] transition-colors duration-150 hover:bg-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {pendiente && (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />

@@ -7,11 +7,11 @@ const corsHeaders = {
 
 const TEMPLATES = {
   welcome: (name: string) => ({
-    subject: `¡Bienvenido a Team 100% Real Estate, ${name}!`,
+    subject: `¡Bienvenido a NCS Realty Hub, ${name}!`,
     html: `<h1>Hola ${name}</h1><p>Tu cuenta está lista. Empieza tu primer curso hoy.</p>`,
   }),
   reminder: (name: string, course: string) => ({
-    subject: `${name}, continúa tu progreso en Team 100% Real Estate`,
+    subject: `${name}, continúa tu progreso en NCS Realty Hub`,
     html: `<h1>Hola ${name}</h1><p>Te falta poco para completar <b>${course}</b>. ¡Tú puedes!</p>`,
   }),
   certificate: (name: string, course: string) => ({
@@ -57,7 +57,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Team 100% Real Estate <no-reply@coachpro.app>',
+        from: 'NCS Realty Hub <no-reply@coachpro.app>',
         to,
         subject,
         html,

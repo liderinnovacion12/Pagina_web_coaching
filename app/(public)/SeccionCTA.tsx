@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -23,10 +23,10 @@ export function SeccionCTA() {
           style={{ background: "linear-gradient(135deg, rgba(27,27,43,0.9) 0%, rgba(40,40,64,0.9) 50%, rgba(27,27,43,0.9) 100%)" }}
         >
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10"
-            style={{ background: "radial-gradient(ellipse 70% 60% at 50% 100%, rgba(217,169,78,0.12), transparent)" }}
+            style={{ background: "radial-gradient(ellipse 70% 60% at 50% 100%, rgba(0,201,87,0.12), transparent)" }}
           />
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 opacity-5"
-            style={{ backgroundImage: "radial-gradient(circle, rgba(217,169,78,0.8) 1px, transparent 1px)", backgroundSize: "32px 32px" }}
+            style={{ backgroundImage: "radial-gradient(circle, rgba(0,201,87,0.8) 1px, transparent 1px)", backgroundSize: "32px 32px" }}
           />
 
           <span className="inline-block font-mono text-xs uppercase tracking-widest text-gold-400 mb-6">{c.eyebrow}</span>
@@ -39,7 +39,7 @@ export function SeccionCTA() {
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Link
                 href="/registro"
-                className="group relative overflow-hidden inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-gold-500 px-10 text-base font-semibold text-ink-950 shadow-[0_0_40px_rgba(217,169,78,0.3)] transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_60px_rgba(217,169,78,0.45)]"
+                className="group relative overflow-hidden inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-gold-500 px-10 text-base font-semibold text-ink-950 shadow-[0_0_40px_rgba(0,201,87,0.3)] transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_60px_rgba(0,201,87,0.45)]"
               >
                 <span className="relative z-10">{c.btn}</span>
                 <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" />

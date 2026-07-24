@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useActionState, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -99,7 +99,7 @@ function SubmitBtn({ pending, children }: { pending: boolean; children: React.Re
     <button
       type="submit"
       disabled={pending}
-      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-sm text-ink-950 shadow-[0_8px_24px_rgba(217,169,78,0.2)] transition-all hover:bg-gold-400 disabled:opacity-60 active:scale-[0.98]"
+      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gold-500 font-semibold text-sm text-ink-950 shadow-[0_8px_24px_rgba(0,201,87,0.2)] transition-all hover:bg-gold-400 disabled:opacity-60 active:scale-[0.98]"
     >
       {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : children}
     </button>
@@ -264,7 +264,7 @@ function SelectorPlan({ onSelect, membresiaPrecio = 100 }: { onSelect: (plan: "c
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-white">Elige tu plan</h1>
-        <p className="mt-1 text-sm text-mist-400">Selecciona cómo quieres acceder al contenido de Team 100%.</p>
+        <p className="mt-1 text-sm text-mist-400">Selecciona cómo quieres acceder al contenido de NCS Realty Hub.</p>
       </div>
       <div className="grid gap-3">
         <button
