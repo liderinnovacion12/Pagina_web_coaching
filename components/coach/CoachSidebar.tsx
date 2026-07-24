@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogoNCS } from "@/components/ui/LogoNCS";
 import { LayoutDashboard, BookOpen, Users, CalendarDays, ChevronRight, LogOut, Home } from "lucide-react";
 import { logoutAction } from "@/lib/auth/logout";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -26,14 +27,13 @@ export function CoachSidebar({ email }: { email: string }) {
   return (
     <aside className="flex h-screen w-60 flex-col border-r border-white/8 bg-ink-950 sticky top-0">
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-white/8 px-5">
-        <Link href="/coach" className="font-display text-sm font-bold text-white leading-tight">
-          TEAM 100%
-          <span className="text-gold-400"> REAL ESTATE</span>
-          <span className="ml-2 rounded-full bg-purple-500/15 border border-purple-500/30 px-2 py-0.5 font-mono text-[10px] text-purple-400 align-middle">
-            COACH
-          </span>
+      <div className="flex h-16 items-center gap-2 border-b border-white/8 px-4">
+        <Link href="/coach" aria-label="NCS Realty Hub – Coach">
+          <LogoNCS height={40} />
         </Link>
+        <span className="rounded-full bg-purple-500/15 border border-purple-500/30 px-2 py-0.5 font-mono text-[10px] text-purple-400">
+          COACH
+        </span>
       </div>
 
       {/* Nav */}

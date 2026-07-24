@@ -6,6 +6,7 @@ import { ChevronDown, Star, Play, TrendingUp, Award } from "lucide-react";
 import { motion, animate } from "framer-motion";
 import { blurFadeUp, fadeUp, staggerContainer, useReducedMotionSafe } from "@/lib/motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { LogoNCS } from "@/components/ui/LogoNCS";
 
 function AnimatedCounter({ value }: { value: string }) {
   const [displayValue, setDisplayValue] = useState(() => {
@@ -182,6 +183,10 @@ export function HeroContent() {
           variants={staggerContainer(0.08, 0.1)}
           className="flex-1 text-left"
         >
+          <motion.div variants={animVariant} className="mb-8">
+            <LogoNCS height={96} />
+          </motion.div>
+
           <motion.div variants={animVariant} className="mb-6 inline-flex">
             <span className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-4 py-1.5 font-mono text-xs text-gold-400">
               <span className="h-1.5 w-1.5 rounded-full bg-gold-400 animate-pulse" />

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LogoNCS } from "@/components/ui/LogoNCS";
 import type { Locale } from "@/lib/i18n/translations";
 
 export function SiteHeader() {
@@ -39,9 +40,8 @@ export function SiteHeader() {
       className="sticky top-0 z-20 border-b border-transparent backdrop-blur-xl"
     >
       <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="font-display text-lg font-bold tracking-tight text-white">
-          NCS REALTY<span className="text-gold-400"> HUB</span>
-          <span className="text-gold-400"> •</span>
+        <Link href="/" aria-label="NCS Realty Hub – Inicio">
+          <LogoNCS height={40} />
         </Link>
 
         <div className="flex items-center gap-3">

@@ -10,6 +10,7 @@ import { cerrarSesion } from "@/lib/auth/actions";
 import { BotonCronograma } from "@/components/cronograma/BotonCronograma";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LogoNCS } from "@/components/ui/LogoNCS";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 function idDePanel(label: string, prefijo: string): string {
@@ -71,10 +72,10 @@ export function EstudianteShell({
         >
           <Link
             href="/dashboard"
-            className="font-display text-lg font-bold tracking-tight text-white transition duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+            aria-label="NCS Realty Hub – Dashboard"
+            className="transition duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 rounded-sm"
           >
-            NCS REALTY<span className="text-gold-400"> HUB</span>
-            <span className="text-gold-400"> •</span>
+            <LogoNCS height={40} />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
@@ -161,10 +162,7 @@ export function EstudianteShell({
           className="bg-grain fixed inset-0 z-30 overflow-y-auto bg-ink-950 lg:hidden"
         >
           <div className="flex items-center justify-between px-6 py-5">
-            <span className="font-display text-lg font-bold tracking-tight text-white">
-              NCS REALTY<span className="text-gold-400"> HUB</span>
-              <span className="text-gold-400"> •</span>
-            </span>
+            <LogoNCS height={40} />
             <button
               type="button"
               onClick={() => setMenuMovilAbierto(false)}

@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { ActualizarPasswordForm } from "./ActualizarPasswordForm";
+import { LogoNCS } from "@/components/ui/LogoNCS";
 
 export const metadata: Metadata = {
   title: "Actualizar contraseña | NCS Realty Hub",
@@ -12,10 +13,10 @@ export default function ActualizarPasswordPage() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-ink-950 bg-grain px-6 py-16">
       <Link
         href="/"
-        className="rounded-sm font-display text-2xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+        aria-label="NCS Realty Hub – Inicio"
+        className="rounded-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
       >
-        NCS REALTY<span className="text-gold-400"> HUB</span>
-        <span className="text-gold-400"> •</span>
+        <LogoNCS height={88} />
       </Link>
 
       <div className="mt-10 w-full max-w-sm">

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { RegistroForm } from "./RegistroForm";
 import { ParticleField } from "@/components/motion/ParticleField";
 import { createClient } from "@/lib/supabase/server";
+import { LogoNCS } from "@/components/ui/LogoNCS";
 
 export const metadata: Metadata = {
   title: "Crear cuenta | NCS Realty Hub",
@@ -33,10 +34,10 @@ export default async function RegistroPage({
 
       <Link
         href="/"
-        className="relative z-10 rounded-sm font-display text-xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+        aria-label="NCS Realty Hub – Inicio"
+        className="relative z-10 rounded-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
       >
-        NCS REALTY<span className="text-gold-400"> HUB</span>
-        <span className="text-gold-400"> •</span>
+        <LogoNCS height={80} />
       </Link>
 
       <div className="relative z-10 mt-4 w-full max-w-sm">

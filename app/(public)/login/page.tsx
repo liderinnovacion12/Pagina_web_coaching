@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { LoginForm } from "./LoginForm";
 import { ParticleField } from "@/components/motion/ParticleField";
+import { LogoNCS } from "@/components/ui/LogoNCS";
 
 export const metadata: Metadata = {
   title: "Iniciar sesión | NCS Realty Hub",
@@ -27,10 +28,10 @@ export default async function LoginPage({
       <div className="relative z-10 w-full max-w-sm">
         <Link
           href="/"
-          className="flex justify-center rounded-sm font-display text-2xl font-bold tracking-tight text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+          aria-label="NCS Realty Hub – Inicio"
+          className="flex justify-center rounded-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
         >
-          NCS REALTY<span className="text-gold-400"> HUB</span>
-          <span className="text-gold-400"> •</span>
+          <LogoNCS height={88} />
         </Link>
 
         <div className="mt-10 text-center">

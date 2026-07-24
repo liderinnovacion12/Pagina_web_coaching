@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogoNCS } from "@/components/ui/LogoNCS";
 import {
   LayoutDashboard, BookOpen, Users, CalendarDays,
   Wrench, Globe, Handshake, Building2, HeadphonesIcon,
@@ -36,14 +37,13 @@ export function AdminSidebar() {
   return (
     <aside className="flex h-screen w-60 flex-col border-r border-white/8 bg-ink-950 sticky top-0">
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-white/8 px-5">
-        <Link href="/admin" className="font-display text-sm font-bold text-white leading-tight">
-          TEAM 100%
-          <span className="text-gold-400"> REAL ESTATE</span>
-          <span className="ml-2 rounded-full bg-gold-500/15 border border-gold-500/30 px-2 py-0.5 font-mono text-[10px] text-gold-400 align-middle">
-            ADMIN
-          </span>
+      <div className="flex h-16 items-center gap-2 border-b border-white/8 px-4">
+        <Link href="/admin" aria-label="NCS Realty Hub – Admin">
+          <LogoNCS height={40} />
         </Link>
+        <span className="rounded-full bg-gold-500/15 border border-gold-500/30 px-2 py-0.5 font-mono text-[10px] text-gold-400">
+          ADMIN
+        </span>
       </div>
 
       {/* Navegación */}
