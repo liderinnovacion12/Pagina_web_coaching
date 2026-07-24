@@ -8,8 +8,8 @@ interface LogoNCSProps {
 export function LogoNCS({ height = 44, className }: LogoNCSProps) {
   // Dark logo: 644×732 (portrait, green glow, transparent bg)
   const darkWidth = Math.round(height * (644 / 732));
-  // Light logo: 696×642 (blue glow, transparent bg)
-  const lightWidth = Math.round(height * (696 / 642));
+  // Light logo: 1024×1024 (square, blue glow, transparent bg)
+  const lightWidth = height;
 
   return (
     <span
