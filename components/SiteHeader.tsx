@@ -40,13 +40,13 @@ export function SiteHeader() {
       className="sticky top-0 z-20 border-b border-transparent backdrop-blur-xl"
     >
       <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6">
-        <Link href="/" aria-label="NCS Realty Hub – Inicio" className="flex items-center gap-4">
-          <LogoNCS height={60} />
+        <Link href="/" aria-label="NCS Realty Hub – Inicio" className="flex items-center gap-5">
+          <LogoNCS height={72} />
           <div className="leading-none">
-            <span className="block font-display text-xl font-extrabold tracking-tight text-white">
-              NCS <span className="text-gold-400">Realty Hub</span>
+            <span className="block font-display text-2xl font-extrabold tracking-tight text-white [text-shadow:0_0_24px_rgba(0,201,87,0.25)]">
+              NCS <span className="text-gold-400 [text-shadow:0_0_20px_rgba(0,201,87,0.5)]">Realty Hub</span>
             </span>
-            <span className="block font-mono text-[10px] uppercase tracking-[0.22em] text-mist-400 mt-1">
+            <span className="block font-mono text-[11px] uppercase tracking-[0.25em] text-mist-300 mt-1.5">
               Connect. Grow. Succeed.
             </span>
           </div>
